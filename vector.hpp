@@ -1,21 +1,20 @@
 #ifndef C0B8EABC_51F0_4DBA_B6D9_11DC858D0094
 #define C0B8EABC_51F0_4DBA_B6D9_11DC858D0094
-#ifndef VECTOR_HPP
-#define VECTOR_HPP
 
 #include "utils.hpp"
 #include <memory>
 
 namespace ft {
-template <typename T, typename Allocator = std::allocator<T>> class vector {
+template <typename T, typename Allocator = std::allocator<T> >
+class vector {
 public:
   typedef T value_type;
   typedef Allocator allocator_type;
   typedef std::size_t size_type;
   typedef std::ptrdiff_t difference_type;
-  typedef value_type &reference;
-  typedef const value_type &const_reference;
-  typedef value_type *pointer;
+  typedef value_type& reference;
+  typedef const value_type& const_reference;
+  typedef value_type* pointer;
   // typedef allocator_type::pointer     pointer; // See
   // https://en.cppreference.com/w/cpp/container/vector
   typedef const pointer const_pointer;
@@ -31,10 +30,10 @@ public:
       : first(allocate(0)), last(first), reserved_last(first + size()),
         alloc(allocator_type()) {}
 
-  explicit vector(const allocator_type &alloc) : alloc(alloc) {}
+  explicit vector(const allocator_type& alloc) : alloc(alloc) {}
 
   explicit vector(size_type size, const_reference value = T(),
-                  const allocator_type &alloc = allocator_type())
+                  const allocator_type& alloc = allocator_type())
       : first(allocate(0)), last(first), reserved_last(first + this->size()),
         alloc(alloc) {
     resize(size, value);
@@ -43,7 +42,7 @@ public:
   // TODO enable_ifが必要
   template <typename InputIterator>
   explicit vector(InputIterator first, InputIterator last,
-                  const allocator_type &alloc = allocator_type()) {
+                  const allocator_type& alloc = allocator_type()) {
     reserve(distance(first, last));
     for (InputIterator itr = first; itr != last; ++itr) {
       push_back(*itr);
@@ -51,7 +50,7 @@ public:
   }
 
   // TODO deep copy
-  vector(const vector &other) : vector(other.size()) { *this = other; }
+  vector(const vector& other) : vector(other.size()) { *this = other; }
 
   // ---- Destructor ----
   ~vector() {
@@ -60,7 +59,7 @@ public:
   }
 
   // ---- Assigne Operator ----
-  vector &operator=(const vector &other) {
+  vector& operator=(const vector& other) {
     if (this == &other) {
       return *this;
     }
@@ -213,7 +212,5 @@ private:
   // size_type distance(iterator lhs, iterator rhs) { return rhs - lhs; }
 };
 } // namespace ft
-
-#endif
 
 #endif /* C0B8EABC_51F0_4DBA_B6D9_11DC858D0094 */
