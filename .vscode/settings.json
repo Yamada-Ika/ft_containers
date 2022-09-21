@@ -4,4 +4,9 @@
 	"[cpp]": {
 		"editor.defaultFormatter": "xaver.clang-format"
 	},
+	"files.associations": {
+		"vector": "cpp",
+		"memory": "cpp",
+		"*.tcc": "cpp"
+	},
 }

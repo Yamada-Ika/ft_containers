@@ -1,7 +1,7 @@
 .PHONY: run
 run:
 	cmake --build build
-	cd build && ctest
+	cd build && GTEST_COLOR=1 ctest --verbose
 
 .PHONY: install
 install:

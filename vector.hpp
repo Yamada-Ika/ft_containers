@@ -3,6 +3,7 @@
 
 #include "utils.hpp"
 #include <memory>
+#include <vector>
 
 namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
@@ -89,44 +90,53 @@ public:
     return *this;
   }
 
-  // Method
-  void push_back(const_reference v) {
-    size_type cur_sz = size();
-
-    if (cur_sz + 1 > capacity()) {
-      if (cur_sz == 0) {
-        cur_sz = 1;
-      } else {
-        cur_sz *= 2; // TODO care of overflow
-      }
-      reserve(cur_sz);
-    }
-    construct(last, v);
-    ++last;
-  }
-  size_type size() const { return distance(begin(), end()); }
-  bool empty() const { return begin() == end(); }
-  size_type capacity() const { return reserved_last - first; }
+  // Element access
+  // at : access specified element with bounds checking
   reference at(size_type i) {
     if (i >= size())
       throw std::out_of_range("Error: index is out of range.");
 
     return first[i];
   }
-  const_reference at(size_type i) const {
-    if (i >= size())
-      throw std::out_of_range("Error: index is out of range.");
+  const_reference at(size_type i) const { return at(i); }
 
-    return first[i];
-  }
-  reference front() { return first; }
-  const_reference front() const { return first; }
-  // TODO からの時throwした方が良いt思うけど本家はしてない
-  reference back() { return last - 1; }
-  const_reference back() const { return last - 1; }
+  // operator[] : access specified element
+  reference operator[](size_type i) { return first[i]; }
+  const_reference operator[](size_type i) const { return first[i]; }
+
+  // front : access the first element
+  reference front() { return *first; }
+  const_reference front() const { return front(); }
+
+  // back : access the last element
+  reference back() { return *(last - 1); }
+  const_reference back() const { return back(); }
+
+  // data : direct access to the underlying array
   pointer data() { return first; }
   const_pointer data() const { return first; }
-  void clear() { destroy_until(rend()); }
+
+  // Iterators
+  iterator begin() { return first; }
+  iterator end() { return last; }
+  const_iterator begin() const { return first; }
+  const_iterator end() const { return last; }
+  reverse_iterator rbegin() { return reverse_iterator(last); }
+  reverse_iterator rend() { return reverse_iterator(first); }
+  const_reverse_iterator rbegin() const { return reverse_iterator(last); }
+  const_reverse_iterator rend() const { return reverse_iterator(first); }
+
+  // Capacity
+  // empty : checks whether the container is empty
+  bool empty() const { return begin() == end(); }
+
+  // size : returns the number of elements
+  size_type size() const { return distance(begin(), end()); }
+
+  // max_size : returns the maximum possible number of elements
+  size_type max_size() const { return alloc.max_size(); }
+
+  // reserve : reserves storage
   void reserve(size_type sz) {
     if (sz <= capacity())
       return;
@@ -157,6 +167,40 @@ public:
     }
   }
 
+  // capacity : returns the number of elements that can be held in currently allocated storage
+  size_type capacity() const { return reserved_last - first; }
+
+  // Modifiers
+  // clear : clears the contents
+  void clear() { destroy_until(rend()); }
+
+  // TODO
+  // insert : inserts elements
+
+  // TODO
+  // erase : erases elements
+
+  // push_back : adds an element to the end
+  void push_back(const_reference v) {
+    size_type cur_sz = size();
+
+    if (cur_sz + 1 > capacity()) {
+      if (cur_sz == 0) {
+        cur_sz = 1;
+      } else {
+        cur_sz *= 2; // TODO care of overflow
+      }
+      reserve(cur_sz);
+    }
+    construct(last, v);
+    // alloc.constuct(last, v);
+    ++last;
+  }
+
+  // TODO
+  // pop_back : removes the last element
+
+  // resize : changes the number of elements stored
   void resize(size_type sz, const_reference v = T()) {
     size_type cur_sz = size();
 
@@ -174,19 +218,8 @@ public:
     }
   }
 
-  // Operator
-  reference operator[](size_type i) { return first[i]; }
-  const_reference operator[](size_type i) const { return first[i]; }
-
-  // Iterator
-  iterator begin() { return first; }
-  iterator end() { return last; }
-  const_iterator begin() const { return first; }
-  const_iterator end() const { return last; }
-  reverse_iterator rbegin() { return reverse_iterator(last); }
-  reverse_iterator rend() { return reverse_iterator(first); }
-  const_reverse_iterator rbegin() const { return reverse_iterator(last); }
-  const_reverse_iterator rend() const { return reverse_iterator(first); }
+  // TODO
+  // swap : swaps the contents
 
 private:
   // Member
