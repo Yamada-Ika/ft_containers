@@ -20,14 +20,20 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+# add_executable(
+#   test_ft_container
+#   test_is_integral.cpp
+# )
+
 add_executable(
-  test_vector
+  test_ft_container
   test_vector.cpp
 )
+
 target_link_libraries(
-  test_vector
+  test_ft_container
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(test_vector)
+gtest_discover_tests(test_ft_container)

@@ -1,5 +1,5 @@
-#ifndef IS_INTEGRAL_HPP
-#define IS_INTEGRAL_HPP
+#ifndef TYPE_TRAITS_HPP
+#define TYPE_TRAITS_HPP
 
 namespace ft {
 // integral_constant that is used in is_integral
@@ -69,23 +69,23 @@ struct is_integral<wchar_t> : public true_type {};
 // See https://en.cppreference.com/w/cpp/language/types
 //    , https://en.cppreference.com/w/cpp/keyword/char16_t
 //    , https://en.cppreference.com/w/c/string/multibyte/char32_t
-#if __cplusplus >= 201103L
-template <>
-struct is_integral<unsigned long long> : public true_type {};
-template <>
-struct is_integral<long long> : public true_type {};
-template <>
-struct is_integral<char16_t> : public true_type {};
-template <>
-struct is_integral<char32_t> : public true_type {};
-#endif
+// #if __cplusplus >= 201103L
+// template <>
+// struct is_integral<unsigned long long> : public true_type {};
+// template <>
+// struct is_integral<long long> : public true_type {};
+// template <>
+// struct is_integral<char16_t> : public true_type {};
+// template <>
+// struct is_integral<char32_t> : public true_type {};
+// #endif
 
-// Multiprecision integer are implemented C99
-// See https://en.cppreference.com/w/c/language/type
-template <>
-struct is_integral<__int128> : public true_type {};
-template <>
-struct is_integral<unsigned __int128> : public true_type {};
+// // Multiprecision integer are implemented C99
+// // See https://en.cppreference.com/w/c/language/type
+// template <>
+// struct is_integral<__int128> : public true_type {};
+// template <>
+// struct is_integral<unsigned __int128> : public true_type {};
 } // namespace ft
 
 #endif

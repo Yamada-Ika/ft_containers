@@ -2,8 +2,8 @@
 #define C0B8EABC_51F0_4DBA_B6D9_11DC858D0094
 
 #include "utils.hpp"
+#include "is_integral.hpp"
 #include <memory>
-#include <vector>
 
 namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
@@ -33,21 +33,53 @@ public:
 
   explicit vector(const allocator_type& alloc) : alloc(alloc) {}
 
-  explicit vector(size_type size, const_reference value = T(),
+  explicit vector(size_type count, const_reference value = T(),
                   const allocator_type& alloc = allocator_type())
-      : first(allocate(0)), last(first), reserved_last(first + this->size()),
+      : first(allocate(0)), last(first), reserved_last(first + size()),
         alloc(alloc) {
-    resize(size, value);
+    resize(count, value);
   }
 
   // TODO enable_ifが必要
+  // explicit必要？
   template <typename InputIterator>
-  explicit vector(InputIterator first, InputIterator last,
-                  const allocator_type& alloc = allocator_type()) {
-    reserve(distance(first, last));
+  vector(InputIterator first, InputIterator last,
+         const allocator_type& alloc = allocator_type()) {
+    // reserve(ft::distance(first, last));
+    // for (InputIterator itr = first; itr != last; ++itr) {
+    //   push_back(*itr);
+    // }
+
+    // vector(1, 2)とvecotr(other.begin(), other.end())の曖昧さ回避のため
+    typedef typename ft::is_integral<InputIterator>::type integral;
+    initialize_dispatch(first, last, integral());
+  }
+
+  template <typename Integral>
+  void initialize_dispatch(Integral count, Integral value, true_type) {
+    std::cerr << "initialize_dispatch Integral" << std::endl;
+    first = allocate(0);
+    last = first;
+    reserved_last = first + size();
+    resize(count, value);
+  }
+
+  template <typename InputIterator>
+  void initialize_dispatch(InputIterator first, InputIterator last,
+                           false_type) {
+    std::cerr << "initialize_dispatch InputIterator" << std::endl;
+    std::ptrdiff_t diff = ft::distance(first, last);
+    reserve(diff);
+    std::cerr << "initialize_dispatch after reserve" << std::endl;
+    std::cerr << "initialize_dispatch first " << first << std::endl;
+    std::cerr << "initialize_dispatch last  " << last << std::endl;
+    std::cerr << "initialize_dispatch diff  " << diff << std::endl;
+    std::cerr << "initialize_dispatch size  " << size() << std::endl;
     for (InputIterator itr = first; itr != last; ++itr) {
+      std::cerr << "initialize_dispatch loop  " << *itr << std::endl;
       push_back(*itr);
     }
+    std::cerr << "initialize_dispatch end" << std::endl;
   }
 
   // TODO deep copy
@@ -93,12 +125,17 @@ public:
   // Element access
   // at : access specified element with bounds checking
   reference at(size_type i) {
-    if (i >= size())
+    if (i >= size()) {
       throw std::out_of_range("Error: index is out of range.");
-
+    }
     return first[i];
   }
-  const_reference at(size_type i) const { return at(i); }
+  const_reference at(size_type i) const {
+    if (i >= size()) {
+      throw std::out_of_range("Error: index is out of range.");
+    }
+    return first[i];
+  }
 
   // operator[] : access specified element
   reference operator[](size_type i) { return first[i]; }
@@ -106,11 +143,11 @@ public:
 
   // front : access the first element
   reference front() { return *first; }
-  const_reference front() const { return front(); }
+  const_reference front() const { return *first; }
 
   // back : access the last element
   reference back() { return *(last - 1); }
-  const_reference back() const { return back(); }
+  const_reference back() const { return *(last - 1); }
 
   // data : direct access to the underlying array
   pointer data() { return first; }
@@ -138,8 +175,15 @@ public:
 
   // reserve : reserves storage
   void reserve(size_type sz) {
-    if (sz <= capacity())
+    std::cerr << __FILE__ << ":" << __LINE__ << " size " << sz << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__ << " capacity " << capacity()
+              << std::endl;
+
+    if (sz <= capacity()) {
       return;
+    }
+
+    std::cerr << __FILE__ << ":" << __LINE__ << " size " << sz << std::endl;
 
     pointer tmp = allocate(sz);
 
@@ -151,13 +195,13 @@ public:
     last = first;
     reserved_last = first + sz;
 
-    alloc.deallocate(old_first, old_capacity);
-
     // Copy
     for (iterator old_iter = old_first; old_iter != old_last;
          ++old_iter, ++last) {
       construct(last, *old_iter);
     }
+
+    alloc.deallocate(old_first, old_capacity);
 
     // Deallocate old memory
     for (reverse_iterator riter = reverse_iterator(old_last),
@@ -184,6 +228,10 @@ public:
   void push_back(const_reference v) {
     size_type cur_sz = size();
 
+    std::cerr << __FILE__ << ":" << __LINE__ << " size " << cur_sz << std::endl;
+    std::cerr << __FILE__ << ":" << __LINE__ << " capacity " << capacity()
+              << std::endl;
+
     if (cur_sz + 1 > capacity()) {
       if (cur_sz == 0) {
         cur_sz = 1;
@@ -193,12 +241,19 @@ public:
       reserve(cur_sz);
     }
     construct(last, v);
-    // alloc.constuct(last, v);
     ++last;
   }
 
-  // TODO
   // pop_back : removes the last element
+  void pop_back() {
+    // コンテナが空の時にpop_backすると未定義動作
+    if (empty()) {
+      // TODO out_of_rangeのまま？　
+      throw std::out_of_range("Error: cannot pop back because vector is empty");
+    }
+    alloc.destroy(last);
+    --last;
+  }
 
   // resize : changes the number of elements stored
   void resize(size_type sz, const_reference v = T()) {
@@ -218,8 +273,11 @@ public:
     }
   }
 
-  // TODO
   // swap : swaps the contents
+  void swap(vector& other) {
+    // TODO std使っている
+    std::swap(*this, other);
+  }
 
 private:
   // Member
