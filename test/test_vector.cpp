@@ -47,10 +47,11 @@ TEST(VectorTest, int_basic_constructor_with_iterator) {
   test_set.push_back(1);
 
   ft::vector<int> myvec(test_set.begin(), test_set.end());
-  // ASSERT_EQ(myvec.size(), test_set.size());
-  // for (std::vector<int>::size_type i = 0; i < myvec.size(); ++i) {
-  //   ASSERT_EQ(myvec.at(i), test_set.at(i));
-  // }
+
+  ASSERT_EQ(myvec.size(), test_set.size());
+  for (std::vector<int>::size_type i = 0; i < myvec.size(); ++i) {
+    ASSERT_EQ(myvec.at(i), test_set.at(i));
+  }
 }
 
 // // with ft::vector
@@ -514,61 +515,26 @@ TEST(VectorTest, int_basic_max_size) {
 
 // reserve()
 TEST(VectorTest, int_basic_reserve) {
-  std::vector<int> test_set = {100};
-
   ft::vector<int> myvec;
   std::vector<int> libvec;
 
-  for (std::vector<int>::iterator itr = test_set.begin(); itr != test_set.end();
-       ++itr) {
-    myvec.push_back(*itr);
-    libvec.push_back(*itr);
-  }
+  std::size_t size = 100;
+  myvec.reserve(size);
+  libvec.reserve(size);
 
   ASSERT_EQ(myvec.size(), libvec.size());
 }
 
 TEST(VectorTest, int_basic_reserve2) {
-  std::vector<int> test_set = {100, 42};
-
   ft::vector<int> myvec;
   std::vector<int> libvec;
 
-  for (std::vector<int>::iterator itr = test_set.begin(); itr != test_set.end();
-       ++itr) {
-    myvec.push_back(*itr);
-    libvec.push_back(*itr);
-  }
-
-  ASSERT_EQ(myvec.size(), libvec.size());
-}
-
-TEST(VectorTest, int_basic_reserve3) {
-  std::vector<int> test_set = {100, 42, 1};
-
-  ft::vector<int> myvec;
-  std::vector<int> libvec;
-
-  for (std::vector<int>::iterator itr = test_set.begin(); itr != test_set.end();
-       ++itr) {
-    myvec.push_back(*itr);
-    libvec.push_back(*itr);
-  }
-
-  ASSERT_EQ(myvec.size(), libvec.size());
-}
-
-TEST(VectorTest, int_basic_reserve4) {
-  std::vector<int> test_set = {100, 42, 1, 4242};
-
-  ft::vector<int> myvec;
-  std::vector<int> libvec;
-
-  for (std::vector<int>::iterator itr = test_set.begin(); itr != test_set.end();
-       ++itr) {
-    myvec.push_back(*itr);
-    libvec.push_back(*itr);
-  }
+  std::size_t size = 100;
+  myvec.reserve(size);
+  libvec.reserve(size);
+  size = 10;
+  myvec.reserve(size);
+  libvec.reserve(size);
 
   ASSERT_EQ(myvec.size(), libvec.size());
 }

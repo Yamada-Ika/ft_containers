@@ -40,24 +40,18 @@ public:
     resize(count, value);
   }
 
-  // TODO enable_ifが必要
+  // TODO enable_ifを使って書き直したい
   // explicit必要？
   template <typename InputIterator>
   vector(InputIterator first, InputIterator last,
          const allocator_type& alloc = allocator_type()) {
-    // reserve(ft::distance(first, last));
-    // for (InputIterator itr = first; itr != last; ++itr) {
-    //   push_back(*itr);
-    // }
-
-    // vector(1, 2)とvecotr(other.begin(), other.end())の曖昧さ回避のため
+    // vector(size_type count, const_reference value)との曖昧さ回避をする
     typedef typename ft::is_integral<InputIterator>::type integral;
     initialize_dispatch(first, last, integral());
   }
 
   template <typename Integral>
   void initialize_dispatch(Integral count, Integral value, true_type) {
-    std::cerr << "initialize_dispatch Integral" << std::endl;
     first = allocate(0);
     last = first;
     reserved_last = first + size();
@@ -65,21 +59,24 @@ public:
   }
 
   template <typename InputIterator>
-  void initialize_dispatch(InputIterator first, InputIterator last,
+  void initialize_dispatch(InputIterator other_first, InputIterator other_last,
                            false_type) {
-    std::cerr << "initialize_dispatch InputIterator" << std::endl;
-    std::ptrdiff_t diff = ft::distance(first, last);
-    reserve(diff);
-    std::cerr << "initialize_dispatch after reserve" << std::endl;
+    first = allocate(0);
+    last = first;
+    reserved_last = first + size();
+
     std::cerr << "initialize_dispatch first " << first << std::endl;
     std::cerr << "initialize_dispatch last  " << last << std::endl;
-    std::cerr << "initialize_dispatch diff  " << diff << std::endl;
-    std::cerr << "initialize_dispatch size  " << size() << std::endl;
-    for (InputIterator itr = first; itr != last; ++itr) {
-      std::cerr << "initialize_dispatch loop  " << *itr << std::endl;
+
+    std::ptrdiff_t diff = ft::distance(other_first, other_last);
+    std::cerr << "initialize_dispatch diff " << diff << std::endl;
+    reserve(diff);
+    std::cerr << "initialize_dispatch first " << first << std::endl;
+    std::cerr << "initialize_dispatch last  " << last << std::endl;
+    for (InputIterator itr = other_first; itr != other_last; ++itr) {
+      std::cerr << "initialize_dispatch loop *itr " << *itr << std::endl;
       push_back(*itr);
     }
-    std::cerr << "initialize_dispatch end" << std::endl;
   }
 
   // TODO deep copy
@@ -175,15 +172,9 @@ public:
 
   // reserve : reserves storage
   void reserve(size_type sz) {
-    std::cerr << __FILE__ << ":" << __LINE__ << " size " << sz << std::endl;
-    std::cerr << __FILE__ << ":" << __LINE__ << " capacity " << capacity()
-              << std::endl;
-
     if (sz <= capacity()) {
       return;
     }
-
-    std::cerr << __FILE__ << ":" << __LINE__ << " size " << sz << std::endl;
 
     pointer tmp = allocate(sz);
 
@@ -227,10 +218,6 @@ public:
   // push_back : adds an element to the end
   void push_back(const_reference v) {
     size_type cur_sz = size();
-
-    std::cerr << __FILE__ << ":" << __LINE__ << " size " << cur_sz << std::endl;
-    std::cerr << __FILE__ << ":" << __LINE__ << " capacity " << capacity()
-              << std::endl;
 
     if (cur_sz + 1 > capacity()) {
       if (cur_sz == 0) {
