@@ -6,22 +6,36 @@
 
 // TODO 自作アロケーたーのテスト
 // constructor
-// without args
-TEST(VectorTest, int_basic_constructor_without_args) { ft::vector<int> myvec; }
-
-// with allocator
-TEST(VectorTest, int_basic_constructor_with_allocator) {
-  ft::vector<int> myvec(std::allocator<int>);
+// vector();
+TEST(VectorTest, int_basic_constructor_without_args) {
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  ASSERT_EQ(myvec.size(), 1);
+  ASSERT_EQ(myvec.at(0), 1);
 }
 
-// with size
+// vector( const Allocator& alloc );
+TEST(VectorTest, int_basic_constructor_with_allocator) {
+  std::allocator<int> alloc;
+  ft::vector<int, std::allocator<int> > myvec(alloc);
+
+  myvec.push_back(1);
+  ASSERT_EQ(myvec.size(), 1);
+  ASSERT_EQ(myvec.at(0), 1);
+}
+
+// vector( size_type count,
+//                  const T& value = T(),
+//                  const Allocator& alloc = Allocator());
+
+// vector( size_type count );
 TEST(VectorTest, int_basic_constructor_with_size) {
   ft::vector<int> myvec(10);
 
   ASSERT_EQ(myvec.size(), 10);
 }
 
-// with size and value
+// vector( size_type count, const T& value = T() );
 TEST(VectorTest, int_basic_constructor_with_size_and_value) {
   ft::vector<int> myvec(10, 42);
 
@@ -31,9 +45,12 @@ TEST(VectorTest, int_basic_constructor_with_size_and_value) {
   }
 }
 
-// with size, value and allocator
+// vector( size_type count,
+//                  const T& value = T(),
+//                  const Allocator& alloc = Allocator());
 TEST(VectorTest, int_basic_constructor_with_size_and_value_allocator) {
-  ft::vector<int> myvec(10, 42, std::allocator<int>());
+  std::allocator<int> alloc;
+  ft::vector<int> myvec(10, 42, alloc);
 
   ASSERT_EQ(myvec.size(), 10);
   for (std::vector<int>::size_type i = 0; i < myvec.size(); ++i) {
@@ -41,7 +58,12 @@ TEST(VectorTest, int_basic_constructor_with_size_and_value_allocator) {
   }
 }
 
-// with iterator
+// template< class InputIt >
+// vector( InputIt first, InputIt last,
+//         const Allocator& alloc = Allocator() );
+
+// template< class InputIt >
+// vector( InputIt first, InputIt last );
 TEST(VectorTest, int_basic_constructor_with_iterator) {
   ft::vector<int> test_set;
   test_set.push_back(1);
@@ -54,23 +76,80 @@ TEST(VectorTest, int_basic_constructor_with_iterator) {
   }
 }
 
-// // with ft::vector
-// TEST(VectorTest, int_basic_constructor_with_ftvector) {
-//   ft::vector<int> test_set;
-//   test_set.push_back(1);
+// template< class InputIt >
+// vector( InputIt first, InputIt last,
+//                        const Allocator& alloc = Allocator() );
+TEST(VectorTest, int_basic_constructor_with_iterator_and_allocator) {
+  ft::vector<int> test_set;
+  std::allocator<int> alloc;
+  test_set.push_back(1);
 
-//   ft::vector<int> myvec(test_set.begin(), test_set.end());
-//   ft::vector<int> other(test_set.begin(), test_set.end());
-//   ASSERT_EQ(myvec.size(), other.size());
-//   for (std::vector<int>::size_type i = 0; i < other.size(); ++i) {
-//     ASSERT_EQ(myvec.at(i), other.at(i));
-//   }
-// }
+  ft::vector<int> myvec(test_set.begin(), test_set.end(), alloc);
+
+  ASSERT_EQ(myvec.size(), test_set.size());
+  for (std::vector<int>::size_type i = 0; i < myvec.size(); ++i) {
+    ASSERT_EQ(myvec.at(i), test_set.at(i));
+  }
+}
+
+// vector( const vector& other );
+TEST(VectorTest, int_basic_constructor_with_ftvector) {
+  ft::vector<int> test_set;
+  test_set.push_back(1);
+
+  ft::vector<int> myvec(test_set);
+  ASSERT_EQ(myvec.size(), test_set.size());
+  for (std::vector<int>::size_type i = 0; i < test_set.size(); ++i) {
+    ASSERT_EQ(myvec.at(i), test_set.at(i));
+  }
+}
 
 // destructor
+
 // operator=
+TEST(VectorTest, int_basic_operator_assign) {
+  ft::vector<int> test_set;
+  test_set.push_back(1);
+
+  ft::vector<int> myvec = test_set;
+  ASSERT_EQ(myvec.size(), test_set.size());
+  for (std::vector<int>::size_type i = 0; i < test_set.size(); ++i) {
+    ASSERT_EQ(myvec.at(i), test_set.at(i));
+  }
+}
+
 // assign
+// void assign( size_type count, const T& value );
+TEST(VectorTest, int_basic_assign) {
+  ft::vector<int> myvec;
+  myvec.assign(100, 42);
+  ASSERT_EQ(myvec.size(), 100);
+  for (std::vector<int>::size_type i = 0; i < 100; ++i) {
+    ASSERT_EQ(myvec.at(i), 42);
+  }
+}
+
+// template< class InputIt >
+// void assign( InputIt first, InputIt last );
+TEST(VectorTest, int_basic_assign_iterator) {
+  ft::vector<int> test_set;
+  test_set.push_back(1);
+  test_set.push_back(2);
+  test_set.push_back(3);
+
+  ft::vector<int> myvec;
+  myvec.assign(test_set.begin(), test_set.end());
+  ASSERT_EQ(myvec.size(), test_set.size());
+  for (std::vector<int>::size_type i = 0; i < test_set.size(); ++i) {
+    ASSERT_EQ(myvec.at(i), test_set.at(i));
+  }
+}
+
 // get_allocator
+TEST(VectorTest, int_basic_get_allocator) {
+  ft::vector<int> myvec;
+  myvec.get_allocator();
+}
 
 // at()
 TEST(VectorTest, int_basic_at) {
@@ -139,6 +218,12 @@ TEST(VectorTest, int_basic_at4) {
   for (std::vector<int>::size_type i = 0; i < test_set.size(); ++i) {
     ASSERT_EQ(myvec.at(i), libvec.at(i));
   }
+}
+
+TEST(VectorTest, int_basic_at_exception) {
+  ft::vector<int> myvec;
+
+  EXPECT_THROW(myvec.at(42), std::out_of_range);
 }
 
 // operator[]
@@ -549,6 +634,16 @@ TEST(VectorTest, int_basic_reserve2) {
 
 // TODO Modifiers
 // clear()
+TEST(VectorTest, int_basic_clear) {
+  ft::vector<int> myvec;
+  std::vector<int> libvec;
+
+  myvec.clear();
+  libvec.clear();
+
+  ASSERT_EQ(myvec.size(), libvec.size());
+}
+
 // insert()
 // erase()
 

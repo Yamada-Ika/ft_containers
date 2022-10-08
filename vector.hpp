@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "is_integral.hpp"
 #include <memory>
+#include <iostream>
 
 namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
@@ -31,7 +32,12 @@ public:
       : first(allocate(0)), last(first), reserved_last(first + size()),
         alloc(allocator_type()) {}
 
-  explicit vector(const allocator_type& alloc) : alloc(alloc) {}
+  explicit vector(const allocator_type& alloc) : alloc(alloc) {
+    first = allocate(0);
+    last = first;
+    reserved_last = first + size();
+    std::cerr << "constructed!!!!" << std::endl;
+  }
 
   explicit vector(size_type count, const_reference value = T(),
                   const allocator_type& alloc = allocator_type())
@@ -65,16 +71,9 @@ public:
     last = first;
     reserved_last = first + size();
 
-    std::cerr << "initialize_dispatch first " << first << std::endl;
-    std::cerr << "initialize_dispatch last  " << last << std::endl;
-
     std::ptrdiff_t diff = ft::distance(other_first, other_last);
-    std::cerr << "initialize_dispatch diff " << diff << std::endl;
     reserve(diff);
-    std::cerr << "initialize_dispatch first " << first << std::endl;
-    std::cerr << "initialize_dispatch last  " << last << std::endl;
     for (InputIterator itr = other_first; itr != other_last; ++itr) {
-      std::cerr << "initialize_dispatch loop *itr " << *itr << std::endl;
       push_back(*itr);
     }
   }
@@ -119,24 +118,58 @@ public:
     return *this;
   }
 
+  // assign : Replaces the contents of the container.
+  void assign(size_type count, const T& value) { fill_assign(count, value); }
+
+  // TODO: can make private
+  template <class InputIt>
+  void assign(InputIt first, InputIt last) {
+    // 曖昧さ回避
+    typedef typename ft::is_integral<InputIt>::type integral;
+    assign_dispatch(first, last, integral());
+  }
+
+  // TODO : make private
+  template <typename Integral>
+  void assign_dispatch(Integral n, Integral val, true_type) {
+    fill_assign(n, val);
+  }
+  // TODO : make private
+  template <typename InputIt>
+  void assign_dispatch(InputIt first, InputIt last, false_type) {
+    size_type sz = distance(first, last);
+    resize(0);
+    size_type i = 0;
+    for (iterator itr = first; itr != last; ++itr) {
+      push_back(*itr);
+      ++i;
+    }
+  }
+
+  void fill_assign(size_type count, const T& value) { resize(count, value); }
+
+  // get_allocator : Returns the allocator associated with the container.
+  // TODO macだとこうしてるallocator_type(alloc)
+  allocator_type get_allocator() { return alloc; }
+
   // Element access
   // at : access specified element with bounds checking
-  reference at(size_type i) {
-    if (i >= size()) {
+  reference at(size_type pos) {
+    if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
     }
-    return first[i];
+    return first[pos];
   }
-  const_reference at(size_type i) const {
-    if (i >= size()) {
+  const_reference at(size_type pos) const {
+    if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
     }
-    return first[i];
+    return first[pos];
   }
 
   // operator[] : access specified element
-  reference operator[](size_type i) { return first[i]; }
-  const_reference operator[](size_type i) const { return first[i]; }
+  reference operator[](size_type pos) { return first[pos]; }
+  const_reference operator[](size_type pos) const { return first[pos]; }
 
   // front : access the first element
   reference front() { return *first; }
