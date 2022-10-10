@@ -25,6 +25,8 @@ enable_testing()
 #   test_is_integral.cpp
 # )
 
+find_package (glog 0.4.0 REQUIRED)
+
 add_executable(
   test_ft_container
   test_vector.cpp
@@ -33,6 +35,7 @@ add_executable(
 target_link_libraries(
   test_ft_container
   GTest::gtest_main
+  glog::glog
 )
 
 include(GoogleTest)

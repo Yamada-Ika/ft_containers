@@ -644,8 +644,387 @@ TEST(VectorTest, int_basic_clear) {
   ASSERT_EQ(myvec.size(), libvec.size());
 }
 
+template <typename T>
+static void assertVector(std::vector<T>& libvec, ft::vector<T>& myvec) {
+  ASSERT_EQ(libvec.size(), myvec.size());
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    ASSERT_EQ(libvec[i], myvec[i]);
+  }
+}
+
 // insert()
+// iterator insert( const_iterator pos, const T& value );
+TEST(VectorTest, int_basic_insert1) {
+  // stdのセット
+  std::vector<int> libvec(10, 42);
+  std::vector<int>::iterator libitr = libvec.insert(libvec.begin(), 123);
+  // ftのセット
+  ft::vector<int> myvec(10, 42);
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.begin(), 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert2) {
+  // stdのセット
+  std::vector<int> libvec;
+  std::vector<int>::iterator libitr = libvec.insert(libvec.begin(), 123);
+  // ftのセット
+  ft::vector<int> myvec;
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.begin(), 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert3) {
+  // stdのセット
+  std::vector<int> libvec;
+  std::vector<int>::iterator libitr = libvec.insert(libvec.end(), 123);
+  // ftのセット
+  ft::vector<int> myvec;
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.end(), 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert4) {
+  // stdのセット
+  std::vector<int> libvec = {1, 2, 4, 5, 6, 7, 8};
+  std::vector<int>::iterator itr1 = libvec.begin();
+  ++itr1;
+  ++itr1;
+  ++itr1;
+  std::vector<int>::iterator libitr = libvec.insert(itr1, 123);
+  // ftのセット
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  myvec.push_back(2);
+  myvec.push_back(4);
+  myvec.push_back(5);
+  myvec.push_back(6);
+  myvec.push_back(7);
+  myvec.push_back(8);
+  ft::vector<int>::iterator itr2 = myvec.begin();
+  ++itr2;
+  ++itr2;
+  ++itr2;
+  ft::vector<int>::iterator myitr = myvec.insert(itr2, 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << " myvec[" << i << "] " << myvec[i];
+  }
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    LOG(ERROR) << "libvec[" << i << "] " << libvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+// iterator insert( const_iterator pos, size_type count, const T& value );
+TEST(VectorTest, int_basic_insert5) {
+  // stdのセット
+  std::vector<int> libvec(10, 42);
+  std::vector<int>::iterator libitr = libvec.insert(libvec.begin(), 10, 123);
+  // ftのセット
+  ft::vector<int> myvec(10, 42);
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.begin(), 10, 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert6) {
+  // stdのセット
+  std::vector<int> libvec(10, 42);
+  std::vector<int>::iterator libitr = libvec.insert(libvec.end(), 10, 123);
+  // ftのセット
+  ft::vector<int> myvec(10, 42);
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.end(), 10, 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert7) {
+  // stdのセット
+  std::vector<int> libvec;
+  std::vector<int>::iterator libitr = libvec.insert(libvec.begin(), 10, 123);
+  // ftのセット
+  ft::vector<int> myvec;
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.begin(), 10, 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert8) {
+  // stdのセット
+  std::vector<int> libvec;
+  std::vector<int>::iterator libitr = libvec.insert(libvec.end(), 10, 123);
+  // ftのセット
+  ft::vector<int> myvec;
+  ft::vector<int>::iterator myitr = myvec.insert(myvec.end(), 10, 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << "myvec[" << i << "] " << myvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert9) {
+  // stdのセット
+  std::vector<int> libvec = {1, 2, 4, 5, 6, 7, 8};
+  std::vector<int>::iterator itr1 = libvec.begin();
+  ++itr1;
+  ++itr1;
+  ++itr1;
+  std::vector<int>::iterator libitr = libvec.insert(itr1, 100, 123);
+  // ftのセット
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  myvec.push_back(2);
+  myvec.push_back(4);
+  myvec.push_back(5);
+  myvec.push_back(6);
+  myvec.push_back(7);
+  myvec.push_back(8);
+  ft::vector<int>::iterator itr2 = myvec.begin();
+  ++itr2;
+  ++itr2;
+  ++itr2;
+  ft::vector<int>::iterator myitr = myvec.insert(itr2, 100, 123);
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << " myvec[" << i << "] " << myvec[i];
+  }
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    LOG(ERROR) << "libvec[" << i << "] " << libvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+// template< class InputIt >
+// iterator insert( const_iterator pos, InputIt first, InputIt last );
+TEST(VectorTest, int_basic_insert10) {
+  // stdのセット
+  std::vector<int> libvec;
+  libvec.push_back(1);
+  libvec.push_back(2);
+  libvec.push_back(3);
+  std::vector<int> libsrc;
+  libsrc.push_back(4);
+  libsrc.push_back(5);
+  libsrc.push_back(6);
+  std::vector<int>::iterator libitr =
+      libvec.insert(libvec.begin(), libsrc.begin(), libsrc.end());
+  // ftのセット
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  myvec.push_back(2);
+  myvec.push_back(3);
+  ft::vector<int> mysrc;
+  mysrc.push_back(4);
+  mysrc.push_back(5);
+  mysrc.push_back(6);
+  ft::vector<int>::iterator myitr =
+      myvec.insert(myvec.begin(), mysrc.begin(), mysrc.end());
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << " myvec[" << i << "] " << myvec[i];
+  }
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    LOG(ERROR) << "libvec[" << i << "] " << libvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert11) {
+  // stdのセット
+  std::vector<int> libvec;
+  libvec.push_back(1);
+  std::vector<int> libsrc;
+  libsrc.push_back(4);
+  std::vector<int>::iterator libitr =
+      libvec.insert(libvec.begin(), libsrc.begin(), libsrc.end());
+  // ftのセット
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  ft::vector<int> mysrc;
+  mysrc.push_back(4);
+  ft::vector<int>::iterator myitr =
+      myvec.insert(myvec.begin(), mysrc.begin(), mysrc.end());
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << " myvec[" << i << "] " << myvec[i];
+  }
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    LOG(ERROR) << "libvec[" << i << "] " << libvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert12) {
+  // stdのセット
+  std::vector<int> libvec;
+  std::vector<int> libsrc;
+  libsrc.push_back(4);
+  std::vector<int>::iterator libitr =
+      libvec.insert(libvec.begin(), libsrc.begin(), libsrc.end());
+  // ftのセット
+  ft::vector<int> myvec;
+  ft::vector<int> mysrc;
+  mysrc.push_back(4);
+  ft::vector<int>::iterator myitr =
+      myvec.insert(myvec.begin(), mysrc.begin(), mysrc.end());
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << " myvec[" << i << "] " << myvec[i];
+  }
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    LOG(ERROR) << "libvec[" << i << "] " << libvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_insert13) {
+  // stdのセット
+  std::vector<int> libvec;
+  std::vector<int> libsrc;
+  std::vector<int>::iterator libitr =
+      libvec.insert(libvec.begin(), libsrc.begin(), libsrc.end());
+  // ftのセット
+  ft::vector<int> myvec;
+  ft::vector<int> mysrc;
+  ft::vector<int>::iterator myitr =
+      myvec.insert(myvec.begin(), mysrc.begin(), mysrc.end());
+
+  ASSERT_TRUE(libitr == libvec.begin());
+  ASSERT_TRUE(myitr == myvec.begin());
+}
+
 // erase()
+// iterator erase( iterator pos );
+TEST(VectorTest, int_basic_erase1) {
+  // stdのセット
+  std::vector<int> libvec(1, 42);
+  ft::vector<int> myvec(1, 42);
+
+  std::vector<int>::iterator libitr = libvec.erase(libvec.begin());
+  ft::vector<int>::iterator myitr = myvec.erase(myvec.begin());
+
+  for (size_t i = 0; i < myvec.size(); ++i) {
+    LOG(ERROR) << " myvec[" << i << "] " << myvec[i];
+  }
+  for (size_t i = 0; i < libvec.size(); ++i) {
+    LOG(ERROR) << "libvec[" << i << "] " << libvec[i];
+  }
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_erase2) {
+  // stdのセット
+  std::vector<int> libvec(42, 4242);
+  ft::vector<int> myvec(42, 4242);
+  std::vector<int>::iterator libitr = libvec.erase(libvec.begin() + 10);
+  ft::vector<int>::iterator myitr = myvec.erase(myvec.begin() + 10);
+
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+// TEST(VectorTest, int_basic_erase2) {
+//   // stdのセット
+//   std::vector<int> libvec(42, 4242);
+//   ft::vector<int> myvec(42, 4242);
+//   std::vector<int>::iterator libitr = libvec.erase(libvec.begin() + 10);
+//   ft::vector<int>::iterator myitr = myvec.erase(myvec.begin() + 10);
+
+//   ASSERT_EQ(*libitr, *myitr);
+//   assertVector(libvec, myvec);
+// }
+
+// The iterator pos must be valid and dereferenceable. Thus the end() iterator (which is valid, but is not dereferenceable) cannot be used as a value for pos.
+// デリファレンスできないイテレータは入れられない
+
+TEST(VectorTest, int_basic_erase3) {
+  // stdのセット
+  std::vector<int> libvec;
+  libvec.push_back(1);
+  libvec.push_back(2);
+  libvec.push_back(3);
+  libvec.push_back(4);
+  libvec.push_back(5);
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  myvec.push_back(2);
+  myvec.push_back(3);
+  myvec.push_back(4);
+  myvec.push_back(5);
+  std::vector<int>::iterator libitr = libvec.erase(libvec.begin() + 3);
+  ft::vector<int>::iterator myitr = myvec.erase(myvec.begin() + 3);
+
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
+
+TEST(VectorTest, int_basic_erase4) {
+  // stdのセット
+  std::vector<int> libvec;
+  libvec.push_back(1);
+  libvec.push_back(2);
+  libvec.push_back(3);
+  libvec.push_back(4);
+  libvec.push_back(5);
+  libvec.push_back(6);
+  libvec.push_back(7);
+  libvec.push_back(8);
+  libvec.push_back(9);
+  libvec.push_back(10);
+  ft::vector<int> myvec;
+  myvec.push_back(1);
+  myvec.push_back(2);
+  myvec.push_back(3);
+  myvec.push_back(4);
+  myvec.push_back(5);
+  myvec.push_back(6);
+  myvec.push_back(7);
+  myvec.push_back(8);
+  myvec.push_back(9);
+  myvec.push_back(10);
+  std::vector<int>::iterator libitr =
+      libvec.erase(libvec.begin() + 3, libvec.end());
+  ft::vector<int>::iterator myitr = myvec.erase(myvec.begin() + 3, myvec.end());
+
+  ASSERT_EQ(*libitr, *myitr);
+  assertVector(libvec, myvec);
+}
 
 // push_back()
 TEST(VectorTest, int_basic_push_back) {
