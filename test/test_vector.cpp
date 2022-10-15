@@ -1209,11 +1209,143 @@ TEST(VectorTest, int_basic_swap) {
   }
 }
 
+template <typename T>
+static void prepareTestData(std::vector<T>& libvector, ft::vector<T>& myvector,
+                            const std::vector<T>& data) {
+  for (typename std::vector<T>::const_iterator itr = data.begin();
+       itr != data.end(); ++itr) {
+    libvector.push_back(*itr);
+    myvector.push_back(*itr);
+  }
+}
+
 // TODO Non-member functions
 // operator==
+TEST(VectorTest, int_basic_operator_equal) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+
+  ASSERT_TRUE((libvec == libvec_comp_target) && (myvec == myvec_comp_target));
+}
+
 // operator!=
+TEST(VectorTest, int_basic_operator_not_equal) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+  libvec_comp_target.push_back(1);
+  myvec_comp_target.push_back(1);
+
+  ASSERT_TRUE((libvec != libvec_comp_target) && (myvec != myvec_comp_target));
+}
+
 // operator<
+TEST(VectorTest, int_basic_operator_less_than) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+  libvec_comp_target.push_back(1);
+  myvec_comp_target.push_back(1);
+
+  ASSERT_EQ(libvec < libvec_comp_target, myvec < myvec_comp_target);
+}
+
 // operator<=
+TEST(VectorTest, int_basic_operator_less_than_equal) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+  libvec_comp_target.push_back(1);
+  myvec_comp_target.push_back(1);
+
+  ASSERT_TRUE((libvec <= libvec_comp_target) && (myvec <= myvec_comp_target));
+}
+
+TEST(VectorTest, int_basic_operator_less_than_equal2) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+
+  ASSERT_TRUE((libvec <= libvec_comp_target) && (myvec <= myvec_comp_target));
+}
+
 // operator>
+TEST(VectorTest, int_basic_operator_greater_than) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+  libvec_comp_target.pop_back();
+  myvec_comp_target.pop_back();
+
+  ASSERT_EQ(libvec > libvec_comp_target, myvec > myvec_comp_target);
+}
+
 // operator>=
+TEST(VectorTest, int_basic_operator_greater_than_equal) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+  libvec_comp_target.pop_back();
+  myvec_comp_target.pop_back();
+
+  ASSERT_TRUE((libvec >= libvec_comp_target) && (myvec >= myvec_comp_target));
+}
+
+TEST(VectorTest, int_basic_operator_greater_than_equal2) {
+  std::vector<int> test_set = {100, 42, -1, -100, 4242};
+
+  ft::vector<int> myvec;
+  ft::vector<int> myvec_comp_target;
+  std::vector<int> libvec;
+  std::vector<int> libvec_comp_target;
+
+  prepareTestData(libvec, myvec, test_set);
+  prepareTestData(libvec_comp_target, myvec_comp_target, test_set);
+
+  ASSERT_TRUE((libvec >= libvec_comp_target) && (myvec >= myvec_comp_target));
+}
+
 // std::swap(std::vector)

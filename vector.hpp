@@ -442,8 +442,59 @@ private:
       destroy(&*riter);
     }
   }
-  // size_type distance(iterator lhs, iterator rhs) { return rhs - lhs; }
 };
+
+// operator ==
+template <class T, class Alloc>
+bool operator==(const ft::vector<T, Alloc>& lhs,
+                const ft::vector<T, Alloc>& rhs) {
+  if (lhs.size() != rhs.size()) {
+    return false;
+  }
+  for (typename ft::vector<T, Alloc>::size_type i = 0; i < lhs.size(); ++i) {
+    if (lhs[i] != rhs[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// operator !=
+template <class T, class Alloc>
+bool operator!=(const ft::vector<T, Alloc>& lhs,
+                const ft::vector<T, Alloc>& rhs) {
+  return !(lhs == rhs);
+}
+
+// operator <
+template <class T, class Alloc>
+bool operator<(const ft::vector<T, Alloc>& lhs,
+               const ft::vector<T, Alloc>& rhs) {
+  return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+                                     rhs.end());
+}
+
+// operator >=
+template <class T, class Alloc>
+bool operator>=(const ft::vector<T, Alloc>& lhs,
+                const ft::vector<T, Alloc>& rhs) {
+  return !(lhs < rhs);
+}
+
+// operator >
+template <class T, class Alloc>
+bool operator>(const ft::vector<T, Alloc>& lhs,
+               const ft::vector<T, Alloc>& rhs) {
+  return rhs < lhs;
+}
+
+// operator <=
+template <class T, class Alloc>
+bool operator<=(const ft::vector<T, Alloc>& lhs,
+                const ft::vector<T, Alloc>& rhs) {
+  return !(lhs > rhs);
+}
+
 } // namespace ft
 
 #endif /* C0B8EABC_51F0_4DBA_B6D9_11DC858D0094 */
