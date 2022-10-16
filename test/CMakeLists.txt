@@ -30,6 +30,7 @@ find_package (glog 0.4.0 REQUIRED)
 add_executable(
   test_ft_container
   test_vector.cpp
+  test_stack.cpp
 )
 
 target_link_libraries(

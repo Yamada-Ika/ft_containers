@@ -417,8 +417,18 @@ public:
 
   // swap : swaps the contents
   void swap(vector& other) {
-    // TODO std使っている
-    std::swap(*this, other);
+    size_type this_size = this->size();
+    size_type other_size = other.size();
+
+    for (size_type i = 0; i < this_size; ++i) {
+      other.push_back(this->at(i));
+    }
+    this->clear();
+
+    for (size_type i = 0; i < other_size; ++i) {
+      this->push_back(other.at(i));
+    }
+    other.erase(other.begin(), other.begin() + other_size);
   }
 
 private:
@@ -493,6 +503,12 @@ template <class T, class Alloc>
 bool operator<=(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {
   return !(lhs > rhs);
+}
+
+// specialized ft::swap for ft::vector
+template <class T, class Alloc>
+void swap(ft::vector<T, Alloc>& lhs, ft::vector<T, Alloc>& rhs) {
+  lhs.swap(rhs);
 }
 
 } // namespace ft
