@@ -31,6 +31,7 @@ add_executable(
   test_ft_container
   test_vector.cpp
   test_stack.cpp
+  test_deque.cpp
 )
 
 target_link_libraries(
