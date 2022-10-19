@@ -23,13 +23,12 @@ public:
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
   // constructor
-  deque() : alloc_(Allocator()) {
-    first_ = alloc_.allocate(buffer_size);
-    // TODO とりあえず初期値はNULLで埋めてみた
-    front_ = NULL;
-    back_ = front_;
-  }
-  explicit deque(const Allocator& alloc);
+  deque()
+      : alloc_(Allocator()), first_(alloc_.allocate(buffer_size)), front_(NULL),
+        back_(NULL), current_bufsize(buffer_size) {}
+  explicit deque(const Allocator& alloc)
+      : alloc_(alloc), first_(alloc_.allocate(buffer_size)), front_(NULL),
+        back_(NULL), current_bufsize(buffer_size) {}
   explicit deque(size_type count, const T& value = T(),
                  const Allocator& alloc = Allocator());
   template <class InputIt>
@@ -61,11 +60,36 @@ public:
 
   // at
   // TODO 多分frontで良い気がする
-  reference at(size_type pos) { return front_[pos]; }
+  reference at(size_type pos) {
+    // xxxxxxxxxxx
+    //  |      |
+    //  f      b
+    if (front_ < back_) {
+      return front_[pos];
+    }
+    // xxxxxxxxxxxxxxxxx
+    //  |      |        |
+    //  b    front  first[size]
+    if (back_ < front_) {
+      // front_[pos]がサイズを超えていたら
+      if (&front_[pos] >= &first_[current_bufsize]) {
+        // front_が差している場所をインデックスに換算
+        size_type index_at_front = front_ - first_;
+        LOG(ERROR) << "index_at_front  : " << index_at_front;
+        LOG(ERROR) << "return value at first["
+                   << (index_at_front + pos) % current_bufsize << "]";
+        return first_[(index_at_front + pos) % current_bufsize];
+      }
+      // 超えていなかったら
+      return front_[pos];
+    }
+    // TODO コンパイルエラー回避
+    return front_[pos];
+  }
   const_reference at(size_type pos) const { return front_[pos]; }
 
   // operator[]
-  reference operator[](size_type pos);
+  reference operator[](size_type pos) { return at(pos); }
   const_reference operator[](size_type pos) const;
 
   // front
@@ -73,8 +97,8 @@ public:
   const_reference front() const { return *front_; }
 
   // back
-  reference back() { return *back_; }
-  const_reference back() const { return *back_; }
+  reference back() { return *(back_ - 1); }
+  const_reference back() const { return *(back_ - 1); }
 
   // begin
   iterator begin();
@@ -89,16 +113,36 @@ public:
   const_reverse_iterator rbegin() const;
 
   // empty
-  bool empty() { return front_ == back_; }
+  bool empty() const { return front_ == NULL && back_ == NULL; }
 
   // size
-  size_type size() const;
+  size_type size() const {
+    if (empty()) {
+      return 0;
+    }
+    if (front_ == back_) {
+      return current_bufsize;
+    }
+    // xxxxxxxxxxx
+    //  |      |
+    //  f      b
+    if (front_ < back_) {
+      return back_ - front_;
+    }
+    // xxxxxxxxxxxxxxxxx
+    //  |      |        |
+    //  b    front  first[size]
+    return back_ - first_ + first_ + current_bufsize - front_;
+  }
 
   // max_size
   size_type max_size() const { return alloc_.max_size(); }
 
   // clear
-  void clear();
+  void clear() {
+    front_ = NULL;
+    back_ = front_;
+  }
 
   // insert
   iterator insert(const_iterator pos, const T& value);
@@ -119,7 +163,7 @@ public:
       back_ = front_ + 1;
       return;
     }
-    LOG(ERROR) << "last_index : " << last_index();
+    LOG(ERROR) << "push_back last_index : " << last_index();
     // TODO　サイズチェック
     first_[last_index()] = value;
     // TODO mod
@@ -128,14 +172,57 @@ public:
 
   // pop_back
   // TODO mod
-  void pop_back() { --back; }
+  void pop_back() {
+    if (size() == 1) {
+      front_ = NULL;
+      back_ = NULL;
+      return;
+    }
+    // xxxxxxxxxxxxxxxx
+    // |      |        |
+    // b    front  first[size]
+    // back_がダングリングになるのを防ぐ
+    if (back_ == first_) {
+      back_ = first_ + current_bufsize;
+      return;
+    }
+    --back_;
+  }
 
   // push_front
   // TODO frontを1個前に移動してその後ろにvalueを入れる？
-  void push_front(const T& value);
+  void push_front(const T& value) {
+    // TODO 初めてpush_frontされたらfront_とback_はNULL
+    if (front_ == NULL && back_ == NULL) {
+      size_type index_to_be_first = 0;
+      LOG(ERROR) << "push_front index_to_be_first : " << index_to_be_first;
+      first_[index_to_be_first] = value;
+      front_ = &(first_[index_to_be_first]);
+      back_ = front_ + 1;
+      return;
+    }
+    size_type index_to_be_first = calc_index_to_be_first(); // TODO mod
+    LOG(ERROR) << "push_front index_to_be_first : " << index_to_be_first;
+    first_[index_to_be_first] = value;
+    front_ = &(first_[index_to_be_first]);
+  }
 
   // pop_front
-  void pop_front();
+  void pop_front() {
+    if (size() == 1) {
+      front_ = NULL;
+      back_ = NULL;
+      return;
+    }
+    // xxxxxxxxxxxxxxxx
+    // |              |
+    // b            front
+    if (front_ == first_ + current_bufsize - 1) {
+      front_ = first_;
+      return;
+    }
+    ++front_;
+  }
 
   // resize
   void resize(size_type count, T value = T());
@@ -152,12 +239,24 @@ private:
   pointer back_;
   // メモリアロケーた
   allocator_type alloc_;
+  // 現在のバッファーサイズ（キャパシティ）
+  size_type current_bufsize;
 
   // デフォルトのバッファーサイズ
   const static size_type buffer_size = 512;
 
   // helper
+  // 一番後ろのインデックスを返す
   size_type last_index() { return back_ - first_; }
+  // 一番前のインデックスを返す
+  size_type first_index() { return front_ - first_; }
+  // push_frontした時に値を挿入すべきインデックスを返す
+  size_type calc_index_to_be_first() {
+    if (first_index() == 0) {
+      return current_bufsize - 1;
+    }
+    return first_index() - 1;
+  }
 };
 
 // compare operators
