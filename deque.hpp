@@ -5,6 +5,57 @@
 #include <glog/logging.h>
 
 namespace ft {
+
+// deque用のイテレータ
+// 内部的に配列でリングバッファを使っているので、イテレータをインクリメントなどした時に、さししめしす場所はリニアに変化しない
+// 何を持っていれば良さそうか
+// -　内部的な配列を指すポインタ
+template <typename T, typename Ref, typename Ptr>
+class deque_iterator {
+public:
+  // types
+  typedef deque_iterator<T, T&, T*> iterator;
+  typedef deque_iterator<T, const T&, const T*> const_iterator;
+  typedef T value_type;
+  typedef Ptr pointer;
+  typedef Ref reference;
+  typedef std::size_t size_type;
+  typedef std::ptrdiff_t difference_type;
+  typedef deque_iterator Self;
+
+  deque_iterator(pointer first, pointer pos, size_type size, size_type cap)
+      : first_(first), pos_(pos), size_(size), cap_(cap) {}
+  ~deque_iterator() {}
+  deque_iterator& operator=(const deque_iterator& other);
+
+  reference operator*() const { return *pos_; }
+  pointer operator->() const;
+  Self& operator++();
+  Self& operator++(int);
+  Self& operator--();
+  Self& operator--(int);
+  Self& operator+=(difference_type n);
+  Self& operator-=(difference_type n);
+  reference operator[](difference_type n) const;
+
+private:
+  // デフォルトのバッファーサイズ
+  const static size_type buffer_size = 512;
+
+  // member
+  // dequeが内部的に持っている配列の先頭を指すポインタ
+  pointer first_;
+  // deque_iteratorが指す配列の要素を指すポインタ
+  pointer pos_;
+  // dequeが内部的に持っている配列の中に詰められている要素の数
+  size_type size_;
+  // dequeが内部的に持っている配列の容量
+  size_type cap_;
+};
+
+// compare operators
+// TODO
+
 template <class T, class Allocator = std::allocator<T> >
 class deque {
 public:
@@ -16,8 +67,10 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  typedef pointer iterator;
-  typedef const_pointer const_iterator;
+  // typedef pointer iterator;
+  // typedef const_pointer const_iterator;
+  typedef deque_iterator<T, T&, pointer> iterator;
+  typedef deque_iterator<T, const T&, const_pointer> const_iterator;
   // TODO ftのやつに差し替える
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -59,8 +112,21 @@ public:
   allocator_type get_allocator() const { return alloc_; }
 
   // at
-  // TODO 多分frontで良い気がする
   reference at(size_type pos) {
+    if (pos >= size()) {
+      throw std::out_of_range("Error: index is out of range.");
+    }
+    return operator[](pos);
+  }
+  const_reference at(size_type pos) const {
+    if (pos >= size()) {
+      throw std::out_of_range("Error: index is out of range.");
+    }
+    return operator[](pos);
+  }
+
+  // operator[]
+  reference operator[](size_type pos) {
     // xxxxxxxxxxx
     //  |      |
     //  f      b
@@ -86,11 +152,32 @@ public:
     // TODO コンパイルエラー回避
     return front_[pos];
   }
-  const_reference at(size_type pos) const { return front_[pos]; }
-
-  // operator[]
-  reference operator[](size_type pos) { return at(pos); }
-  const_reference operator[](size_type pos) const;
+  const_reference operator[](size_type pos) const {
+    // xxxxxxxxxxx
+    //  |      |
+    //  f      b
+    if (front_ < back_) {
+      return front_[pos];
+    }
+    // xxxxxxxxxxxxxxxxx
+    //  |      |        |
+    //  b    front  first[size]
+    if (back_ < front_) {
+      // front_[pos]がサイズを超えていたら
+      if (&front_[pos] >= &first_[current_bufsize]) {
+        // front_が差している場所をインデックスに換算
+        size_type index_at_front = front_ - first_;
+        LOG(ERROR) << "index_at_front  : " << index_at_front;
+        LOG(ERROR) << "return value at first["
+                   << (index_at_front + pos) % current_bufsize << "]";
+        return first_[(index_at_front + pos) % current_bufsize];
+      }
+      // 超えていなかったら
+      return front_[pos];
+    }
+    // TODO コンパイルエラー回避
+    return front_[pos];
+  }
 
   // front
   reference front() { return *front_; }
@@ -101,7 +188,10 @@ public:
   const_reference back() const { return *(back_ - 1); }
 
   // begin
-  iterator begin();
+  iterator begin() {
+    // TODO 適当に実装してみる。メンバとして持たせないといけない気がする
+    return iterator(first_, front_, size(), current_bufsize);
+  }
   const_iterator begin() const;
 
   // end

@@ -38,7 +38,8 @@ TEST(DequeTest, int_basic_at1) {
   std::deque<int> libdec;
   libdec.push_front(1);
 
-  ASSERT_EQ(libdec.at(100), mydec.at(100));
+  EXPECT_THROW(libdec.at(100), std::out_of_range);
+  EXPECT_THROW(mydec.at(100), std::out_of_range);
 }
 
 // operator[]
@@ -51,14 +52,14 @@ TEST(DequeTest, int_basic_operator_brace) {
   ASSERT_EQ(libdec[0], mydec[0]);
 }
 
-TEST(DequeTest, int_basic_operator_brace1) {
-  ft::deque<int> mydec;
-  mydec.push_front(1);
-  std::deque<int> libdec;
-  libdec.push_front(1);
+// TEST(DequeTest, int_basic_operator_brace1) {
+//   ft::deque<int> mydec;
+//   mydec.push_front(1);
+//   std::deque<int> libdec;
+//   libdec.push_front(1);
 
-  ASSERT_EQ(libdec[10], mydec[10]);
-}
+//   ASSERT_EQ(libdec[10], mydec[10]);
+// }
 
 // front
 // Calling front on an empty container is undefined.
@@ -119,6 +120,15 @@ TEST(DequeTest, int_basic_back2) {
 }
 
 // begin
+TEST(DequeTest, int_basic_begin) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  std::deque<int> libdec;
+  libdec.push_back(1);
+
+  ASSERT_EQ(*(libdec.begin()), *(mydec.begin()));
+}
+
 // end
 // rbegin
 // empty
