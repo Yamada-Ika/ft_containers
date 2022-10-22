@@ -107,6 +107,62 @@ public:
     return pos_[n];
   }
 
+  // compare operators
+  // TODO これだと曖昧らしいけどわからん
+  friend bool operator==(const Self& lhs, const Self& rhs) {
+    return lhs.pos_ == rhs.pos_;
+  }
+  friend bool operator!=(const Self& lhs, const Self& rhs) {
+    return !(lhs == rhs);
+  }
+  friend bool operator<(const Self& lhs, const Self& rhs) {
+    return (lhs.first_ == rhs.first_) ? lhs.pos_ < rhs.pos_
+                                      : lhs.first_ < rhs.first_;
+  }
+  friend bool operator>=(const Self& lhs, const Self& rhs) {
+    return !(lhs < rhs);
+  }
+  friend bool operator>(const Self& lhs, const Self& rhs) { return rhs < lhs; }
+  friend bool operator<=(const Self& lhs, const Self& rhs) {
+    return !(lhs > rhs);
+  }
+  // TODO よくわからない
+  friend difference_type operator-(const Self& lhs, const Self& rhs) {
+    // llllllll
+    // |    rrrrrrr
+    // |          |
+    // <---------->
+    //      n
+    //
+    // llllllll
+    // |          rrrrrrr
+    // |                |
+    // <---------------->
+    //          n
+    //
+    //       lllllll
+    //   rrrrrrr   |
+    //   |         |
+    //   <--------->
+    //        n
+    if (lhs == rhs) {
+      return 0;
+    }
+    if (lhs.first_ < rhs.first_) {
+      return rhs.first_ - lhs.first_ + lhs.cap_;
+    }
+    return rhs.first_ + rhs.cap_ - lhs.first_;
+  }
+  friend Self operator+(const Self& lhs, difference_type n) {
+    Self tmp = lhs;
+    return tmp += n;
+  }
+  friend Self operator+(difference_type n, const Self& rhs) { return rhs + n; }
+  friend Self operator-(const Self& lhs, difference_type n) {
+    Self tmp = lhs;
+    return tmp -= n;
+  }
+
 private:
   // デフォルトのバッファーサイズ
   const static size_type buffer_size = 512;
@@ -121,11 +177,6 @@ private:
   // dequeが内部的に持っている配列の容量
   size_type cap_;
 };
-
-// compare operators
-template <typename T>
-bool operator==(const ft::deque_iterator::iterator& lhs,
-                const ft::deque_iterator::iterator& rhs) {}
 
 template <class T, class Allocator = std::allocator<T> >
 class deque {
@@ -263,15 +314,33 @@ public:
     // TODO 適当に実装してみる。メンバとして持たせないといけない気がする
     return iterator(first_, front_, size(), current_bufsize);
   }
-  const_iterator begin() const;
+  const_iterator begin() const {
+    return const_iterator(first_, front_, size(), current_bufsize);
+  }
 
   // end
-  iterator end();
-  const_iterator end() const;
+  iterator end() { return iterator(first_, back_, size(), current_bufsize); }
+  const_iterator end() const {
+    return const_iterator(first_, back_, size(), current_bufsize);
+  }
 
   // rbegin
-  reverse_iterator rbegin();
-  const_reverse_iterator rbegin() const;
+  reverse_iterator rbegin() {
+    return reverse_iterator(iterator(first_, back_, size(), current_bufsize));
+  }
+  const_reverse_iterator rbegin() const {
+    return const_reverse_iterator(
+        const_iterator(first_, back_, size(), current_bufsize));
+  }
+
+  // rend
+  reverse_iterator rend() {
+    return reverse_iterator(iterator(first_, front_, size(), current_bufsize));
+  }
+  const_reverse_iterator rend() const {
+    return const_reverse_iterator(
+        const_iterator(first_, front_, size(), current_bufsize));
+  }
 
   // empty
   bool empty() const { return front_ == NULL && back_ == NULL; }
@@ -449,7 +518,6 @@ bool operator<=(const ft::deque<T, Alloc>& lhs,
                 const ft::deque<T, Alloc>& rhs) {
   return !(lhs > rhs);
 }
-
 }; // namespace ft
 
 #endif

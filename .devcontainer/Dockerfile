@@ -14,7 +14,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     python3-pip \
     valgrind \
     clang-format \
-    clang-tidy
+    clang-tidy \
+    libgoogle-glog-dev
 
 RUN git config --global user.name 'Yamada-Ika' \
     && git config --global user.email '73375669+Yamada-Ika@users.noreply.github.com'
