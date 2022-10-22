@@ -129,6 +129,272 @@ TEST(DequeTest, int_basic_begin) {
   ASSERT_EQ(*(libdec.begin()), *(mydec.begin()));
 }
 
+// iterator
+TEST(DequeTest, int_basic_iterator) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  ++myitr;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  ++libitr;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator1) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr++;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr++;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator2) {
+  ft::deque<int> mydec;
+  mydec.push_front(1);
+  mydec.push_front(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  ++myitr;
+  std::deque<int> libdec;
+  libdec.push_front(1);
+  libdec.push_front(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  ++libitr;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator3) {
+  ft::deque<int> mydec;
+  mydec.push_front(1);
+  mydec.push_front(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr++;
+  std::deque<int> libdec;
+  libdec.push_front(1);
+  libdec.push_front(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr++;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator4) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  ++myitr;
+  --myitr;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  ++libitr;
+  --libitr;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator5) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  ++myitr;
+  myitr--;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  ++libitr;
+  libitr--;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator6) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+
+  ASSERT_EQ(*(myitr.operator->()), *(libitr.operator->()));
+}
+
+TEST(DequeTest, int_basic_iterator7) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator mi = mydec.begin();
+  ft::deque<int>::iterator* myitr = &mi;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator li = libdec.begin();
+  std::deque<int>::iterator* libitr = &li;
+
+  ASSERT_EQ(myitr->operator*(), libitr->operator*());
+}
+
+TEST(DequeTest, int_basic_iterator8) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr += 1;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr += 1;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator9) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr += 1;
+  myitr -= 1;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr += 1;
+  libitr -= 1;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator10) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(2);
+  mydec.push_back(42);
+  mydec.push_back(100);
+  mydec.push_back(1234);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr += 3;
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(2);
+  libdec.push_back(42);
+  libdec.push_back(100);
+  libdec.push_back(1234);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr += 3;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator11) {
+  ft::deque<int> mydec;
+  mydec.push_front(1);
+  mydec.push_front(3);
+  mydec.push_back(2);
+  mydec.push_back(42);
+  mydec.push_back(100);
+  mydec.push_back(1234);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr += 3;
+  std::deque<int> libdec;
+  libdec.push_front(1);
+  libdec.push_front(3);
+  libdec.push_back(2);
+  libdec.push_back(42);
+  libdec.push_back(100);
+  libdec.push_back(1234);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr += 3;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator12) {
+  ft::deque<int> mydec;
+  mydec.push_front(1);
+  mydec.push_front(3);
+  mydec.push_back(2);
+  mydec.push_back(42);
+  mydec.push_back(100);
+  mydec.push_back(1234);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  myitr += 3;
+  myitr -= 3;
+  std::deque<int> libdec;
+  libdec.push_front(1);
+  libdec.push_front(3);
+  libdec.push_back(2);
+  libdec.push_back(42);
+  libdec.push_back(100);
+  libdec.push_back(1234);
+  std::deque<int>::iterator libitr = libdec.begin();
+  libitr += 3;
+  libitr -= 3;
+
+  ASSERT_EQ(*myitr, *libitr);
+}
+
+TEST(DequeTest, int_basic_iterator13) {
+  ft::deque<int> mydec;
+  mydec.push_back(1);
+  mydec.push_back(3);
+  mydec.push_back(2);
+  mydec.push_back(42);
+  mydec.push_back(100);
+  mydec.push_back(1234);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  std::deque<int> libdec;
+  libdec.push_back(1);
+  libdec.push_back(3);
+  libdec.push_back(2);
+  libdec.push_back(42);
+  libdec.push_back(100);
+  libdec.push_back(1234);
+  std::deque<int>::iterator libitr = libdec.begin();
+
+  ASSERT_EQ(myitr[4], libitr[4]);
+}
+
+TEST(DequeTest, int_basic_iterator14) {
+  ft::deque<int> mydec;
+  mydec.push_front(1);
+  mydec.push_front(3);
+  mydec.push_back(2);
+  mydec.push_back(42);
+  mydec.push_back(100);
+  mydec.push_back(1234);
+  ft::deque<int>::iterator myitr = mydec.begin();
+  std::deque<int> libdec;
+  libdec.push_front(1);
+  libdec.push_front(3);
+  libdec.push_back(2);
+  libdec.push_back(42);
+  libdec.push_back(100);
+  libdec.push_back(1234);
+  std::deque<int>::iterator libitr = libdec.begin();
+
+  ASSERT_EQ(myitr[4], libitr[4]);
+}
+
 // end
 // rbegin
 // empty

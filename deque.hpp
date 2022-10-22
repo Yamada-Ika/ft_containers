@@ -26,17 +26,86 @@ public:
   deque_iterator(pointer first, pointer pos, size_type size, size_type cap)
       : first_(first), pos_(pos), size_(size), cap_(cap) {}
   ~deque_iterator() {}
-  deque_iterator& operator=(const deque_iterator& other);
+  deque_iterator& operator=(const deque_iterator& other) {
+    if (this == &other)
+      return *this;
+
+    first_ = other.first_;
+    pos_ = other.pos_;
+    size_ = other.size_;
+    cap_ = other.cap_;
+    return *this;
+  }
 
   reference operator*() const { return *pos_; }
-  pointer operator->() const;
-  Self& operator++();
-  Self& operator++(int);
-  Self& operator--();
-  Self& operator--(int);
-  Self& operator+=(difference_type n);
-  Self& operator-=(difference_type n);
-  reference operator[](difference_type n) const;
+  pointer operator->() const { return pos_; }
+  Self& operator++() {
+    ++pos_;
+    if (pos_ >= first_ + cap_) {
+      // xxxxxxxx
+      //         |
+      //       pos_
+      pos_ = first_;
+    }
+    return *this;
+  }
+  Self operator++(int) {
+    Self tmp = *this;
+    ++*this;
+    return tmp;
+  }
+  Self& operator--() {
+    --pos_;
+    if (pos_ < first_) {
+      pos_ = first_ + cap_ - 1;
+    }
+    return *this;
+  }
+  Self operator--(int) {
+    Self tmp = *this;
+    --*this;
+    return tmp;
+  }
+  Self& operator+=(difference_type n) {
+    if (pos_ + n >= first_ + cap_) {
+      // n > cap_
+      // xxxxxxxxxxxxx
+      //         |
+      //        pos_
+      size_type pos_to_r_buf_boundry = first_ + cap_ - pos_;
+      pos_ = first_ + ((n - pos_to_r_buf_boundry) % cap_);
+    } else {
+      pos_ += n;
+    }
+    return *this;
+  }
+  Self& operator-=(difference_type n) {
+    if (pos_ - n < first_) {
+      // n > cap_
+      // xxxxxxxxxxxxx
+      //         |
+      //        pos_
+      size_type pos_to_l_buf_boundry = pos_ - first_;
+      pos_ = first_ + cap_ - ((n - pos_to_l_buf_boundry) % cap_);
+    } else {
+      pos_ -= n;
+    }
+    return *this;
+  }
+  reference operator[](difference_type n) const {
+    if (pos_ + n >= first_ + cap_) {
+      // n > cap_
+      // xxxxxxxxxxxxx
+      //         |
+      //        pos_
+      size_type pos_to_r_buf_boundry = first_ + cap_ - pos_;
+      LOG(ERROR) << "operator[] n : " << n;
+      n = (n - pos_to_r_buf_boundry) % cap_;
+      LOG(ERROR) << "operator[] n : " << n;
+      return first_[n];
+    }
+    return pos_[n];
+  }
 
 private:
   // デフォルトのバッファーサイズ
@@ -54,7 +123,9 @@ private:
 };
 
 // compare operators
-// TODO
+template <typename T>
+bool operator==(const ft::deque_iterator::iterator& lhs,
+                const ft::deque_iterator::iterator& rhs) {}
 
 template <class T, class Allocator = std::allocator<T> >
 class deque {
