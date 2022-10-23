@@ -10,21 +10,28 @@ namespace ft {
 // 内部的に配列でリングバッファを使っているので、イテレータをインクリメントなどした時に、さししめしす場所はリニアに変化しない
 // 何を持っていれば良さそうか
 // -　内部的な配列を指すポインタ
-template <typename T, typename Ref, typename Ptr>
+// template <typename T, typename Ref, typename Ptr>
+template <typename T>
 class deque_iterator {
 public:
   // types
-  typedef deque_iterator<T, T&, T*> iterator;
-  typedef deque_iterator<T, const T&, const T*> const_iterator;
+  typedef std::random_access_iterator_tag iterator_category;
+  // typedef deque_iterator<T, T&, T*> iterator;
+  // typedef deque_iterator<T, const T&, const T*> const_iterator;
+  typedef deque_iterator<T> iterator;
+  typedef const deque_iterator<T> const_iterator;
   typedef T value_type;
-  typedef Ptr pointer;
-  typedef Ref reference;
+  // typedef Ptr pointer;
+  // typedef Ref reference;
+  typedef T* pointer;
+  typedef T& reference;
   typedef std::size_t size_type;
   typedef std::ptrdiff_t difference_type;
   typedef deque_iterator Self;
 
   deque_iterator(pointer first, pointer pos, size_type size, size_type cap)
       : first_(first), pos_(pos), size_(size), cap_(cap) {}
+  deque_iterator(const Self& other) { *this = other; }
   ~deque_iterator() {}
   deque_iterator& operator=(const deque_iterator& other) {
     if (this == &other)
@@ -128,30 +135,10 @@ public:
   }
   // TODO よくわからない
   friend difference_type operator-(const Self& lhs, const Self& rhs) {
-    // llllllll
-    // |    rrrrrrr
-    // |          |
-    // <---------->
-    //      n
-    //
-    // llllllll
-    // |          rrrrrrr
-    // |                |
-    // <---------------->
-    //          n
-    //
-    //       lllllll
-    //   rrrrrrr   |
-    //   |         |
-    //   <--------->
-    //        n
-    if (lhs == rhs) {
-      return 0;
+    if (lhs.pos_ < rhs.pos_) {
+      return rhs.pos_ - lhs.pos_;
     }
-    if (lhs.first_ < rhs.first_) {
-      return rhs.first_ - lhs.first_ + lhs.cap_;
-    }
-    return rhs.first_ + rhs.cap_ - lhs.first_;
+    return lhs.pos_ - rhs.pos_;
   }
   friend Self operator+(const Self& lhs, difference_type n) {
     Self tmp = lhs;
@@ -191,8 +178,10 @@ public:
   typedef typename Allocator::const_pointer const_pointer;
   // typedef pointer iterator;
   // typedef const_pointer const_iterator;
-  typedef deque_iterator<T, T&, pointer> iterator;
-  typedef deque_iterator<T, const T&, const_pointer> const_iterator;
+  // typedef deque_iterator<T, T&, pointer> iterator;
+  // typedef deque_iterator<T, const T&, const_pointer> const_iterator;
+  typedef deque_iterator<T> iterator;
+  typedef const deque_iterator<T> const_iterator;
   // TODO ftのやつに差し替える
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -248,58 +237,8 @@ public:
   }
 
   // operator[]
-  reference operator[](size_type pos) {
-    // xxxxxxxxxxx
-    //  |      |
-    //  f      b
-    if (front_ < back_) {
-      return front_[pos];
-    }
-    // xxxxxxxxxxxxxxxxx
-    //  |      |        |
-    //  b    front  first[size]
-    if (back_ < front_) {
-      // front_[pos]がサイズを超えていたら
-      if (&front_[pos] >= &first_[current_bufsize]) {
-        // front_が差している場所をインデックスに換算
-        size_type index_at_front = front_ - first_;
-        LOG(ERROR) << "index_at_front  : " << index_at_front;
-        LOG(ERROR) << "return value at first["
-                   << (index_at_front + pos) % current_bufsize << "]";
-        return first_[(index_at_front + pos) % current_bufsize];
-      }
-      // 超えていなかったら
-      return front_[pos];
-    }
-    // TODO コンパイルエラー回避
-    return front_[pos];
-  }
-  const_reference operator[](size_type pos) const {
-    // xxxxxxxxxxx
-    //  |      |
-    //  f      b
-    if (front_ < back_) {
-      return front_[pos];
-    }
-    // xxxxxxxxxxxxxxxxx
-    //  |      |        |
-    //  b    front  first[size]
-    if (back_ < front_) {
-      // front_[pos]がサイズを超えていたら
-      if (&front_[pos] >= &first_[current_bufsize]) {
-        // front_が差している場所をインデックスに換算
-        size_type index_at_front = front_ - first_;
-        LOG(ERROR) << "index_at_front  : " << index_at_front;
-        LOG(ERROR) << "return value at first["
-                   << (index_at_front + pos) % current_bufsize << "]";
-        return first_[(index_at_front + pos) % current_bufsize];
-      }
-      // 超えていなかったら
-      return front_[pos];
-    }
-    // TODO コンパイルエラー回避
-    return front_[pos];
-  }
+  reference operator[](size_type pos) { return *pointer_at(pos); }
+  const_reference operator[](size_type pos) const { return *pointer_at(pos); }
 
   // front
   reference front() { return *front_; }
@@ -375,14 +314,30 @@ public:
   }
 
   // insert
-  iterator insert(const_iterator pos, const T& value);
+  iterator insert(const_iterator pos, const T& value) {
+    size_type pos_at = pos - begin();
+    size_type old_size = size();
+    push_back(operator[](old_size - 1));
+    for (size_type i = old_size - 1; i > pos_at; --i) {
+      operator[](i + 1) = operator[](i);
+    }
+    operator[](pos_at) = value;
+    return iterator(first_, pointer_at(pos_at), size(), current_bufsize);
+  }
   iterator insert(const_iterator pos, size_type count, const T& value);
   template <class InputIt>
   iterator insert(const_iterator pos, InputIt first, InputIt last);
-
   // erase
-  iterator erase(iterator pos);
-  iterator erase(iterator first, iterator last);
+  iterator erase(iterator pos) { return erase(pos, pos + 1); }
+  iterator erase(iterator first, iterator last) {
+    difference_type n = first - begin();
+    difference_type diff = last - first;
+    for (iterator itr = last; itr != end(); ++itr) {
+      *(itr - diff) = *itr;
+    }
+    decrease_back_pointer(diff);
+    return iterator(first_, pointer_at(n), size(), current_bufsize);
+  }
 
   // push_back
   void push_back(const T& value) {
@@ -408,15 +363,7 @@ public:
       back_ = NULL;
       return;
     }
-    // xxxxxxxxxxxxxxxx
-    // |      |        |
-    // b    front  first[size]
-    // back_がダングリングになるのを防ぐ
-    if (back_ == first_) {
-      back_ = first_ + current_bufsize;
-      return;
-    }
-    --back_;
+    decrement_back_pointer();
   }
 
   // push_front
@@ -455,7 +402,19 @@ public:
   }
 
   // resize
-  void resize(size_type count, T value = T());
+  void resize(size_type count, T value = T()) {
+    if (count == size()) {
+      return;
+    }
+    if (count > size()) {
+      size_type additional_size = count - size();
+      for (size_type i = 0; i < additional_size; ++i) {
+        push_back(value);
+      }
+      return;
+    }
+    back_ = front_ + count;
+  }
 
   // swap
   void swap(deque& other);
@@ -486,6 +445,50 @@ private:
       return current_bufsize - 1;
     }
     return first_index() - 1;
+  }
+  // posのポインターを返す
+  pointer pointer_at(size_type pos) {
+    // xxxxxxxxxxx
+    //  |      |
+    //  f      b
+    if (front_ < back_) {
+      pos += front_ - first_;
+      return first_ + pos;
+    }
+    // xxxxxxxxxxxxxxxxx
+    //  |      |        |
+    //  b    front  first[size]
+    if (back_ < front_) {
+      // front_[pos]がサイズを超えていたら
+      if (&front_[pos] >= &first_[current_bufsize]) {
+        // front_が差している場所をインデックスに換算
+        size_type index_at_front = front_ - first_;
+        LOG(ERROR) << "index_at_front  : " << index_at_front;
+        LOG(ERROR) << "return value at first["
+                   << (index_at_front + pos) % current_bufsize << "]";
+        return first_ + (index_at_front + pos) % current_bufsize;
+      }
+      // 超えていなかったら
+      // return front_[pos];
+      pos += front_ - first_;
+      return first_ + pos;
+    }
+    // TODO コンパイルエラー回避
+    return front_ + pos;
+  }
+  // 最後の要素がある場所を指すポインターを一個手前にずらす
+  void decrement_back_pointer() { decrease_back_pointer(1); }
+  // 最後の要素がある場所を指すポインターをn個手前にずらす
+  void decrease_back_pointer(difference_type n) {
+    // xxxxxxxxxxxxxxxx
+    // |      |        |
+    // b    front  first[size]
+    // back_がダングリングになるのを防ぐ
+    if (back_ == first_) {
+      back_ = first_ + current_bufsize + n;
+      return;
+    }
+    back_ -= n;
   }
 };
 
