@@ -1,14 +1,17 @@
 #include "../vector.hpp"
+#include "../stack.hpp"
 #include <cassert>
 #include <iostream>
 #include <vector>
 #include <stack>
 #include <deque>
+#include <set>
+#include <list>
+#include <map>
 #include <stdio.h>
 
 int main(int ac, char** av) {
-  std::deque<int> d1 = {1, 2, 3};
-  std::deque<int> d2 = {4, 5};
-
-  std::cerr << d2.begin() - d1.begin() << std::endl;
+  ft::vector<int> v1;
+  v1.push_back(1);
+  std::cerr << "v1 value : " << v1.at(0) << std::endl;
 }

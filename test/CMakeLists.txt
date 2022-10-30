@@ -27,18 +27,48 @@ enable_testing()
 
 find_package (glog 0.4.0 REQUIRED)
 
+# add_executable(
+#   test_vector
+#   test_vector.cpp
+#   test_stack.cpp
+#   test_deque.cpp
+# )
+
 add_executable(
-  test_ft_container
+  test_vector
   test_vector.cpp
+)
+
+
+add_executable(
+  test_stack
   test_stack.cpp
+)
+
+add_executable(
+  test_deque
   test_deque.cpp
 )
 
 target_link_libraries(
-  test_ft_container
+  test_vector
+  GTest::gtest_main
+  glog::glog
+)
+
+target_link_libraries(
+  test_stack
+  GTest::gtest_main
+  glog::glog
+)
+
+target_link_libraries(
+  test_deque
   GTest::gtest_main
   glog::glog
 )
 
 include(GoogleTest)
-gtest_discover_tests(test_ft_container)
+gtest_discover_tests(test_vector)
+gtest_discover_tests(test_stack)
+gtest_discover_tests(test_deque)
