@@ -3,6 +3,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(my_project)
 
+add_compile_options(-std=c++98)
+
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
 
@@ -20,25 +22,12 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-# add_executable(
-#   test_ft_container
-#   test_is_integral.cpp
-# )
-
 find_package (glog 0.4.0 REQUIRED)
-
-# add_executable(
-#   test_vector
-#   test_vector.cpp
-#   test_stack.cpp
-#   test_deque.cpp
-# )
 
 add_executable(
   test_vector
   test_vector.cpp
 )
-
 
 add_executable(
   test_stack
@@ -50,6 +39,26 @@ add_executable(
   test_deque.cpp
 )
 
+add_executable(
+  test_tree
+  test_tree.cpp
+)
+
+add_executable(
+  test_set
+  test_set.cpp
+)
+
+add_executable(
+  test_map
+  test_map.cpp
+)
+
+add_executable(
+  test_pair
+  test_pair.cpp
+)
+
 target_link_libraries(
   test_vector
   GTest::gtest_main
@@ -68,7 +77,35 @@ target_link_libraries(
   glog::glog
 )
 
+target_link_libraries(
+  test_tree
+  GTest::gtest_main
+  glog::glog
+)
+
+target_link_libraries(
+  test_set
+  GTest::gtest_main
+  glog::glog
+)
+
+target_link_libraries(
+  test_map
+  GTest::gtest_main
+  glog::glog
+)
+
+target_link_libraries(
+  test_pair
+  GTest::gtest_main
+  glog::glog
+)
+
 include(GoogleTest)
 gtest_discover_tests(test_vector)
 gtest_discover_tests(test_stack)
 gtest_discover_tests(test_deque)
+gtest_discover_tests(test_tree)
+gtest_discover_tests(test_set)
+gtest_discover_tests(test_map)
+gtest_discover_tests(test_pair)
