@@ -175,7 +175,7 @@ struct __tree_iterator {
   }
 
   friend bool operator==(const Self& lhs, const Self& rhs) {
-    return lhs.__node_pointer_->value == rhs.__node_pointer_->value;
+    return *lhs == *rhs;
   }
   friend bool operator!=(const Self& lhs, const Self& rhs) {
     return !(lhs == rhs);
@@ -187,14 +187,15 @@ private:
 };
 
 // 二分探索木を表すクラス
-template <typename Key, typename Val, class Compare = std::less<Key>,
+template <typename Key, typename Val, typename KeyOfValue,
+          class Compare = std::less<Key>,
           typename Allocator = std::allocator<Key> >
 class __tree {
 public:
   // typedef Key value_type;
   typedef Key key_type;
-  typedef Val mapped_type;
-  typedef ft::pair<const Key, Val> value_type;
+  typedef Val value_type;
+  // typedef ft::pair<const Key, Val> value_type;
   typedef std::size_t size_type;
   // typedef Allocator allocator_type;
   typedef value_type& reference;
@@ -208,8 +209,8 @@ public:
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  __tree()
-      : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
+  __tree() : root_(NULL), end_node_(__allocate_node(Val())) {}
+  // : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
   // TODO メモリ解放したらクラッシュする
   ~__tree() {}
 
@@ -253,14 +254,16 @@ public:
     node_pointer nd = root_;
     while (true) {
       // keyで比較
-      if (value.first < nd->value.first) {
+      LOG(ERROR) << "value  first " << KeyOfValue()(value);
+      LOG(ERROR) << "nd val first " << KeyOfValue()(nd->value);
+      if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
         nd = nd->left;
         if (nd == NULL) {
           prev_parent->left = __allocate_node(value);
           prev_parent->left->parent = prev_parent; // TODO 親をつける
           break;
         }
-      } else if (value.first > nd->value.first) {
+      } else if (KeyOfValue()(value) > KeyOfValue()(nd->value)) {
         nd = nd->right;
         // if (nd == NULL) {
         if (nd == __end_node()) {
@@ -288,11 +291,11 @@ public:
     }
   }
 
-  // TODO 適当
-  void __insert(key_type k, mapped_type v) {
-    value_type val(k, v);
-    __insert(val);
-  }
+  // // TODO 適当
+  // void __insert(key_type k, mapped_type v) {
+  //   value_type val(k, v);
+  //   __insert(val);
+  // }
 
   // ノードの要素を返す
   size_type __size() const {
@@ -332,9 +335,9 @@ public:
     node_pointer prev_parent = root_;
     node_pointer nd = root_;
     while (true) {
-      if (k < nd->value.first) {
+      if (k < KeyOfValue()(nd->value)) {
         nd = nd->left;
-      } else if (k > nd->value.first) {
+      } else if (k > KeyOfValue()(nd->value)) {
         nd = nd->right;
       } else {
         LOG(ERROR) << "__find/ found";

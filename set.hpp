@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 #include "tree.hpp"
+#include "utils.hpp"
 
 namespace ft {
 
@@ -25,9 +26,11 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  typedef typename __tree<Key, Key, Compare, Allocator>::iterator iterator;
-  typedef typename __tree<Key, Key, Compare, Allocator>::const_iterator
-      const_iterator;
+  typedef
+      typename __tree<Key, Key, ft::Identity<Key>, Compare, Allocator>::iterator
+          iterator;
+  typedef typename __tree<Key, Key, ft::Identity<Key>, Compare,
+                          Allocator>::const_iterator const_iterator;
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -62,7 +65,7 @@ public:
   //   template <class InputIt>
   //   void insert(InputIt first, InputIt last);
   // TODO テストように生やした
-  void insert(const_reference v) { __tree_.__insert(v, v); }
+  void insert(const_reference v) { __tree_.__insert(v); }
   //   iterator erase(iterator pos);
   //   iterator erase(iterator first, iterator last);
   //   size_type erase(const Key& key);
@@ -80,7 +83,9 @@ public:
   value_compare value_comp() const;
 
 private:
-  typedef typename ft::__tree<key_type, key_type, Compare, Allocator> __tree;
+  typedef typename ft::__tree<key_type, key_type, ft::Identity<value_type>,
+                              Compare, Allocator>
+      __tree;
 
   __tree __tree_;
 };

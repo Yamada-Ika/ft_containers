@@ -11,11 +11,9 @@
 // at
 TEST(MapTest, int_basic_at) {
   std::map<int, int> libmp;
-  std::pair<int, int> libpair(1, 1);
-  libmp.insert(libpair);
+  libmp.insert(std::make_pair(1, 1));
   ft::map<int, int> mymp;
-  ft::pair<int, int> mypair(1, 1);
-  mymp.insert(mypair);
+  mymp.insert(ft::make_pair(1, 1));
   ASSERT_EQ(libmp.at(1), mymp.at(1));
 }
 

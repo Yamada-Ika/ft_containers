@@ -5,6 +5,7 @@
 #include <memory>
 #include "tree.hpp"
 #include "pair.hpp"
+#include "utils.hpp"
 
 namespace ft {
 template <class Key, class T, class Compare = std::less<Key>,
@@ -23,9 +24,10 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  typedef typename __tree<Key, T, Compare, Allocator>::iterator iterator;
-  typedef typename __tree<Key, T, Compare, Allocator>::const_iterator
-      const_iterator;
+  typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
+                          Allocator>::iterator iterator;
+  typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
+                          Allocator>::const_iterator const_iterator;
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -55,24 +57,27 @@ public:
 
   allocator_type get_allocator() const;
   T& at(const Key& key) {
-    typename ft::__tree<key_type, mapped_type, Compare, Allocator>::node_pointer
-        ptr = __tree_.__find(key);
+    typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
+                        Compare, Allocator>::node_pointer ptr =
+        __tree_.__find(key);
     if (ptr == NULL) {
       throw std::out_of_range("Error: index is out of range.");
     }
     return ptr->value.second;
   }
   const T& at(const Key& key) const {
-    typename ft::__tree<key_type, mapped_type, Compare, Allocator>::node_pointer
-        ptr = __tree_.__find(key);
+    typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
+                        Compare, Allocator>::node_pointer ptr =
+        __tree_.__find(key);
     if (ptr == NULL) {
       throw std::out_of_range("Error: index is out of range.");
     }
     return ptr->value.second;
   }
   T& operator[](const Key& key) {
-    typename ft::__tree<key_type, mapped_type, Compare, Allocator>::node_pointer
-        ptr = __tree_.__find(key);
+    typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
+                        Compare, Allocator>::node_pointer ptr =
+        __tree_.__find(key);
     // 見つからなかったら挿入
     if (ptr == NULL) {
       pair<Key, T> p(key, T());
@@ -99,7 +104,7 @@ public:
   // void insert(InputIt first, InputIt last);
   // TODO テストように生やしたメソッド
   void insert(const_reference value) { __tree_.__insert(value); }
-  void insert(key_type k, mapped_type v) { __tree_.__insert(k, v); }
+  // void insert(key_type k, mapped_type v) { __tree_.__insert(k, v); }
   // //   iterator erase(iterator pos);
   // // //   iterator erase(iterator first, iterator last);
   size_type erase(const Key& key);
@@ -118,7 +123,9 @@ public:
 
 private:
   // typedef typename ft::__tree<value_type, Compare, Allocator> __tree;
-  typedef typename ft::__tree<key_type, mapped_type, Compare, Allocator> __tree;
+  typedef typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
+                              Compare, Allocator>
+      __tree;
 
   __tree __tree_;
 };
