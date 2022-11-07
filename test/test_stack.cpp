@@ -32,7 +32,7 @@ TEST(StackTest, int_basic_constructor_without_container) {
 
 TEST(StackTest, int_basic_constructor_with_container) {
   std::deque<int> container;
-  ft::stack<int> myst(container);
+  ft::stack<int, std::deque<int> > myst(container);
 }
 
 // TODO 要素もチェックするテスト追加する

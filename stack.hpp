@@ -1,10 +1,10 @@
 #ifndef STACK_HPP
 #define STACK_HPP
 
-#include <deque>
+#include "deque.hpp"
 
 namespace ft {
-template <class T, class Container = std::deque<T> >
+template <class T, class Container = ft::deque<T> >
 class stack {
 public:
   typedef Container container_type;

@@ -825,6 +825,33 @@ TEST(DequeTest, int_basic_rbegin) {
   ASSERT_EQ(*(myitr + 3), *(libitr + 3));
 }
 
+TEST(DequeTest, int_basic_rbegin1) {
+  ft::deque<int> mydec;
+  mydec.push_front(1234);
+  mydec.push_back(42);
+  mydec.push_back(2);
+  mydec.push_back(1020202);
+  ft::deque<int>::reverse_iterator myitr = mydec.rbegin();
+  std::deque<int> libdec;
+  libdec.push_front(1234);
+  libdec.push_back(42);
+  libdec.push_back(2);
+  libdec.push_back(1020202);
+  std::deque<int>::reverse_iterator libitr = libdec.rbegin();
+  ASSERT_EQ(*myitr, *libitr);
+  myitr++;
+  libitr++;
+  ASSERT_EQ(*myitr, *libitr);
+  myitr++;
+  libitr++;
+  ASSERT_EQ(*myitr, *libitr);
+  myitr++;
+  libitr++;
+  ASSERT_EQ(*myitr, *libitr);
+  myitr++;
+  libitr++;
+}
+
 // rend
 // TEST(DequeTest, int_basic_rend) {
 //   ft::deque<int> mydec;

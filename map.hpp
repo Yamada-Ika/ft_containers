@@ -23,10 +23,11 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  // typedef iterator;
-  // typedef const_iterator;
-  // typedef std::reverse_iterator<iterator> reverse_iterator;
-  // typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef typename __tree<Key, T, Compare, Allocator>::iterator iterator;
+  typedef typename __tree<Key, T, Compare, Allocator>::const_iterator
+      const_iterator;
+  typedef typename std::reverse_iterator<iterator> reverse_iterator;
+  typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
   // class value_compare {
   // public:
@@ -72,19 +73,22 @@ public:
   T& operator[](const Key& key) {
     typename ft::__tree<key_type, mapped_type, Compare, Allocator>::node_pointer
         ptr = __tree_.__find(key);
+    // 見つからなかったら挿入
     if (ptr == NULL) {
-      throw std::out_of_range("Error: index is out of range.");
+      pair<Key, T> p(key, T());
+      insert(p);
+      return at(key);
     }
     return ptr->value.second;
   }
-  // iterator begin();
-  // const_iterator begin() const;
-  // iterator end();
-  // const_iterator end() const;
-  // reverse_iterator rbegin();
-  // const_reverse_iterator rbegin() const;
-  // reverse_iterator rend();
-  // const_reverse_iterator rend() const;
+  iterator begin() { return __tree_.__begin(); }
+  const_iterator begin() const { return __tree_.__begin(); }
+  iterator end() { return __tree_.__end(); }
+  const_iterator end() const { return __tree_.__end(); }
+  reverse_iterator rbegin() { return __tree_.__rbegin(); }
+  const_reverse_iterator rbegin() const { return __tree_.__rbegin(); }
+  reverse_iterator rend() { return __tree_.__rend(); }
+  const_reverse_iterator rend() const { return __tree_.__rend(); }
   bool empty() { return __tree_.__empty(); }
   size_type size() const { return __tree_.__size(); }
   size_type max_size() const;

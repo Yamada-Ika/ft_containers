@@ -25,10 +25,11 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  // iterator	Constant LegacyBidirectionalIterator to value_type
-  // const_iterator	LegacyBidirectionalIterator to const value_type
-  // reverse_iterator	std::reverse_iterator<iterator>
-  // const_reverse_iterator	std::reverse_iterator<const_iterator>
+  typedef typename __tree<Key, Key, Compare, Allocator>::iterator iterator;
+  typedef typename __tree<Key, Key, Compare, Allocator>::const_iterator
+      const_iterator;
+  typedef typename std::reverse_iterator<iterator> reverse_iterator;
+  typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
   set() {}
   explicit set(const Compare& comp, const Allocator& alloc = Allocator());

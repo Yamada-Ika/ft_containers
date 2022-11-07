@@ -14,6 +14,10 @@
 #include <memory>
 
 int main(int ac, char** av) {
-  std::map<int, int> mp;
   std::set<int> st;
+  std::map<int> mp;
+  st.insert(1);
+  std::set<int>::iterator itr = st.begin();
+
+  std::cerr << *itr << std::endl;
 }

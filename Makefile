@@ -1,5 +1,5 @@
-.PHONY: test
-test:
+.PHONY: run
+run:
 	make -C test run
 
 .PHONY: tree
@@ -17,3 +17,11 @@ map:
 .PHONY: pair
 pair:
 	make -C test pair
+
+.PHONY: stack
+stack:
+	make -C test stack
+
+.PHONY: deque
+deque:
+	make -C test deque

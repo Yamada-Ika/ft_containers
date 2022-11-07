@@ -9,7 +9,7 @@
 // get_allocator
 
 // at
-TEST(TreeTest, int_basic_at) {
+TEST(MapTest, int_basic_at) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   libmp.insert(libpair);
@@ -19,7 +19,7 @@ TEST(TreeTest, int_basic_at) {
   ASSERT_EQ(libmp.at(1), mymp.at(1));
 }
 
-TEST(TreeTest, int_basic_at1) {
+TEST(MapTest, int_basic_at1) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -34,7 +34,7 @@ TEST(TreeTest, int_basic_at1) {
   ASSERT_EQ(libmp.at(2), mymp.at(2));
 }
 
-TEST(TreeTest, int_basic_at2) {
+TEST(MapTest, int_basic_at2) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -54,7 +54,7 @@ TEST(TreeTest, int_basic_at2) {
   ASSERT_EQ(libmp.at(3), mymp.at(3));
 }
 
-TEST(TreeTest, int_basic_at3) {
+TEST(MapTest, int_basic_at3) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -74,7 +74,7 @@ TEST(TreeTest, int_basic_at3) {
 }
 
 // operator[]
-TEST(TreeTest, int_basic_bracket_operator) {
+TEST(MapTest, int_basic_bracket_operator) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   libmp.insert(libpair);
@@ -84,7 +84,7 @@ TEST(TreeTest, int_basic_bracket_operator) {
   ASSERT_EQ(libmp[1], mymp[1]);
 }
 
-TEST(TreeTest, int_basic_bracket_operato1) {
+TEST(MapTest, int_basic_bracket_operato1) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -93,11 +93,12 @@ TEST(TreeTest, int_basic_bracket_operato1) {
   ft::pair<int, int> mypair(1, 1);
   ft::pair<int, int> mypair1(2, 2);
   mymp.insert(mypair);
+  ASSERT_EQ(libmp.size(), mymp.size());
   ASSERT_EQ(libmp[1], mymp[1]);
   ASSERT_EQ(libmp[2], mymp[2]);
 }
 
-TEST(TreeTest, int_basic_bracket_operato2) {
+TEST(MapTest, int_basic_bracket_operato2) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -108,12 +109,13 @@ TEST(TreeTest, int_basic_bracket_operato2) {
   ft::pair<int, int> mypair1(2, 2);
   ft::pair<int, int> mypair2(3, 3);
   mymp.insert(mypair);
+  ASSERT_EQ(libmp.size(), mymp.size());
   ASSERT_EQ(libmp[1], mymp[1]);
   ASSERT_EQ(libmp[2], mymp[2]);
   ASSERT_EQ(libmp[3], mymp[3]);
 }
 
-TEST(TreeTest, int_basic_bracket_operato3) {
+TEST(MapTest, int_basic_bracket_operato3) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -124,30 +126,195 @@ TEST(TreeTest, int_basic_bracket_operato3) {
   ft::pair<int, int> mypair1(2, 2);
   ft::pair<int, int> mypair2(2, 3);
   mymp.insert(mypair);
+  ASSERT_EQ(libmp.size(), mymp.size());
   ASSERT_EQ(libmp[1], mymp[1]);
   ASSERT_EQ(libmp[2], mymp[2]);
 }
 
 // begin
+TEST(MapTest, int_basic_begin) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  libmp.insert(libpair);
+  std::map<int, int>::iterator libitr = libmp.begin();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  mymp.insert(mypair);
+  ft::map<int, int>::iterator myitr = mymp.begin();
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
+TEST(MapTest, int_basic_begin1) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  std::pair<int, int> libpair1(2, 2);
+  libmp.insert(libpair);
+  libmp.insert(libpair1);
+  std::map<int, int>::iterator libitr = libmp.begin();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  ft::pair<int, int> mypair1(2, 2);
+  mymp.insert(mypair);
+  mymp.insert(mypair1);
+  ft::map<int, int>::iterator myitr = mymp.begin();
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
+TEST(MapTest, int_basic_begin2) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  std::pair<int, int> libpair1(2, 2);
+  libmp.insert(libpair);
+  libmp.insert(libpair1);
+  std::map<int, int>::iterator libitr = libmp.begin();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  ft::pair<int, int> mypair1(2, 2);
+  mymp.insert(mypair);
+  mymp.insert(mypair1);
+  ft::map<int, int>::iterator myitr = mymp.begin();
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  libitr++;
+  myitr++;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
 // end
+TEST(MapTest, int_basic_end) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  libmp.insert(libpair);
+  std::map<int, int>::iterator libitr = libmp.end();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  mymp.insert(mypair);
+  ft::map<int, int>::iterator myitr = mymp.end();
+  --libitr;
+  --myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
+TEST(MapTest, int_basic_end1) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  std::pair<int, int> libpair1(2, 2);
+  libmp.insert(libpair);
+  libmp.insert(libpair1);
+  std::map<int, int>::iterator libitr = libmp.end();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  ft::pair<int, int> mypair1(2, 2);
+  mymp.insert(mypair);
+  mymp.insert(mypair1);
+  ft::map<int, int>::iterator myitr = mymp.end();
+  --libitr;
+  --myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  --libitr;
+  --myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
 // rbegin
+TEST(MapTest, int_basic_rbegin) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  libmp.insert(libpair);
+  std::map<int, int>::reverse_iterator libitr = libmp.rbegin();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  mymp.insert(mypair);
+  ft::map<int, int>::reverse_iterator myitr = mymp.rbegin();
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
+TEST(MapTest, int_basic_rbegin1) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  std::pair<int, int> libpair1(2, 2);
+  libmp.insert(libpair);
+  libmp.insert(libpair1);
+  std::map<int, int>::reverse_iterator libitr = libmp.rbegin();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  ft::pair<int, int> mypair1(2, 2);
+  mymp.insert(mypair);
+  mymp.insert(mypair1);
+  ft::map<int, int>::reverse_iterator myitr = mymp.rbegin();
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
 // rend
+TEST(MapTest, int_basic_rend) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  libmp.insert(libpair);
+  std::map<int, int>::reverse_iterator libitr = libmp.rend();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  mymp.insert(mypair);
+  ft::map<int, int>::reverse_iterator myitr = mymp.rend();
+  --libitr;
+  --myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
+
+TEST(MapTest, int_basic_rend1) {
+  std::map<int, int> libmp;
+  std::pair<int, int> libpair(1, 1);
+  std::pair<int, int> libpair1(2, 2);
+  libmp.insert(libpair);
+  libmp.insert(libpair1);
+  std::map<int, int>::reverse_iterator libitr = libmp.rend();
+  ft::map<int, int> mymp;
+  ft::pair<int, int> mypair(1, 1);
+  ft::pair<int, int> mypair1(2, 2);
+  mymp.insert(mypair);
+  mymp.insert(mypair1);
+  ft::map<int, int>::reverse_iterator myitr = mymp.rend();
+  --libitr;
+  --myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  --libitr;
+  --myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+}
 
 // empty
-TEST(TreeTest, int_basic_empty) {
+TEST(MapTest, int_basic_empty) {
   std::map<int, int> libmp;
   ft::map<int, int> mymp;
   ASSERT_EQ(libmp.empty(), mymp.empty());
 }
 
 // size && insert
-TEST(TreeTest, int_basic_size) {
+TEST(MapTest, int_basic_size) {
   std::map<int, int> libmp;
   ft::map<int, int> mymp;
   ASSERT_EQ(libmp.size(), mymp.size());
 }
 
-TEST(TreeTest, int_basic_size1) {
+TEST(MapTest, int_basic_size1) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   libmp.insert(libpair);
@@ -157,7 +324,7 @@ TEST(TreeTest, int_basic_size1) {
   ASSERT_EQ(libmp.size(), mymp.size());
 }
 
-TEST(TreeTest, int_basic_size2) {
+TEST(MapTest, int_basic_size2) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -171,7 +338,7 @@ TEST(TreeTest, int_basic_size2) {
   ASSERT_EQ(libmp.size(), mymp.size());
 }
 
-TEST(TreeTest, int_basic_size3) {
+TEST(MapTest, int_basic_size3) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -189,7 +356,7 @@ TEST(TreeTest, int_basic_size3) {
   ASSERT_EQ(libmp.size(), mymp.size());
 }
 
-TEST(TreeTest, int_basic_size4) {
+TEST(MapTest, int_basic_size4) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);
@@ -211,7 +378,7 @@ TEST(TreeTest, int_basic_size4) {
   ASSERT_EQ(libmp.size(), mymp.size());
 }
 
-TEST(TreeTest, int_basic_size5) {
+TEST(MapTest, int_basic_size5) {
   std::map<int, int> libmp;
   std::pair<int, int> libpair(1, 1);
   std::pair<int, int> libpair1(2, 2);

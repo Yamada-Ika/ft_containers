@@ -7,14 +7,14 @@
 // constructor
 
 // empty
-TEST(TreeTest, int_basic_empty) {
+TEST(SetTest, int_basic_empty) {
   std::set<int> libst;
   ft::set<int> myst;
   ASSERT_EQ(libst.empty(), myst.empty());
 }
 
 // size
-TEST(TreeTest, int_basic_size) {
+TEST(SetTest, int_basic_size) {
   std::set<int> libst;
   libst.insert(1);
   ft::set<int> myst;
