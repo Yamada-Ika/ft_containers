@@ -6,6 +6,7 @@
 #include <memory>
 #include "deque.hpp"
 #include "pair.hpp"
+#include "utils.hpp"
 #include <glog/logging.h>
 #include <functional>
 
@@ -196,8 +197,9 @@ public:
   typedef Key key_type;
   typedef Val value_type;
   // typedef ft::pair<const Key, Val> value_type;
+  typedef Compare key_compare;
   typedef std::size_t size_type;
-  // typedef Allocator allocator_type;
+  typedef Allocator allocator_type;
   typedef value_type& reference;
   typedef const value_type& const_reference;
   // typedef __node<Key, Allocator> node;
@@ -209,7 +211,12 @@ public:
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  __tree() : root_(NULL), end_node_(__allocate_node(Val())) {}
+  __tree()
+      : node_alloc_(node_allocator()), root_(NULL),
+        end_node_(__allocate_node(Val())) {}
+  explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
+      : node_alloc_(node_allocator()), root_(NULL),
+        end_node_(__allocate_node(Val())), __comp_(comp) {}
   // : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
   // TODO メモリ解放したらクラッシュする
   ~__tree() {}
@@ -237,6 +244,7 @@ public:
   node_pointer __end_node() const { return end_node_; }
 
   // 要素を追加
+  // deprecated
   void __insert(const_reference value) {
     // 初めて要素を追加
     if (__empty()) {
@@ -291,6 +299,66 @@ public:
     }
   }
 
+  ft::pair<iterator, bool> __insert_alt(const_reference value) {
+    node_pointer inserted_node = NULL;
+    bool has_inserted = false;
+
+    // 初めて要素を追加
+    if (__empty()) {
+      LOG(ERROR) << "__insert/ node is root";
+      // TODO とりあえず左側に
+      root_ = __allocate_node(value);
+      root_->parent = root_; // TODO 根の親は自分自身を指しておく
+      root_->right = __end_node(); // TODO 最後のイテレータのためだけにつける
+      root_->right->parent = root_;
+
+      inserted_node = root_;
+      has_inserted = true;
+      return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
+    }
+    // ノードを辿って適切な場所にノードを作成
+    node_pointer prev_parent = root_;
+    node_pointer nd = root_;
+    while (true) {
+      if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
+        nd = nd->left;
+        if (nd == NULL) {
+          prev_parent->left = __allocate_node(value);
+          prev_parent->left->parent = prev_parent; // TODO 親をつける
+
+          inserted_node = prev_parent->left;
+          has_inserted = true;
+          break;
+        }
+      } else if (KeyOfValue()(value) > KeyOfValue()(nd->value)) {
+        nd = nd->right;
+        if (nd == __end_node()) {
+          prev_parent->right = __allocate_node(value);
+          prev_parent->right->parent = prev_parent; // TODO 親をつける
+          // TODO 最後のイテレータのためだけにつける
+          prev_parent->right->right = __end_node();
+          prev_parent->right->right->parent = prev_parent->right;
+          break;
+        }
+        // TODO rightがend nodeじゃない時もある
+        if (nd == NULL) {
+          prev_parent->right = __allocate_node(value);
+          prev_parent->right->parent = prev_parent; // TODO 親をつける
+
+          inserted_node = prev_parent->right;
+          has_inserted = true;
+          break;
+        }
+      } else {
+        has_inserted = false;
+        break;
+      }
+      prev_parent = nd;
+    }
+
+    return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
+  }
+
   // // TODO 適当
   // void __insert(key_type k, mapped_type v) {
   //   value_type val(k, v);
@@ -323,12 +391,54 @@ public:
   // TODO sizeはカウントしなくても良さそうだけど
   bool __empty() const { return root_ == NULL; }
 
-  //  値と一致するノードを検索
-  // 適当
-  node_pointer __find(const key_type& k) const {
+  // iterator返すfind
+  iterator __find(const key_type& key) {
+    iterator target = __lower_bound(key);
+    // 見つからなかったか
+    if (target == __end()) {
+      return __end();
+    }
+    // keyと一致しているか
+    if (KeyOfValue()(*target) == key) {
+      return target;
+    }
+    // 一致してない == 見つからなかった
+    return __end();
+  }
+  const_iterator __find(const key_type& key) const {
+    const_iterator target = __lower_bound(key);
+    // 見つからなかったか
+    if (target == __end()) {
+      return __end();
+    }
+    // keyと一致しているか
+    if (KeyOfValue()(*target) == key) {
+      return target;
+    }
+    // 一致してない == 見つからなかった
+    return __end();
+  }
+
+  // lower_bound　
+  // keyと一緒か大きい最初？一番近いイテレータを返す
+  iterator __lower_bound(const Key& key) {
+    node_pointer ptr = __lower_bound_pointer(key);
+    if (ptr == NULL) {
+      return __end();
+    }
+    return iterator(ptr, __end_node());
+  }
+  const_iterator __lower_bound(const Key& key) const {
+    node_pointer ptr = __lower_bound_pointer(key);
+    if (ptr == NULL) {
+      return __end();
+    }
+    return const_iterator(ptr, __end_node());
+  }
+
+  node_pointer __lower_bound_pointer(const Key& k) const {
     // TODO うまくinsertと共通化したい
     if (__empty()) {
-      LOG(ERROR) << "__find/ not found";
       return NULL;
     }
     // ノードを辿って適切な場所にノードを作成
@@ -345,6 +455,11 @@ public:
       }
       if (nd == NULL || nd == end_node_) {
         LOG(ERROR) << "__find/ not found";
+        // ここで一個前のノードの値をチェック
+        // k > nd->valueならそのノードを返す
+        if (k < KeyOfValue()(prev_parent->value)) {
+          return prev_parent;
+        }
         return NULL;
       }
       prev_parent = nd;
@@ -352,24 +467,79 @@ public:
     return nd;
   }
 
+  // upper bound
+  // lower boundの不等号変わったやつ
+  iterator __uppper_bound(const Key& k) {
+    node_pointer ptr = __upper_bound_pointer(k);
+    if (ptr == NULL) {
+      return __end();
+    }
+    return iterator(ptr, __end_node());
+  }
+  const_iterator __upper_bound(const Key& k) {
+    node_pointer ptr = __upper_bound_pointer(k);
+    if (ptr == NULL) {
+      return __end();
+    }
+    return const_iterator(ptr, __end_node());
+  }
+
+  node_pointer __upper_bound_pointer(const Key& k) {
+    // TODO うまくinsertと共通化したい
+    if (__empty()) {
+      return NULL;
+    }
+    // ノードを辿って適切な場所にノードを作成
+    node_pointer prev_parent = root_;
+    node_pointer nd = root_;
+    while (true) {
+      if (k < KeyOfValue()(nd->value)) {
+        nd = nd->left;
+      } else if (k > KeyOfValue()(nd->value)) {
+        nd = nd->right;
+      } else {
+        // upper boundはkeyが一致するノードを検索対象に含まない
+        // より大きい値を持つノードを訪ねるために右の子に移動
+        nd = nd->right;
+      }
+      if (nd == NULL || nd == end_node_) {
+        LOG(ERROR) << "__find/ not found";
+        // ここで一個前のノードの値をチェック
+        if (k < KeyOfValue()(prev_parent->value)) {
+          return prev_parent;
+        }
+        return NULL;
+      }
+      prev_parent = nd;
+    }
+    return nd;
+  }
+
+  // count
+  size_type __count(const Key& key) const {
+    return __find(key) == __end() ? 0 : 1;
+  }
+
+  // max_size
+  size_type __max_size() const { return node_alloc_.max_size(); }
+
   // rootを返す
   node_pointer root() { return root_; }
+
+  // allocatorを返す
+  allocator_type __get_allocator() const { return allocator_type(node_alloc_); }
+  // key_compareを返す
+  key_compare __key_comp() const { return __comp_; }
 
 private:
   node_allocator node_alloc_;
   node_pointer root_;
   node_pointer end_node_;
+  key_compare __comp_;
 
   // TODO tree_baseみたいなの作ってnodeいじるメソッドはそっちに移動させたい
   // nodeをアロケーションする
   node_pointer __allocate_node(const_reference v) {
-    // node_pointer n = node_alloc_.allocate(1);
-
-    // n->value = v;
-    // n->left = NULL;
-    // n->right = NULL;
-    // n->parent = NULL;
-
     node_pointer n = node_alloc_.allocate(1);
     node_alloc_.construct(n, v);
     if (n == NULL) {

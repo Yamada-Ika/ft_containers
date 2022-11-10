@@ -11,7 +11,7 @@ namespace ft {
 // Function object for performing comparisons. Unless specialized, invokes operator< on type T.
 // std::less
 
-template <class Key, class Compare = std::less<Key>,
+template <class Key, class Compare = ft::less<Key>,
           class Allocator = std::allocator<Key> >
 class set {
 public:
@@ -47,40 +47,52 @@ public:
 
   allocator_type get_allocator() const;
 
-  //   iterator begin();
-  //   const_iterator begin() const;
-  // iterator end();
-  // const_iterator end() const;
-  //   reverse_iterator rbegin();
-  //   const_reverse_iterator rbegin() const;
-  //   reverse_iterator rend();
-  //   const_reverse_iterator rend() const;
+  iterator begin() { return __tree_.__begin(); }
+  const_iterator begin() const { return __tree_.__begin(); }
+  iterator end() { return __tree_.__end(); }
+  const_iterator end() const { return __tree_.__end(); }
+  reverse_iterator rbegin() { return __tree_.__rbegin(); }
+  const_reverse_iterator rbegin() const { return __tree_.__rbegin(); }
+  reverse_iterator rend() { return __tree_.__rend(); }
+  const_reverse_iterator rend() const { return __tree_.__rend(); }
 
   bool empty() const { return __tree_.__empty(); }
   size_type size() const { return __tree_.__size(); }
   size_type max_size() const;
   void clear();
-  //   std::pair<iterator, bool> insert(const value_type& value);
-  //   iterator insert(iterator pos, const value_type& value);
-  //   template <class InputIt>
-  //   void insert(InputIt first, InputIt last);
-  // TODO テストように生やした
-  void insert(const_reference v) { __tree_.__insert(v); }
+  ft::pair<iterator, bool> insert(const value_type& value) {
+    return __tree_.__insert_alt(value);
+  }
+  // iterator insert(iterator pos, const value_type& value);
+  template <class InputIt>
+  void insert(InputIt first, InputIt last) {
+    for (InputIt itr = first; itr != last; ++itr) {
+      insert(*itr);
+    }
+  }
   //   iterator erase(iterator pos);
   //   iterator erase(iterator first, iterator last);
   //   size_type erase(const Key& key);
   void swap(set& other);
-  size_type count(const Key& key);
-  // iteraotr find(const Key& key);
-  // const_iterator find(const Key& key) const;
-  // std::pair<iterator, iterator> equal_range(const Key& key);
-  // std::pari<const_iterator, const_iterator> equal_range(const Key& key) const;
-  // iterator lower_bound(const Key& key);
-  // cosnt_iterator lower_bound(const Key& key) const;
-  // iterator upper_bound(const Key& key);
-  // const_iterator upper_bound(const Key& key) const;
-  key_compare key_comp() const;
-  value_compare value_comp() const;
+  size_type count(const Key& key) const { return __tree_.__count(key); }
+  iterator find(const Key& key) { return __tree_.__find(key); }
+  const_iterator find(const Key& key) const { return __tree_.__find(key); }
+  ft::pair<iterator, iterator> equal_range(const Key& key) {
+    return ft::make_pair(lower_bound(key), upper_bound(key));
+  }
+  ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
+    return ft::make_pair(lower_bound(key), upper_bound(key));
+  }
+  iterator lower_bound(const Key& key) { return __tree_.__lower_bound(key); }
+  const_iterator lower_bound(const Key& key) const {
+    return __tree_.__lower_bound(key);
+  }
+  iterator upper_bound(const Key& key) { return __tree_.__upper_bound(key); }
+  const_iterator upper_bound(const Key& key) const {
+    return __tree_.__upper_bound(key);
+  }
+  key_compare key_comp() const { return __tree_.__key_comp(); }
+  value_compare value_comp() const { return key_comp(); }
 
 private:
   typedef typename ft::__tree<key_type, key_type, ft::Identity<value_type>,

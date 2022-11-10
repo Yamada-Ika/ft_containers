@@ -409,39 +409,3 @@ TEST(TreeTest, int_basic_empty3) {
 }
 
 // __erase
-
-// __find
-TEST(TreeTest, int_basic_find) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer ndp = t.__find(1);
-  ASSERT_EQ(ndp->value, 1);
-}
-
-TEST(TreeTest, int_basic_find1) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer ndp = t.__find(1);
-  ASSERT_EQ(ndp->value, 1);
-}
-
-TEST(TreeTest, int_basic_find2) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__insert(-1);
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer ndp = t.__find(1);
-  ASSERT_EQ(ndp->value, 1);
-}
-
-TEST(TreeTest, int_basic_find3) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__insert(10);
-  t.__insert(-1);
-  t.__insert(-42);
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer ndp = t.__find(-42);
-  ASSERT_EQ(ndp->value, -42);
-}

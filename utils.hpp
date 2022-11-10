@@ -59,6 +59,19 @@ struct Identity {
   const T& operator()(const T& __x) const { return __x; }
 };
 
+// 二つの値を比較するやつ
+// <
+template <typename T>
+struct less {
+  bool operator()(const T& lhs, const T& rhs) { return lhs < rhs; }
+};
+
+// >
+template <typename T>
+struct greater {
+  bool operator()(const T& lhs, const T& rhs) { return lhs > rhs; }
+};
+
 } // namespace ft
 
 #endif

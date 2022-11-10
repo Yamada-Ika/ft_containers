@@ -19,5 +19,7 @@ int main(int ac, char** av) {
   st.insert(1);
   std::set<int>::iterator itr = st.begin();
 
+  mp.value_comp();
+
   std::cerr << *itr << std::endl;
 }
