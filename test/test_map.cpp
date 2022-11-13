@@ -816,4 +816,63 @@ TEST(MapTest, int_basic_upper_bound3) {
 
 // key_comp
 // value_comp
+
 // compare operators
+TEST(MapTest, int_basic_compare_operator) {
+  std::map<int, int> libmp1;
+  std::map<int, int> libmp2;
+  libmp1.insert(std::make_pair(1, 1));
+  libmp2.insert(std::make_pair(1, 1));
+
+  ft::map<int, int> mymp1;
+  ft::map<int, int> mymp2;
+  mymp1.insert(ft::make_pair(1, 1));
+  mymp2.insert(ft::make_pair(1, 1));
+
+  ASSERT_EQ(libmp1 == libmp2, mymp1 == mymp2);
+  ASSERT_EQ(libmp1 != libmp2, mymp1 != mymp2);
+  ASSERT_EQ(libmp1 < libmp2, mymp1 < mymp2);
+  ASSERT_EQ(libmp1 > libmp2, mymp1 > mymp2);
+  ASSERT_EQ(libmp1 >= libmp2, mymp1 >= mymp2);
+  ASSERT_EQ(libmp1 <= libmp2, mymp1 <= mymp2);
+}
+
+TEST(MapTest, int_basic_compare_operator1) {
+  std::map<int, int> libmp1;
+  std::map<int, int> libmp2;
+  libmp1.insert(std::make_pair(1, 1));
+  libmp2.insert(std::make_pair(2, 2));
+
+  ft::map<int, int> mymp1;
+  ft::map<int, int> mymp2;
+  mymp1.insert(ft::make_pair(1, 1));
+  mymp2.insert(ft::make_pair(2, 2));
+
+  ASSERT_EQ(libmp1 == libmp2, mymp1 == mymp2);
+  ASSERT_EQ(libmp1 != libmp2, mymp1 != mymp2);
+  ASSERT_EQ(libmp1 < libmp2, mymp1 < mymp2);
+  ASSERT_EQ(libmp1 > libmp2, mymp1 > mymp2);
+  ASSERT_EQ(libmp1 >= libmp2, mymp1 >= mymp2);
+  ASSERT_EQ(libmp1 <= libmp2, mymp1 <= mymp2);
+}
+
+TEST(MapTest, int_basic_compare_operator2) {
+  std::map<int, int> libmp1;
+  std::map<int, int> libmp2;
+  libmp1.insert(std::make_pair(1, 1));
+  libmp2.insert(std::make_pair(2, 1));
+  libmp2.insert(std::make_pair(-42, 1));
+
+  ft::map<int, int> mymp1;
+  ft::map<int, int> mymp2;
+  mymp1.insert(ft::make_pair(1, 1));
+  mymp2.insert(ft::make_pair(2, 2));
+  mymp2.insert(ft::make_pair(-42, 1));
+
+  ASSERT_EQ(libmp1 == libmp2, mymp1 == mymp2);
+  ASSERT_EQ(libmp1 != libmp2, mymp1 != mymp2);
+  ASSERT_EQ(libmp1 < libmp2, mymp1 < mymp2);
+  ASSERT_EQ(libmp1 > libmp2, mymp1 > mymp2);
+  ASSERT_EQ(libmp1 >= libmp2, mymp1 >= mymp2);
+  ASSERT_EQ(libmp1 <= libmp2, mymp1 <= mymp2);
+}

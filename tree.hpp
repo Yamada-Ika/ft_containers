@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include "deque.hpp"
+#include "stack.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
 #include <glog/logging.h>
@@ -189,7 +190,7 @@ private:
 
 // 二分探索木を表すクラス
 template <typename Key, typename Val, typename KeyOfValue,
-          class Compare = std::less<Key>,
+          class Compare = ft::less<Key>,
           typename Allocator = std::allocator<Key> >
 class __tree {
 public:
@@ -262,8 +263,6 @@ public:
     node_pointer nd = root_;
     while (true) {
       // keyで比較
-      LOG(ERROR) << "value  first " << KeyOfValue()(value);
-      LOG(ERROR) << "nd val first " << KeyOfValue()(nd->value);
       if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
         nd = nd->left;
         if (nd == NULL) {
@@ -294,7 +293,6 @@ public:
         // nd->value.second = value.second;
         break;
       }
-      LOG(ERROR) << "__insert/ update prev node";
       prev_parent = nd;
     }
   }
@@ -359,16 +357,10 @@ public:
     return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
   }
 
-  // // TODO 適当
-  // void __insert(key_type k, mapped_type v) {
-  //   value_type val(k, v);
-  //   __insert(val);
-  // }
-
   // ノードの要素を返す
   size_type __size() const {
     LOG(ERROR) << "__size called";
-    if (root_ == NULL) {
+    if (__empty()) {
       return 0;
     }
     ft::deque<node_pointer> q;
@@ -417,6 +409,21 @@ public:
     }
     // 一致してない == 見つからなかった
     return __end();
+  }
+
+  // TODO とりあえず木の中で使ってるfind。ノードポインターを返す
+  node_pointer __find_node_pointer(const key_type& key) const {
+    node_pointer target = __lower_bound_pointer(key);
+    // 見つからなかった
+    if (target == NULL) {
+      return NULL;
+    }
+    // 値が一致しているか
+    if (KeyOfValue()(target->value) == key) {
+      return target;
+    }
+    // 一致していないのでNULL
+    return NULL;
   }
 
   // lower_bound　
@@ -531,11 +538,155 @@ public:
   // key_compareを返す
   key_compare __key_comp() const { return __comp_; }
 
+  // __erase
+  size_type __erase(const Key& key) {
+    LOG(ERROR) << "__erase called";
+    node_pointer target = __find_node_pointer(key);
+    // keyがなかったら0を返す
+    if (target == NULL) {
+      LOG(ERROR) << "__erase not found";
+      return 0;
+    }
+
+    // 削除対象のノードが子を持たない場合
+    if (__has_no_child(target)) {
+      LOG(ERROR) << "__erase no child";
+      // targetの親から見てtargetがleftにある場合
+      if (__has_exist_on_left_from_parent_side(target)) {
+        // TODO メモリ解放
+        target->parent->left = NULL;
+      } else if (__has_exist_on_right_from_parent_side(target)) {
+        // targetの親から見てtargetがrightにある場合
+
+        // targetのrightがend nodeの場合
+        if (target->right == __end_node()) {
+          // TODO メモリ解放
+          target->parent->right = __end_node();
+        } else if (target->right == NULL) {
+          target->parent->right = NULL;
+        } else {
+          // ここに来るのはあり得ない
+          LOG(ERROR) << "__erase/ " << key;
+          assert(false);
+        }
+      }
+      return 1;
+    }
+
+    // 削除対象のノードが一つだけ子を持つ場合
+    // 左だけ
+    if (__has_only_left_child(target)) {
+      LOG(ERROR) << "__erase/__has_only_left_child";
+      // その左にある子ノードをtargetの親のtargetがあった側につける
+      // targetが親から見てleftにある場合
+      if (__has_exist_on_left_from_parent_side(target)) {
+        // 繋ぎかえ
+        target->parent->left = target->left;
+        target->left->parent = target->parent;
+      } else {
+        LOG(ERROR) << "__erase/__has_only_left_child/"
+                      "__has_exist_on_right_from_parent_side";
+        // rigth側にある場合
+        target->parent->right = target->left;
+        target->left->parent = target->parent;
+      }
+      // targetのrightにend nodeがあったら、一番右にあるノードにend nodeをつける
+      if (target->right == __end_node()) {
+        node::__get_max_node(target->left, __end_node())->right = __end_node();
+      }
+      return 1;
+    }
+    // 右だけ
+    if (__has_only_right_child(target)) {
+      LOG(ERROR) << "__erase/__has_only_right_child";
+      // 同様
+      // 右側にある子ノードをtargetの親のtargetがある側の子とする
+      if (__has_exist_on_left_from_parent_side(target)) {
+        target->parent->left = target->right;
+        target->right->parent = target->parent;
+      } else {
+        target->parent->right = target->right;
+        target->right->parent = target->parent;
+      }
+      return 1;
+    }
+
+    LOG(ERROR) << "__erase/ has two nodes";
+    // 削除対象のノードが二つ子を持つ場合
+    // - targetがあったところにtargetのrightを持ってくる
+    //   - targetの右側の子の右側の子がend nodeの時
+    //     -
+    stack<node_pointer> node_stack;
+    node_pointer prev_target = target;
+    node_pointer prev_parent = NULL;
+    while (target == NULL || target == __end_node()) {
+      node_pointer tmp = NULL;
+      // targetがright側にあったら、そこにtargetのrightを突っ込む
+      if (__has_exist_on_right_from_parent_side(target)) {
+        target->parent->right = target->right;
+        tmp = target->parent->right;
+      } else {
+        target->parent->left = target->right;
+        tmp = target->parent->left;
+      }
+      // つける前にスタックに置いておく
+      node_stack.push(tmp->left);
+      // 新しくtargetの位置に持ってきたノードのleftに、targetのleftをつける
+      tmp->left = target->left;
+      prev_parent = target;
+      // targetを更新する
+      target = tmp;
+    }
+
+    //　スタックに積まれたノードをつなぐ
+    // - 上のループで辿ったところから、targetが元あった場所まで上にたどっていく
+    target = prev_parent;
+    while (prev_target == target) {
+      node_pointer prev_left = node_stack.top();
+      node_stack.pop();
+      target->left = prev_left;
+      target = target->parent;
+    }
+
+    return 1;
+  }
+
 private:
   node_allocator node_alloc_;
   node_pointer root_;
   node_pointer end_node_;
   key_compare __comp_;
+
+  // node操作するメソッド ここから
+  // TODO こういうのはtemplateにしてクラス外にして良い気がする
+  bool __has_right_child(node_pointer nd) { return !__has_no_right_child(nd); }
+  bool __has_no_right_child(node_pointer nd) {
+    return nd->right == NULL || nd->right == __end_node();
+  }
+  bool __has_left_child(node_pointer nd) { return !__has_no_left_child(nd); }
+  bool __has_no_left_child(node_pointer nd) { return nd->left == NULL; }
+  bool __has_both_child(node_pointer nd) {
+    return __has_left_child(nd) && __has_right_child(nd);
+  }
+  bool __has_only_right_child(node_pointer nd) {
+    return !__has_left_child(nd) && __has_right_child(nd);
+  }
+  bool __has_only_left_child(node_pointer nd) {
+    return __has_left_child(nd) && !__has_right_child(nd);
+  }
+  bool __has_no_child(node_pointer nd) {
+    return __has_no_left_child(nd) && __has_no_right_child(nd);
+  }
+
+  // 自分が親から見て左側にあるか
+  bool __has_exist_on_left_from_parent_side(node_pointer nd) {
+    return nd->parent->left == nd;
+  }
+  bool __has_exist_on_right_from_parent_side(node_pointer nd) {
+    return !__has_exist_on_left_from_parent_side(nd);
+  }
+
+  // node操作するメソッド　ここまで
 
   // TODO tree_baseみたいなの作ってnodeいじるメソッドはそっちに移動させたい
   // nodeをアロケーションする
@@ -553,8 +704,66 @@ private:
     node_alloc_.deallocate(root_, 1);
   }
 
-  node_pointer __begin_node() const { return node::__get_min_node(root_); }
+  node_pointer __begin_node() const {
+    // TODO　何も値がないときはend nodeを返す？
+    if (__empty()) {
+      return __end_node();
+    }
+    return node::__get_min_node(root_);
+  }
 };
+
+// compare operators
+template <class Key, class Val, class KeyOfValue, class Compare,
+          class Allocator>
+bool operator==(
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return lhs.__size() == rhs.__size() &&
+         ft::equal(lhs.__begin(), lhs.__end(), rhs.__begin(), rhs.__end());
+}
+
+template <class Key, class Val, class KeyOfValue, class Compare,
+          class Allocator>
+bool operator!=(
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return !(lhs == rhs);
+}
+
+template <class Key, class Val, class KeyOfValue, class Compare,
+          class Allocator>
+bool operator<(
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return ft::lexicographical_compare(lhs.__begin(), lhs.__end(), rhs.__begin(),
+                                     rhs.__end());
+}
+
+template <class Key, class Val, class KeyOfValue, class Compare,
+          class Allocator>
+bool operator>=(
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return !(lhs < rhs);
+}
+
+template <class Key, class Val, class KeyOfValue, class Compare,
+          class Allocator>
+bool operator>(
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return rhs < lhs;
+}
+
+template <class Key, class Val, class KeyOfValue, class Compare,
+          class Allocator>
+bool operator<=(
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return !(lhs > rhs);
+}
+
 }; // namespace ft
 
 #endif
