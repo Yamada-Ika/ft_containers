@@ -114,9 +114,11 @@ public:
       insert(*itr);
     }
   }
-  // //   iterator erase(iterator pos);
-  // // //   iterator erase(iterator first, iterator last);
-  size_type erase(const Key& key);
+  iterator erase(iterator pos) { return __tree_.__erase(pos); }
+  iterator erase(iterator first, iterator last) {
+    return __tree_.__erase(first, last);
+  }
+  size_type erase(const Key& key) { return __tree_.__erase(key); }
   void swap(map& other);
   size_type count(const Key& key) const { return __tree_.__count(key); }
   iterator find(const Key& key) { return __tree_.__find(key); }

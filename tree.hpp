@@ -548,6 +548,13 @@ public:
       return 0;
     }
 
+    // TODO ノード一個だけの時
+    if (__is_root(target)) {
+      root_->parent = NULL;
+      root_ = NULL;
+      return 1;
+    }
+
     // 削除対象のノードが子を持たない場合
     if (__has_no_child(target)) {
       LOG(ERROR) << "__erase no child";
@@ -555,7 +562,7 @@ public:
       if (__has_exist_on_left_from_parent_side(target)) {
         // TODO メモリ解放
         target->parent->left = NULL;
-      } else if (__has_exist_on_right_from_parent_side(target)) {
+      } else {
         // targetの親から見てtargetがrightにある場合
 
         // targetのrightがend nodeの場合
@@ -570,6 +577,7 @@ public:
           assert(false);
         }
       }
+      LOG(ERROR) << "__erase end";
       return 1;
     }
 
@@ -611,44 +619,49 @@ public:
       return 1;
     }
 
-    LOG(ERROR) << "__erase/ has two nodes";
     // 削除対象のノードが二つ子を持つ場合
-    // - targetがあったところにtargetのrightを持ってくる
-    //   - targetの右側の子の右側の子がend nodeの時
-    //     -
-    stack<node_pointer> node_stack;
-    node_pointer prev_target = target;
-    node_pointer prev_parent = NULL;
-    while (target == NULL || target == __end_node()) {
-      node_pointer tmp = NULL;
-      // targetがright側にあったら、そこにtargetのrightを突っ込む
-      if (__has_exist_on_right_from_parent_side(target)) {
-        target->parent->right = target->right;
-        tmp = target->parent->right;
+    // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
+    LOG(ERROR) << "__erase/ has two nodes";
+    node_pointer partial_min = node::__get_min_node(target->right);
+
+    // 繋がれているノードを外す
+    if (__has_exist_on_left_from_parent_side(partial_min)) {
+      partial_min->parent->left = NULL;
+    } else {
+      if (partial_min->right == __end_node()) {
+        partial_min->parent->right = __end_node();
       } else {
-        target->parent->left = target->right;
-        tmp = target->parent->left;
+        partial_min->parent->right = NULL;
       }
-      // つける前にスタックに置いておく
-      node_stack.push(tmp->left);
-      // 新しくtargetの位置に持ってきたノードのleftに、targetのleftをつける
-      tmp->left = target->left;
-      prev_parent = target;
-      // targetを更新する
-      target = tmp;
     }
 
-    //　スタックに積まれたノードをつなぐ
-    // - 上のループで辿ったところから、targetが元あった場所まで上にたどっていく
-    target = prev_parent;
-    while (prev_target == target) {
-      node_pointer prev_left = node_stack.top();
-      node_stack.pop();
-      target->left = prev_left;
-      target = target->parent;
+    // targetと隣接するノードをつなぐ
+    if (__has_exist_on_left_from_parent_side(target)) {
+      target->parent->right = partial_min;
+    } else {
+      target->parent->left = partial_min;
     }
+    partial_min->right = target->right;
+    partial_min->left = target->left;
 
     return 1;
+  }
+
+  // iterator __erase(iterator pos)
+  iterator __erase(iterator pos) {
+    iterator res = pos;
+
+    ++res;
+    __erase(KeyOfValue()(*pos));
+    return res;
+  }
+
+  // iterator __erase(iterator first, iterator last)
+  iterator __erase(iterator first, iterator last) {
+    for (; first != last;) {
+      first = __erase(first);
+    }
+    return ++last;
   }
 
 private:
@@ -685,6 +698,9 @@ private:
   bool __has_exist_on_right_from_parent_side(node_pointer nd) {
     return !__has_exist_on_left_from_parent_side(nd);
   }
+
+  // rootかどうか
+  bool __is_root(node_pointer nd) { return nd->parent == nd; }
 
   // node操作するメソッド　ここまで
 
