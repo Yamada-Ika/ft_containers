@@ -482,38 +482,38 @@ TEST(MapTest, int_basic_insert3) {
 }
 
 // erase
-TEST(MapTest, int_basic_erase1_1) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(2, 2));
-  libmp.insert(std::make_pair(-2, -2));
-  std::map<int, int>::iterator libitr1 = libmp.begin();
+// TEST(MapTest, int_basic_erase1_1) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(2, 2));
+//   libmp.insert(std::make_pair(-2, -2));
+//   std::map<int, int>::iterator libitr1 = libmp.begin();
 
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(2, 2));
-  mymp.insert(ft::make_pair(-2, -2));
-  ft::map<int, int>::iterator myitr1 = mymp.begin();
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(2, 2));
+//   mymp.insert(ft::make_pair(-2, -2));
+//   ft::map<int, int>::iterator myitr1 = mymp.begin();
 
-  std::map<int, int>::iterator libret = libmp.erase(libitr1);
-  ft::map<int, int>::iterator myret = mymp.erase(myitr1);
+//   std::map<int, int>::iterator libret = libmp.erase(libitr1);
+//   ft::map<int, int>::iterator myret = mymp.erase(myitr1);
 
-  ASSERT_EQ(libret->first, myret->first);
-  ASSERT_EQ(libret->second, myret->second);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret->first, myret->first);
+//   ASSERT_EQ(libret->second, myret->second);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
 // TEST(MapTest, int_basic_erase1_2) {
 //   std::map<int, int> libmp;
@@ -587,211 +587,211 @@ TEST(MapTest, int_basic_erase1_1) {
 //   ++myitr;
 // }
 
-TEST(MapTest, int_basic_erase2_1) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(2, 2));
-  libmp.insert(std::make_pair(-2, -2));
-  std::map<int, int>::iterator libitr1 = libmp.begin();
-  std::map<int, int>::iterator libitr2 = libmp.end();
+// TEST(MapTest, int_basic_erase2_1) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(2, 2));
+//   libmp.insert(std::make_pair(-2, -2));
+//   std::map<int, int>::iterator libitr1 = libmp.begin();
+//   std::map<int, int>::iterator libitr2 = libmp.end();
 
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(2, 2));
-  mymp.insert(ft::make_pair(-2, -2));
-  ft::map<int, int>::iterator myitr1 = mymp.begin();
-  ft::map<int, int>::iterator myitr2 = mymp.end();
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(2, 2));
+//   mymp.insert(ft::make_pair(-2, -2));
+//   ft::map<int, int>::iterator myitr1 = mymp.begin();
+//   ft::map<int, int>::iterator myitr2 = mymp.end();
 
-  std::map<int, int>::iterator libret = libmp.erase(libitr1, libitr2);
-  ft::map<int, int>::iterator myret = mymp.erase(myitr1, myitr2);
+//   std::map<int, int>::iterator libret = libmp.erase(libitr1, libitr2);
+//   ft::map<int, int>::iterator myret = mymp.erase(myitr1, myitr2);
 
-  ASSERT_EQ(libret->first, myret->first);
-  ASSERT_EQ(libret->second, myret->second);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret->first, myret->first);
+//   ASSERT_EQ(libret->second, myret->second);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
-TEST(MapTest, int_basic_erase3_1) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(2, 2));
-  libmp.insert(std::make_pair(3, 3));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(2, 2));
-  mymp.insert(ft::make_pair(3, 3));
+// TEST(MapTest, int_basic_erase3_1) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(2, 2));
+//   libmp.insert(std::make_pair(3, 3));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(2, 2));
+//   mymp.insert(ft::make_pair(3, 3));
 
-  size_t libret = libmp.erase(2);
-  size_t myret = mymp.erase(2);
+//   size_t libret = libmp.erase(2);
+//   size_t myret = mymp.erase(2);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
-TEST(MapTest, int_basic_erase3_2) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(10, 1));
-  libmp.insert(std::make_pair(5, 1));
-  libmp.insert(std::make_pair(15, 1));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(10, 1));
-  mymp.insert(ft::make_pair(5, 1));
-  mymp.insert(ft::make_pair(15, 1));
+// TEST(MapTest, int_basic_erase3_2) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(10, 1));
+//   libmp.insert(std::make_pair(5, 1));
+//   libmp.insert(std::make_pair(15, 1));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(10, 1));
+//   mymp.insert(ft::make_pair(5, 1));
+//   mymp.insert(ft::make_pair(15, 1));
 
-  size_t libret = libmp.erase(5);
-  size_t myret = mymp.erase(5);
+//   size_t libret = libmp.erase(5);
+//   size_t myret = mymp.erase(5);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
-TEST(MapTest, int_basic_erase3_3) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
+// TEST(MapTest, int_basic_erase3_3) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
 
-  size_t libret = libmp.erase(1);
-  size_t myret = mymp.erase(1);
+//   size_t libret = libmp.erase(1);
+//   size_t myret = mymp.erase(1);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
-}
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
+// }
 
-TEST(MapTest, int_basic_erase3_4) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
+// TEST(MapTest, int_basic_erase3_4) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
 
-  size_t libret = libmp.erase(2);
-  size_t myret = mymp.erase(2);
+//   size_t libret = libmp.erase(2);
+//   size_t myret = mymp.erase(2);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
-}
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
+// }
 
-TEST(MapTest, int_basic_erase3_5) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(10, 1));
-  libmp.insert(std::make_pair(5, 1));
-  libmp.insert(std::make_pair(15, 1));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(10, 1));
-  mymp.insert(ft::make_pair(5, 1));
-  mymp.insert(ft::make_pair(15, 1));
+// TEST(MapTest, int_basic_erase3_5) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(10, 1));
+//   libmp.insert(std::make_pair(5, 1));
+//   libmp.insert(std::make_pair(15, 1));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(10, 1));
+//   mymp.insert(ft::make_pair(5, 1));
+//   mymp.insert(ft::make_pair(15, 1));
 
-  size_t libret = libmp.erase(5);
-  size_t myret = mymp.erase(5);
+//   size_t libret = libmp.erase(5);
+//   size_t myret = mymp.erase(5);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
-TEST(MapTest, int_basic_erase3_6) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(10, 1));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(10, 1));
+// TEST(MapTest, int_basic_erase3_6) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(10, 1));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(10, 1));
 
-  size_t libret = libmp.erase(10);
-  size_t myret = mymp.erase(10);
+//   size_t libret = libmp.erase(10);
+//   size_t myret = mymp.erase(10);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
-TEST(MapTest, int_basic_erase3_7) {
-  std::map<int, int> libmp;
-  libmp.insert(std::make_pair(1, 1));
-  libmp.insert(std::make_pair(-10, 1));
-  ft::map<int, int> mymp;
-  mymp.insert(ft::make_pair(1, 1));
-  mymp.insert(ft::make_pair(-10, 1));
+// TEST(MapTest, int_basic_erase3_7) {
+//   std::map<int, int> libmp;
+//   libmp.insert(std::make_pair(1, 1));
+//   libmp.insert(std::make_pair(-10, 1));
+//   ft::map<int, int> mymp;
+//   mymp.insert(ft::make_pair(1, 1));
+//   mymp.insert(ft::make_pair(-10, 1));
 
-  size_t libret = libmp.erase(-10);
-  size_t myret = mymp.erase(-10);
+//   size_t libret = libmp.erase(-10);
+//   size_t myret = mymp.erase(-10);
 
-  ASSERT_EQ(libret, myret);
-  ASSERT_EQ(libmp.size(), mymp.size());
+//   ASSERT_EQ(libret, myret);
+//   ASSERT_EQ(libmp.size(), mymp.size());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
+//   std::map<int, int>::iterator libitr = libmp.begin();
+//   ft::map<int, int>::iterator myitr = mymp.begin();
 
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  ++libitr;
-  ++myitr;
-}
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++myitr;
+// }
 
 // swap
 // count

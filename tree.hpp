@@ -214,10 +214,10 @@ public:
 
   __tree()
       : node_alloc_(node_allocator()), root_(NULL),
-        end_node_(__allocate_node(Val())) {}
+        end_node_(__allocate_node(Val())), __tree_size_(0) {}
   explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
       : node_alloc_(node_allocator()), root_(NULL),
-        end_node_(__allocate_node(Val())), __comp_(comp) {}
+        end_node_(__allocate_node(Val())), __comp_(comp), __tree_size_(0) {}
   // : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
   // TODO メモリ解放したらクラッシュする
   ~__tree() {}
@@ -245,59 +245,7 @@ public:
   node_pointer __end_node() const { return end_node_; }
 
   // 要素を追加
-  // deprecated
-  void __insert(const_reference value) {
-    // 初めて要素を追加
-    if (__empty()) {
-      LOG(ERROR) << "__insert/ node is root";
-      // TODO とりあえず左側に
-      root_ = __allocate_node(value);
-      root_->parent = root_; // TODO 根の親は自分自身を指しておく
-      root_->right = __end_node(); // TODO 最後のイテレータのためだけにつける
-      root_->right->parent = root_;
-      return;
-    }
-    LOG(ERROR) << "__insert/ node is not root";
-    // ノードを辿って適切な場所にノードを作成
-    node_pointer prev_parent = root_;
-    node_pointer nd = root_;
-    while (true) {
-      // keyで比較
-      if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
-        nd = nd->left;
-        if (nd == NULL) {
-          prev_parent->left = __allocate_node(value);
-          prev_parent->left->parent = prev_parent; // TODO 親をつける
-          break;
-        }
-      } else if (KeyOfValue()(value) > KeyOfValue()(nd->value)) {
-        nd = nd->right;
-        // if (nd == NULL) {
-        if (nd == __end_node()) {
-          prev_parent->right = __allocate_node(value);
-          prev_parent->right->parent = prev_parent; // TODO 親をつける
-          // TODO 最後のイテレータのためだけにつける
-          prev_parent->right->right = __end_node();
-          prev_parent->right->right->parent = prev_parent->right;
-          break;
-        }
-        // TODO rightがend nodeじゃない時もある
-        if (nd == NULL) {
-          prev_parent->right = __allocate_node(value);
-          prev_parent->right->parent = prev_parent; // TODO 親をつける
-          break;
-        }
-      } else {
-        // すでに存在していたら、重複を許さないので何もしない
-        // ただvalueを更新する必要がある。実はない？
-        // nd->value.second = value.second;
-        break;
-      }
-      prev_parent = nd;
-    }
-  }
-
-  ft::pair<iterator, bool> __insert_alt(const_reference value) {
+  ft::pair<iterator, bool> __insert_helper(const_reference value) {
     node_pointer inserted_node = NULL;
     bool has_inserted = false;
 
@@ -317,6 +265,7 @@ public:
     // ノードを辿って適切な場所にノードを作成
     node_pointer prev_parent = root_;
     node_pointer nd = root_;
+
     while (true) {
       if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
         nd = nd->left;
@@ -336,6 +285,7 @@ public:
           // TODO 最後のイテレータのためだけにつける
           prev_parent->right->right = __end_node();
           prev_parent->right->right->parent = prev_parent->right;
+          has_inserted = true;
           break;
         }
         // TODO rightがend nodeじゃない時もある
@@ -357,31 +307,24 @@ public:
     return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
   }
 
-  // ノードの要素を返す
-  size_type __size() const {
-    LOG(ERROR) << "__size called";
-    if (__empty()) {
-      return 0;
+  ft::pair<iterator, bool> __insert(const_reference value) {
+    ft::pair<iterator, bool> p = __insert_helper(value);
+    LOG(ERROR) << "__insert/ has inserted " << p.second;
+    if (p.second) {
+      ++__tree_size_;
+      LOG(ERROR) << "__insert/ size incremented";
+      LOG(ERROR) << "__insert/ size : " << __tree_size_;
     }
-    ft::deque<node_pointer> q;
-    size_type sz = 0;
-    q.push_back(root_);
-    while (!q.empty()) {
-      node_pointer nd = q.at(0);
-      q.pop_front();
-      sz++;
-      if (nd->left != NULL) {
-        q.push_back(nd->left);
-      }
-      if (nd->right != __end_node() && nd->right != NULL) {
-        q.push_back(nd->right);
-      }
-    }
-    return sz;
+    return p;
   }
 
-  // TODO sizeはカウントしなくても良さそうだけど
-  bool __empty() const { return root_ == NULL; }
+  // ノードの要素を返す
+  size_type __size() const {
+    LOG(ERROR) << "__size/ " << __tree_size_;
+    return __tree_size_;
+  }
+
+  bool __empty() const { return __size() == 0; }
 
   // iterator返すfind
   iterator __find(const key_type& key) {
@@ -538,8 +481,7 @@ public:
   // key_compareを返す
   key_compare __key_comp() const { return __comp_; }
 
-  // __erase
-  size_type __erase(const Key& key) {
+  size_type __erase_helper(const Key& key) {
     LOG(ERROR) << "__erase called";
     node_pointer target = __find_node_pointer(key);
     // keyがなかったら0を返す
@@ -623,6 +565,7 @@ public:
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
     LOG(ERROR) << "__erase/ has two nodes";
     node_pointer partial_min = node::__get_min_node(target->right);
+    LOG(ERROR) << "__erase/ pmin val: " << partial_min->value;
 
     // 繋がれているノードを外す
     if (__has_exist_on_left_from_parent_side(partial_min)) {
@@ -641,10 +584,20 @@ public:
     } else {
       target->parent->left = partial_min;
     }
+    partial_min->parent = target->parent;
     partial_min->right = target->right;
     partial_min->left = target->left;
 
     return 1;
+  }
+
+  // __erase
+  size_type __erase(const Key& key) {
+    if (__erase_helper(key) == 1) {
+      --__tree_size_;
+      return 1;
+    }
+    return 0;
   }
 
   // iterator __erase(iterator pos)
@@ -669,6 +622,7 @@ private:
   node_pointer root_;
   node_pointer end_node_;
   key_compare __comp_;
+  size_type __tree_size_;
 
   // node操作するメソッド ここから
   // TODO こういうのはtemplateにしてクラス外にして良い気がする

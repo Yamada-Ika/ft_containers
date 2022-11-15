@@ -105,7 +105,7 @@ public:
   size_type max_size() const { return __tree_.__max_size(); }
   void clear();
   ft::pair<iterator, bool> insert(const value_type& value) {
-    return __tree_.__insert_alt(value);
+    return __tree_.__insert(value);
   }
   // //   iterator insert(iterator pos, const value_type& value);
   template <class InputIt>
