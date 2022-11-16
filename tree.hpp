@@ -318,6 +318,15 @@ public:
     return p;
   }
 
+  //  Inserts value in the position as close as possible to the position just prior to pos.
+  iterator __insert(iterator pos, const_reference value) {
+    // posからnode pointerをとる
+    node_pointer pos_node;
+    node_pointer new_node; // valueを持つノード
+
+    // pos_nodeが右側にあればその間にnew nodeを挿入する
+  }
+
   // ノードの要素を返す
   size_type __size() const {
     LOG(ERROR) << "__size/ " << __tree_size_;
@@ -564,29 +573,37 @@ public:
     // 削除対象のノードが二つ子を持つ場合
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
     LOG(ERROR) << "__erase/ has two nodes";
+    // 15
     node_pointer partial_min = node::__get_min_node(target->right);
     LOG(ERROR) << "__erase/ pmin val: " << partial_min->value;
 
     // 繋がれているノードを外す
     if (__has_exist_on_left_from_parent_side(partial_min)) {
+      LOG(ERROR) << "__erase/ pmin on left from parent side";
       partial_min->parent->left = NULL;
     } else {
+      LOG(ERROR) << "__erase/ pmin on right from parent side";
       if (partial_min->right == __end_node()) {
+        LOG(ERROR) << "__erase/ pmin right node is end node";
         partial_min->parent->right = __end_node();
       } else {
         partial_min->parent->right = NULL;
       }
     }
 
+    // 10
     // targetと隣接するノードをつなぐ
     if (__has_exist_on_left_from_parent_side(target)) {
-      target->parent->right = partial_min;
-    } else {
       target->parent->left = partial_min;
+    } else {
+      LOG(ERROR) << "__erase/ target on right from parent side";
+      target->parent->right = partial_min;
     }
     partial_min->parent = target->parent;
     partial_min->right = target->right;
+    target->right->parent = partial_min;
     partial_min->left = target->left;
+    target->left->parent = partial_min;
 
     return 1;
   }
@@ -614,7 +631,7 @@ public:
     for (; first != last;) {
       first = __erase(first);
     }
-    return ++last;
+    return last;
   }
 
 private:
