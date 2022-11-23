@@ -1020,46 +1020,17 @@ public:
   //                            N2
   //                        +---+---+
   //                       CL2     CR2
-  void __exchange_place(node_pointer n1, node_pointer n2) {
+
+  // TODO 色（kind）も交換するか
+  void __exchange_value(node_pointer n1, node_pointer n2) {
     value_type tmp_val = n1->value;
-    int tmp_kind = n1->__node_kind_;
+    // int tmp_kind = n1->__node_kind_;
 
     n1->value = n2->value;
-    n1->__node_kind_ = n2->__node_kind_;
+    // n1->__node_kind_ = n2->__node_kind_;
 
     n2->value = tmp_val;
-    n2->__node_kind_ = tmp_kind;
-
-    // node_pointer p1 = n1->parent;
-    // node_pointer cl1 = n1->left;
-    // node_pointer cr1 = n1->right;
-    // node_pointer p2 = n2->parent;
-    // node_pointer cl2 = n2->left;
-    // node_pointer cr2 = n2->right;
-
-    // // N1があったところにN2を持ってくる
-    // if (n1 == p1->left) {
-    //   p1->left = n2;
-    // } else {
-    //   p1->right = n2;
-    // }
-    // n2->parent = p1;
-    // n2->left = cl1;
-    // cl1->parent = n2;
-    // n2->right = cr1;
-    // cr1->parent = n2;
-
-    // // N2があったところにN1を持ってくる
-    // if (n2 == p2->left) {
-    //   p2->left = n1;
-    // } else {
-    //   p2->right = n1;
-    // }
-    // n1->parent = p2;
-    // n1->left = cl2;
-    // cl2->parent = n1;
-    // n1->right = cr2;
-    // cr2->parent = n1;
+    // n2->__node_kind_ = tmp_kind;
   }
 
   // 以下の条件を満たすようにする
@@ -1087,6 +1058,12 @@ public:
     if (target->right == NULL) {
       LOG(ERROR) << "__erase_node_pointer target right is NULL";
     }
+    if (target->left->__is_nil_node()) {
+      LOG(ERROR) << "__erase_node_pointer target left is nil";
+    }
+    if (target->right->__is_nil_node()) {
+      LOG(ERROR) << "__erase_node_pointer target right is nil";
+    }
 
     if (__has_no_child(target)) {
       LOG(ERROR) << "__erase_node_pointer target has no child";
@@ -1098,13 +1075,31 @@ public:
       return __erase_one_child(target);
     }
 
+    // TODO targetの子供が両方ともnilの場合
+    // 無限ループ回避するため
+    if (target->left->__is_nil_node() && target->right->__is_nil_node()) {
+      node_pointer p = target->parent;
+      node_pointer cr = target->right;
+
+      if (target == p->left) {
+        p->left = cr;
+      } else {
+        p->right = cr;
+      }
+      cr->parent = p;
+      return 1;
+    }
+
     // 削除対象のノードが二つ子を持つ場合
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
     LOG(ERROR) << "__erase_node_pointer target has two child";
+    LOG(ERROR) << "__erase_node_pointer target val : "
+               << KeyOfValue()(target->value);
     node_pointer partial_min = node::__get_min_node(target->right);
+    // node_pointer partial_min = node::__get_max_node(target->left, end_node_);
 
     // targetとpartial_minを入れ替える
-    __exchange_place(target, partial_min);
+    __exchange_value(target, partial_min);
 
     // 削除対象のtargetは子を一つ持つ or いないはず。
     // 再帰して削除処理を委譲する

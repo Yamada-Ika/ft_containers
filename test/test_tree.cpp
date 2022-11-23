@@ -228,6 +228,8 @@ TEST(TreeTest, int_basic_insert) {
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->value, 1);
   ASSERT_EQ(root->parent, root);
+  ASSERT_EQ(root->left->__is_nil_node(), true);
+  ASSERT_EQ(root->right->__is_nil_node(), true);
 }
 
 TEST(TreeTest, int_basic_insert1) {
@@ -240,6 +242,8 @@ TEST(TreeTest, int_basic_insert1) {
   ASSERT_EQ(root->right->__is_red_node(), true);
   ASSERT_EQ(root->right->value, 2);
   ASSERT_EQ(root->right->parent, root);
+  ASSERT_EQ(root->right->right->__is_nil_node(), true);
+  ASSERT_EQ(root->right->left->__is_nil_node(), true);
 }
 
 TEST(TreeTest, int_basic_node_kind) {
@@ -570,9 +574,9 @@ TEST(TreeTest, int_basic_erase_1_5) {
   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
   ASSERT_EQ(t.__size(), 2);
   ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->value, 1);
-  ASSERT_EQ(r->right->__is_red_node(), true);
-  ASSERT_EQ(r->right->value, 3);
+  ASSERT_EQ(r->value, 3);
+  ASSERT_EQ(r->left->__is_red_node(), true);
+  ASSERT_EQ(r->left->value, 1);
 }
 
 // TEST(TreeTest, int_basic_erase_1_6) {
