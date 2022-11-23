@@ -30,16 +30,19 @@ public:
   typedef __node Self;
   typedef __node* node_pointer;
 
+  enum __kind { BLACK = 1, RED, NIL };
+
   node_pointer left;
   node_pointer right;
   node_pointer parent;
   value_type value;
+  int __node_kind_;
 
   __node()
       : left(NULL), right(NULL), parent(NULL), value(value_type()),
-        node_alloc(node_allocator()) {}
+        __node_kind_(0), node_alloc(node_allocator()) {}
   __node(const_reference v)
-      : left(NULL), right(NULL), parent(NULL), value(v),
+      : left(NULL), right(NULL), parent(NULL), value(v), __node_kind_(0),
         node_alloc(node_allocator()) {}
   ~__node();
   __node(const __node& other) { *this = other; }
@@ -54,43 +57,38 @@ public:
     parent = other.parent;
     value = other.value;
     node_alloc = other.node_alloc;
+    __node_kind_ = other.__node_kind_;
     return *this;
   }
 
-  static bool __is_root(node_pointer nd);
   static node_pointer __get_min_node(node_pointer nd) {
-    while (nd->left != NULL) {
+    // while (nd->left != NULL) {
+    while (!nd->left->__is_nil_node()) {
       nd = nd->left;
     }
     return nd;
   }
   static node_pointer __get_max_node(node_pointer nd, node_pointer end) {
-    while (nd->right != NULL && nd->right != end) {
+    // while (nd->right != NULL && nd->right != end) {
+    while (!nd->right->__is_nil_node()) {
       nd = nd->right;
     }
     return nd;
   }
+  bool __is_black_node() { return __node_kind_ & (1 << BLACK); }
+  bool __is_red_node() { return __node_kind_ & (1 << RED); }
+  bool __is_nil_node() {
+    return __is_black_node() && __node_kind_ & (1 << NIL);
+  }
+  void __set_black_kind() { __node_kind_ = 1 << BLACK; }
+  void __set_red_kind() { __node_kind_ = 1 << RED; }
+  void __set_nil_kind() { __node_kind_ = (1 << BLACK) | (1 << NIL); }
+  int __get_node_kind() { return __node_kind_; }
+  void __set_node_kind(int k) { __node_kind_ = k; }
 
 private:
   allocator_type node_alloc;
 };
-
-/*
-valueを木に追加する
-public void __insert(const_reference value)
-
-ノードの数を返す
-public size_type __size()
-
-空かチェック
-public bool __empty()
-
-値と一致するノードを削除
-public void __erase(const_reference value)
-
-値と一致するノードを検索
-public node_pointer __find(const_reference value)
-*/
 
 // tree用のイテレータ
 // ・イテレータをnextするアルゴリズム
@@ -144,13 +142,18 @@ struct __tree_iterator {
   }
 
   __node_pointer __next_node(__node_pointer nd) {
+    // TODO end nodeなら親を返すだけで良い
+    if (nd->right == __end_node_) {
+      return __end_node_;
+    }
+
     // 　右の子がある場合
     // 　- 右の子を根とする部分木の一番左下の子を返す
-    if (nd->right != NULL) {
+    if (!nd->right->__is_nil_node()) {
       return __node<T, Allocator>::__get_min_node(nd->right);
     }
     // 左の子がいるノードまで親を辿る
-    while (nd->left == NULL) {
+    while (nd->left->__is_nil_node()) {
       nd = nd->parent;
     }
     // 左の子以下のノードはすでに訪れているので親に移動
@@ -164,11 +167,11 @@ struct __tree_iterator {
     }
     // 左の子がある場合
     // - 左の子を根とする部分木の一番右したの子を返す
-    if (nd->left != NULL) {
+    if (!nd->left->__is_nil_node()) {
       return __node<T, Allocator>::__get_max_node(nd->left, __end_node_);
     }
     // 右の子がいるノードまで親を辿る
-    while (nd->right == NULL) {
+    while (nd->right->__is_nil_node()) {
       nd = nd->parent;
       LOG(ERROR) << "__prev_node/ loop";
     }
@@ -214,16 +217,21 @@ public:
 
   __tree()
       : node_alloc_(node_allocator()), root_(NULL),
-        end_node_(__allocate_node(Val())), __tree_size_(0) {}
+        end_node_(__allocate_end_node()), __tree_size_(0) {}
   explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
       : node_alloc_(node_allocator()), root_(NULL),
-        end_node_(__allocate_node(Val())), __comp_(comp), __tree_size_(0) {}
+        end_node_(__allocate_end_node()), __comp_(comp), __tree_size_(0) {}
   // : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
   // TODO メモリ解放したらクラッシュする
   ~__tree() {}
 
   // TODO テキトー
-  iterator __begin() { return iterator(__begin_node(), __end_node()); }
+  iterator __begin() {
+    LOG(ERROR) << "__begin/ called";
+    iterator itr = iterator(__begin_node(), __end_node());
+    LOG(ERROR) << "__begin/ finished";
+    return itr;
+  }
   const_iterator __begin() const {
     return iterator(__begin_node(), __end_node());
   }
@@ -244,77 +252,309 @@ public:
 
   node_pointer __end_node() const { return end_node_; }
 
+  // 以下の条件を満たすようにする
+  // 1. ノードは赤か黒である
+  // 2. 根は黒である
+  // 3. 全ての葉は黒である
+  // 4. 赤いノードの子は黒である
+  // 5. 全ての葉から根までのパスには、同じ個数の黒いノードがある
+
+  // insertした後のtreeのトポロジをリバランスする関数
+  void __rebalance_tree(node_pointer n, node_pointer p) {
+    node_pointer g;
+    node_pointer u;
+
+    // case 1
+    // - Nがroot
+    if (__is_root(n)) {
+      LOG(ERROR) << "__rebalance_tree/ N is root";
+      // 条件2より黒にする
+      n->__set_black_kind();
+      // ノードがrootしか存在しないので、全ての葉から根までのパスに黒いノードは1個のため条件5もクリア
+      return;
+    }
+
+    // - Pが黒
+    if (p->__is_black_node()) {
+      LOG(ERROR) << "__rebalance_tree/ P is black";
+      // Nは赤なので条件4はクリア。Nが挿入された場所は元々nilであるため、nilからrootまでのパスの黒ノードの数は変わらない
+      // 従って条件5もクリア
+      return;
+    }
+
+    // case 2
+    // - Pが赤
+    LOG(ERROR) << "__rebalance_tree/ P is red";
+    // Pが赤の場合、rootではないため、Gが存在する
+    // 条件4よりGは黒である
+    g = p->parent;
+    // Uが赤か黒の場合が残っている
+    // UはGの右か左
+    if (__has_exist_on_left_from_parent_side(p)) {
+      u = g->right;
+    } else {
+      u = g->left;
+    }
+
+    // - Uが赤
+    if (u->__is_red_node()) {
+      LOG(ERROR) << "__rebalance_tree/ U is red";
+      // Gは黒、その下層のPとUは赤である。色を交換して、Gを赤、PとUを黒にしても条件5を満たしたままのはず
+      // Nを黒にすると条件5を満たさないのでだめ
+      g->__set_red_kind();
+      p->__set_black_kind();
+      u->__set_black_kind();
+      // Gを赤にしたことで、Gより上層の色を変更しないといけない
+      // NをGにして根まで再帰的に辿る
+      __rebalance_tree(g, g->parent);
+      return;
+    }
+
+    // 残りは以下のパターン
+
+    // (i)
+    //      Gb
+    //   +---+---+
+    //   Pr      Ub
+    // +--+--+
+    //       Nr
+
+    // (ii)
+    //      Gb
+    //   +---+---+
+    //   Pr      Ub
+    // +--+--+
+    // Nr
+
+    // (iii)
+    //      Gb
+    //   +---+---+
+    //   Ub      Pr
+    //        +--+--+
+    //       Nr
+
+    // (iv)
+    //      Gb
+    //   +---+---+
+    //   Ub      Pr
+    //        +--+--+
+    //              Nr
+
+    // case 3
+    // - Uが黒の場合
+    // 上記のパターンの(i)と(iii)を(ii)と(iv)に変形し、case 4に委譲する
+    LOG(ERROR) << "__rebalance_tree/ U is black";
+
+    // - (i)を(ii)に変形
+    if (__has_exist_on_left_from_parent_side(p) &&
+        __has_exist_on_right_from_parent_side(n)) {
+      LOG(ERROR) << "__rebalance_tree/ tree shape is (i)";
+      // rotate left
+      p->right = n->left;
+      n->left = p;
+      p->parent = n;
+      n->parent = g;
+      g->left = n;
+    }
+
+    // - (iii)を(iv)に変形
+    if (__has_exist_on_right_from_parent_side(p) &&
+        __has_exist_on_right_from_parent_side(n)) {
+      LOG(ERROR) << "__rebalance_tree/ tree shape is (iii)";
+
+      // rotate right
+      p->left = n->right;
+      n->right = p;
+      p->parent = n;
+      n->parent = g;
+      g->right = n;
+    }
+
+    // case 4
+    // - (ii)の場合
+    if (__has_exist_on_left_from_parent_side(p) &&
+        __has_exist_on_left_from_parent_side(n) &&
+        __has_exist_on_right_from_parent_side(u)) {
+      LOG(ERROR) << "__rebalance_tree/ tree shape is (ii)";
+
+      // TODO Gがrootだと、rootが指すポインタを書き換える必要がある
+      if (__is_root(g)) {
+        LOG(ERROR) << "__rebalance_tree/ G is root";
+        root_ = p;
+      }
+
+      // rotate right
+      g->left = p->right;
+      p->parent = g->parent; // TODO 必要だとは思う
+      // // TODO これも必要だとは思う, いらない？
+      // if (__has_exist_on_left_from_parent_side(g)) {
+      //   g->parent->left = p;
+      // } else {
+      //   g->parent->right = p;
+      // }
+      g->parent = p;
+      p->right = g;
+    }
+
+    // - (iv)の場合
+    if (__has_exist_on_left_from_parent_side(u) &&
+        __has_exist_on_right_from_parent_side(p) &&
+        __has_exist_on_right_from_parent_side(n)) {
+      LOG(ERROR) << "__rebalance_tree/ tree shape is (iv)";
+
+      // TODO Gがrootだと、rootが指すポインタを書き換える必要がある
+      if (__is_root(g)) {
+        LOG(ERROR) << "__rebalance_tree/ G is root";
+        root_ = p;
+      }
+
+      g->right = p->left;
+      p->left->parent = g;
+      // // TODO 必要な気がする, いらない？
+      // p->parent = g->parent;
+      // if (__has_exist_on_left_from_parent_side(g)) {
+      //   g->parent->left = p;
+      // } else {
+      //   g->parent->right = p;
+      // }
+      g->parent = p;
+      p->left = g;
+    }
+
+    // PとGの色を入れ替える
+    int k = g->__get_node_kind();
+    g->__set_node_kind(p->__get_node_kind());
+    p->__set_node_kind(k);
+  }
+
   // 要素を追加
   ft::pair<iterator, bool> __insert_helper(const_reference value) {
+    LOG(ERROR) << "__insert_helper/ called";
+
     node_pointer inserted_node = NULL;
     bool has_inserted = false;
 
     // 初めて要素を追加
     if (__empty()) {
       LOG(ERROR) << "__insert/ node is root";
-      // TODO とりあえず左側に
-      root_ = __allocate_node(value);
-      root_->parent = root_; // TODO 根の親は自分自身を指しておく
-      root_->right = __end_node(); // TODO 最後のイテレータのためだけにつける
-      root_->right->parent = root_;
 
-      inserted_node = root_;
+      // TODO とりあえず左側に
+      inserted_node = __allocate_node(value);
+
+      root_ = inserted_node;
+      root_->parent = root_; // TODO 根の親は自分自身を指しておく
+
+      // TODO 最後のイテレータのためだけにつける
+      __attach_end_node(inserted_node);
+      __attach_nil_node_to_left(inserted_node);
+
       has_inserted = true;
+
+      // リバランス
+      inserted_node->__set_red_kind();
+      __rebalance_tree(inserted_node, inserted_node);
+      LOG(ERROR) << "__rebalance_tree/ finished";
+
       return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
     }
+
     // ノードを辿って適切な場所にノードを作成
-    node_pointer prev_parent = root_;
+    // node_pointer prev_parent = root_;
     node_pointer nd = root_;
 
+    LOG(ERROR) << "__insert_helper/ loop";
     while (true) {
       if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
+        LOG(ERROR) << "__insert/ nd value < nd->value";
         nd = nd->left;
-        if (nd == NULL) {
-          prev_parent->left = __allocate_node(value);
-          prev_parent->left->parent = prev_parent; // TODO 親をつける
+        LOG(ERROR) << "__insert/ nd is nil node : " << std::boolalpha
+                   << nd->__is_nil_node();
+        if (nd->__is_nil_node()) {
+          LOG(ERROR) << "__insert/ nd is nil";
 
-          inserted_node = prev_parent->left;
+          inserted_node = __allocate_node(value);
+
+          // leftにノードをつける
+          __attach_node_to_left(nd->parent, inserted_node);
+
+          // nil nodeをつける
+          __attach_nil_nodes(inserted_node);
+
           has_inserted = true;
+
+          // リバランス
+          inserted_node->__set_red_kind();
+          LOG(ERROR) << "__rebalance_tree/ called";
+          __rebalance_tree(inserted_node, inserted_node->parent);
+          LOG(ERROR) << "__rebalance_tree/ finished";
           break;
         }
       } else if (KeyOfValue()(value) > KeyOfValue()(nd->value)) {
+        LOG(ERROR) << "__insert/ nd value > nd->value";
         nd = nd->right;
         if (nd == __end_node()) {
-          prev_parent->right = __allocate_node(value);
-          prev_parent->right->parent = prev_parent; // TODO 親をつける
+          LOG(ERROR) << "__insert/ nd is end node";
+          LOG(ERROR) << "__insert/ nd key : " << KeyOfValue()(value);
+
+          inserted_node = __allocate_node(value);
+
+          // rightにノードをつける
+          __attach_node_to_right(nd->parent, inserted_node);
+
           // TODO 最後のイテレータのためだけにつける
-          prev_parent->right->right = __end_node();
-          prev_parent->right->right->parent = prev_parent->right;
+          __attach_end_node(inserted_node);
+
+          // nil nodeをつける
+          __attach_nil_node_to_left(inserted_node);
+
+          // prev_parent->right->right->parent = prev_parent->right;
           has_inserted = true;
+
+          // リバランス
+          inserted_node->__set_red_kind();
+          LOG(ERROR) << "__rebalance_tree/ called";
+          __rebalance_tree(inserted_node, inserted_node->parent);
+          LOG(ERROR) << "__rebalance_tree/ finished";
           break;
         }
         // TODO rightがend nodeじゃない時もある
-        if (nd == NULL) {
-          prev_parent->right = __allocate_node(value);
-          prev_parent->right->parent = prev_parent; // TODO 親をつける
+        if (nd->__is_nil_node()) {
+          LOG(ERROR) << "__insert/ nd is nil";
+          inserted_node = __allocate_node(value);
 
-          inserted_node = prev_parent->right;
+          // rightにノードをつける　
+          __attach_node_to_right(nd->parent, inserted_node);
+
+          // nil nodeをつける
+          __attach_nil_nodes(inserted_node);
+
           has_inserted = true;
+
+          // リバランス
+          inserted_node->__set_red_kind();
+          LOG(ERROR) << "__rebalance_tree/ called";
+          __rebalance_tree(inserted_node, inserted_node->parent);
+          LOG(ERROR) << "__rebalance_tree/ finished";
           break;
         }
       } else {
         has_inserted = false;
         break;
       }
-      prev_parent = nd;
+      // prev_parent = nd;
     }
 
     return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
   }
 
   ft::pair<iterator, bool> __insert(const_reference value) {
+    LOG(ERROR) << "__insert/ called";
     ft::pair<iterator, bool> p = __insert_helper(value);
-    LOG(ERROR) << "__insert/ has inserted " << p.second;
+    LOG(ERROR) << "__insert_helper/ finished";
     if (p.second) {
       ++__tree_size_;
-      LOG(ERROR) << "__insert/ size incremented";
-      LOG(ERROR) << "__insert/ size : " << __tree_size_;
     }
+    LOG(ERROR) << "__insert/ finished";
     return p;
   }
 
@@ -325,6 +565,8 @@ public:
     node_pointer new_node; // valueを持つノード
 
     // pos_nodeが右側にあればその間にnew nodeを挿入する
+    // TODO コンパイルエラーを防ぐ
+    return __end();
   }
 
   // ノードの要素を返す
@@ -676,14 +918,57 @@ private:
   // node操作するメソッド　ここまで
 
   // TODO tree_baseみたいなの作ってnodeいじるメソッドはそっちに移動させたい
+  node_pointer __allocate() {
+    node_pointer n = node_alloc_.allocate(1);
+    return n;
+  }
+
   // nodeをアロケーションする
   node_pointer __allocate_node(const_reference v) {
-    node_pointer n = node_alloc_.allocate(1);
+    node_pointer n = __allocate();
     node_alloc_.construct(n, v);
     if (n == NULL) {
       LOG(ERROR) << "__tree/__allocate_node pointer is null";
     }
     return n;
+  }
+
+  node_pointer __allocate_end_node() { return __allocate_nil_node(); }
+
+  node_pointer __allocate_nil_node() {
+    node_pointer n = __allocate();
+    n->__set_nil_kind();
+    return n;
+  }
+
+  void __attach_nil_node_to_left(node_pointer nd) {
+    node_pointer l = __allocate_nil_node();
+    nd->left = l;
+    l->parent = nd;
+  }
+
+  void __attach_nil_node_to_right(node_pointer nd) {
+    node_pointer r = __allocate_nil_node();
+    nd->right = r;
+    r->parent = nd;
+  }
+
+  void __attach_nil_nodes(node_pointer nd) {
+    __attach_nil_node_to_left(nd);
+    __attach_nil_node_to_right(nd);
+  }
+
+  void __attach_end_node(node_pointer nd) {
+    __attach_node_to_right(nd, end_node_);
+  }
+
+  void __attach_node_to_left(node_pointer parent, node_pointer child) {
+    parent->left = child;
+    child->parent = parent;
+  }
+  void __attach_node_to_right(node_pointer parent, node_pointer child) {
+    parent->right = child;
+    child->parent = parent;
   }
 
   void __deallocate_node() {
@@ -750,7 +1035,6 @@ bool operator<=(
     const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return !(lhs > rhs);
 }
-
 }; // namespace ft
 
 #endif

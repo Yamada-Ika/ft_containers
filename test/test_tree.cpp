@@ -235,21 +235,58 @@ TEST(TreeTest, int_basic_insert1) {
   t.__insert(1);
   t.__insert(2);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
+  ASSERT_EQ(root->__is_black_node(), true);
   ASSERT_EQ(root->value, 1);
+  ASSERT_EQ(root->right->__is_red_node(), true);
   ASSERT_EQ(root->right->value, 2);
   ASSERT_EQ(root->right->parent, root);
+}
+
+TEST(TreeTest, int_basic_node_kind) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
+  ASSERT_EQ(root->left->__is_black_node(), true);
+  ASSERT_EQ(root->left->__is_nil_node(), true);
 }
 
 TEST(TreeTest, int_basic_insert2) {
   ft::__tree<int, int, ft::Identity<int> > t;
   t.__insert(1);
-  t.__insert(2);
   t.__insert(-1);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
+  ASSERT_EQ(root->__is_black_node(), true);
   ASSERT_EQ(root->value, 1);
-  ASSERT_EQ(root->right->value, 2);
-  ASSERT_EQ(root->right->parent, root);
-  ASSERT_EQ(root->left->parent, root);
+  ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->left->value, -1);
+}
+
+TEST(TreeTest, int_basic_insert2_1) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(-1);
+  t.__insert(-2);
+  t.__insert(-3);
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
+  ASSERT_EQ(root->__is_black_node(), true);
+  ASSERT_EQ(root->value, -2);
+  ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->right->value, -1);
+  ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->left->value, -3);
+}
+
+TEST(TreeTest, int_basic_insert2_2) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
+  ASSERT_EQ(root->__is_black_node(), true);
+  ASSERT_EQ(root->value, 2);
+  ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->right->value, 3);
+  ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->left->value, 1);
 }
 
 TEST(TreeTest, int_basic_insert3) {
@@ -257,6 +294,7 @@ TEST(TreeTest, int_basic_insert3) {
   t.__insert(ft::make_pair(1, 1));
   ft::__tree<int, ft::pair<int, int>,
              ft::Select1st<ft::pair<int, int> > >::node_pointer root = t.root();
+  ASSERT_EQ(root->__is_black_node(), true);
   ASSERT_EQ(root->value.first, 1);
   ASSERT_EQ(root->value.second, 1);
   ASSERT_EQ(root->parent, root);
@@ -268,27 +306,12 @@ TEST(TreeTest, int_basic_insert4) {
   t.__insert(ft::make_pair(2, 2));
   ft::__tree<int, ft::pair<int, int>,
              ft::Select1st<ft::pair<int, int> > >::node_pointer root = t.root();
+  ASSERT_EQ(root->__is_black_node(), true);
   ASSERT_EQ(root->value.first, 1);
   ASSERT_EQ(root->value.second, 1);
+  ASSERT_EQ(root->right->__is_red_node(), true);
   ASSERT_EQ(root->right->value.first, 2);
   ASSERT_EQ(root->right->value.second, 2);
-  ASSERT_EQ(root->right->parent, root);
-}
-
-TEST(TreeTest, int_basic_insert5) {
-  ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
-  t.__insert(ft::make_pair(1, 1));
-  t.__insert(ft::make_pair(2, 2));
-  t.__insert(ft::make_pair(-1, -1));
-  ft::__tree<int, ft::pair<int, int>,
-             ft::Select1st<ft::pair<int, int> > >::node_pointer root = t.root();
-  ASSERT_EQ(root->value.first, 1);
-  ASSERT_EQ(root->value.second, 1);
-  ASSERT_EQ(root->right->value.first, 2);
-  ASSERT_EQ(root->right->value.second, 2);
-  ASSERT_EQ(root->left->parent, root);
-  ASSERT_EQ(root->left->value.first, -1);
-  ASSERT_EQ(root->left->value.second, -1);
   ASSERT_EQ(root->right->parent, root);
 }
 
@@ -408,54 +431,17 @@ TEST(TreeTest, int_basic_empty3) {
   ASSERT_EQ(t.__empty(), false);
 }
 
-// __erase
-TEST(TreeTest, int_basic_erase_1_1) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(2);
-  ft::__tree<int, int, ft::Identity<int> >::iterator itr1 = t1.__begin();
-  ++itr1;
-  ft::__tree<int, int, ft::Identity<int> >::iterator itr2 = t1.__erase(itr1);
-
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
-
-  while (t_expitr != t_exp.__end()) {
-    ASSERT_EQ(*t1itr, *t_expitr);
-    ++t1itr;
-    ++t_expitr;
-  }
-}
-
-// TEST(TreeTest, int_basic_erase_2_1) {
+// // __erase
+// TEST(TreeTest, int_basic_erase_1_1) {
 //   ft::__tree<int, int, ft::Identity<int> > t1;
 //   t1.__insert(1);
 //   t1.__insert(2);
-//   t1.__erase(t1.__begin(), t1.__end());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator itr1 = t1.__begin();
+//   ++itr1;
+//   ft::__tree<int, int, ft::Identity<int> >::iterator itr2 = t1.__erase(itr1);
 
 //   ft::__tree<int, int, ft::Identity<int> > t_exp;
-
-//   ASSERT_EQ(t1.__size(), t_exp.__size());
-// }
-
-// TEST(TreeTest, int_basic_erase_2_2) {
-//   ft::__tree<int, int, ft::Identity<int> > t1;
-//   t1.__insert(1);
-//   t1.__insert(2);
-//   t1.__insert(3);
-//   t1.__insert(4);
-//   ft::__tree<int, int, ft::Identity<int> >::iterator itr = t1.__begin();
-//   ++itr;
-//   t1.__erase(t1.__begin(), itr);
-
-//   ft::__tree<int, int, ft::Identity<int> > t_exp;
-//   t_exp.__insert(2);
-//   t_exp.__insert(3);
-//   t_exp.__insert(4);
+//   t_exp.__insert(1);
 
 //   ASSERT_EQ(t1.__size(), t_exp.__size());
 //   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
@@ -468,212 +454,249 @@ TEST(TreeTest, int_basic_erase_1_1) {
 //   }
 // }
 
-TEST(TreeTest, int_basic_erase_3_1) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(2);
-  t1.__erase(2);
+// // TEST(TreeTest, int_basic_erase_2_1) {
+// //   ft::__tree<int, int, ft::Identity<int> > t1;
+// //   t1.__insert(1);
+// //   t1.__insert(2);
+// //   t1.__erase(t1.__begin(), t1.__end());
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
+// //   ft::__tree<int, int, ft::Identity<int> > t_exp;
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+// //   ASSERT_EQ(t1.__size(), t_exp.__size());
+// // }
 
-  while (t_expitr != t_exp.__end()) {
-    ASSERT_EQ(*t1itr, *t_expitr);
-    ++t1itr;
-    ++t_expitr;
-  }
-}
+// // TEST(TreeTest, int_basic_erase_2_2) {
+// //   ft::__tree<int, int, ft::Identity<int> > t1;
+// //   t1.__insert(1);
+// //   t1.__insert(2);
+// //   t1.__insert(3);
+// //   t1.__insert(4);
+// //   ft::__tree<int, int, ft::Identity<int> >::iterator itr = t1.__begin();
+// //   ++itr;
+// //   t1.__erase(t1.__begin(), itr);
 
-TEST(TreeTest, int_basic_erase_3_2) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(4);
-  t1.__insert(2);
-  t1.__erase(4);
+// //   ft::__tree<int, int, ft::Identity<int> > t_exp;
+// //   t_exp.__insert(2);
+// //   t_exp.__insert(3);
+// //   t_exp.__insert(4);
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-  t_exp.__insert(2);
+// //   ASSERT_EQ(t1.__size(), t_exp.__size());
+// //   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+// //   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+// //   while (t_expitr != t_exp.__end()) {
+// //     ASSERT_EQ(*t1itr, *t_expitr);
+// //     ++t1itr;
+// //     ++t_expitr;
+// //   }
+// // }
 
-  while (t_expitr != t_exp.__end()) {
-    ASSERT_EQ(*t1itr, *t_expitr);
-    ++t1itr;
-    ++t_expitr;
-  }
-}
+// TEST(TreeTest, int_basic_erase_3_1) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(2);
+//   t1.__erase(2);
 
-TEST(TreeTest, int_basic_erase_3_3) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(-4);
-  t1.__insert(-6);
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
 
-  ASSERT_EQ(t1.__erase(-4), 1);
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-  t_exp.__insert(-6);
+//   while (t_expitr != t_exp.__end()) {
+//     ASSERT_EQ(*t1itr, *t_expitr);
+//     ++t1itr;
+//     ++t_expitr;
+//   }
+// }
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+// TEST(TreeTest, int_basic_erase_3_2) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(4);
+//   t1.__insert(2);
+//   t1.__erase(4);
 
-  while (t_expitr != t_exp.__end()) {
-    ASSERT_EQ(*t1itr, *t_expitr);
-    ++t1itr;
-    ++t_expitr;
-  }
-}
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
+//   t_exp.__insert(2);
 
-TEST(TreeTest, int_basic_erase_3_4) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(4);
-  t1.__insert(6);
-  t1.__erase(4);
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-  t_exp.__insert(6);
+//   while (t_expitr != t_exp.__end()) {
+//     ASSERT_EQ(*t1itr, *t_expitr);
+//     ++t1itr;
+//     ++t_expitr;
+//   }
+// }
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+// TEST(TreeTest, int_basic_erase_3_3) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(-4);
+//   t1.__insert(-6);
 
-  while (t_expitr != t_exp.__end()) {
-    ASSERT_EQ(*t1itr, *t_expitr);
-    ++t1itr;
-    ++t_expitr;
-  }
-}
+//   ASSERT_EQ(t1.__erase(-4), 1);
 
-TEST(TreeTest, int_basic_erase_3_5) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(-4);
-  t1.__insert(-1);
-  t1.__erase(-4);
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
+//   t_exp.__insert(-6);
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-  t_exp.__insert(-1);
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+//   while (t_expitr != t_exp.__end()) {
+//     ASSERT_EQ(*t1itr, *t_expitr);
+//     ++t1itr;
+//     ++t_expitr;
+//   }
+// }
 
-  while (t_expitr != t_exp.__end()) {
-    ASSERT_EQ(*t1itr, *t_expitr);
-    ++t1itr;
-    ++t_expitr;
-  }
-}
+// TEST(TreeTest, int_basic_erase_3_4) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(4);
+//   t1.__insert(6);
+//   t1.__erase(4);
 
-TEST(TreeTest, int_basic_erase_3_6) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(10);
-  t1.__insert(5);
-  t1.__insert(15);
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
+//   t_exp.__insert(6);
 
-  t1.__erase(10);
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-  t_exp.__insert(15);
-  t_exp.__insert(5);
+//   while (t_expitr != t_exp.__end()) {
+//     ASSERT_EQ(*t1itr, *t_expitr);
+//     ++t1itr;
+//     ++t_expitr;
+//   }
+// }
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+// TEST(TreeTest, int_basic_erase_3_5) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(-4);
+//   t1.__insert(-1);
+//   t1.__erase(-4);
 
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-}
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
+//   t_exp.__insert(-1);
 
-TEST(TreeTest, int_basic_erase_3_7) {
-  ft::__tree<int, int, ft::Identity<int> > t1;
-  t1.__insert(1);
-  t1.__insert(10);
-  t1.__insert(5);
-  t1.__insert(15);
-  t1.__insert(6);
-  t1.__insert(7);
-  t1.__insert(8);
-  t1.__insert(9);
-  t1.__insert(11);
-  t1.__insert(12);
-  t1.__insert(13);
-  t1.__insert(14);
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
 
-  t1.__erase(10);
+//   while (t_expitr != t_exp.__end()) {
+//     ASSERT_EQ(*t1itr, *t_expitr);
+//     ++t1itr;
+//     ++t_expitr;
+//   }
+// }
 
-  ft::__tree<int, int, ft::Identity<int> > t_exp;
-  t_exp.__insert(1);
-  t_exp.__insert(11);
-  t_exp.__insert(5);
-  t_exp.__insert(15);
-  t_exp.__insert(6);
-  t_exp.__insert(7);
-  t_exp.__insert(8);
-  t_exp.__insert(9);
-  t_exp.__insert(12);
-  t_exp.__insert(13);
-  t_exp.__insert(14);
+// TEST(TreeTest, int_basic_erase_3_6) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(10);
+//   t1.__insert(5);
+//   t1.__insert(15);
 
-  ASSERT_EQ(t1.__size(), t_exp.__size());
-  ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
-  ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+//   t1.__erase(10);
 
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-  ASSERT_EQ(*t1itr, *t_expitr);
-  ++t1itr;
-  ++t_expitr;
-}
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
+//   t_exp.__insert(15);
+//   t_exp.__insert(5);
+
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+// }
+
+// TEST(TreeTest, int_basic_erase_3_7) {
+//   ft::__tree<int, int, ft::Identity<int> > t1;
+//   t1.__insert(1);
+//   t1.__insert(10);
+//   t1.__insert(5);
+//   t1.__insert(15);
+//   t1.__insert(6);
+//   t1.__insert(7);
+//   t1.__insert(8);
+//   t1.__insert(9);
+//   t1.__insert(11);
+//   t1.__insert(12);
+//   t1.__insert(13);
+//   t1.__insert(14);
+
+//   t1.__erase(10);
+
+//   ft::__tree<int, int, ft::Identity<int> > t_exp;
+//   t_exp.__insert(1);
+//   t_exp.__insert(11);
+//   t_exp.__insert(5);
+//   t_exp.__insert(15);
+//   t_exp.__insert(6);
+//   t_exp.__insert(7);
+//   t_exp.__insert(8);
+//   t_exp.__insert(9);
+//   t_exp.__insert(12);
+//   t_exp.__insert(13);
+//   t_exp.__insert(14);
+
+//   ASSERT_EQ(t1.__size(), t_exp.__size());
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t1itr = t1.__begin();
+//   ft::__tree<int, int, ft::Identity<int> >::iterator t_expitr = t_exp.__begin();
+
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+//   ASSERT_EQ(*t1itr, *t_expitr);
+//   ++t1itr;
+//   ++t_expitr;
+// }
 
 // operator==
 TEST(TreeTest, int_basic_operator_equal) {
