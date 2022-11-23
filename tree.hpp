@@ -63,17 +63,18 @@ public:
 
   static node_pointer __get_min_node(node_pointer nd) {
     // while (nd->left != NULL) {
-    while (!nd->left->__is_nil_node()) {
+    // while (!nd->left->__is_nil_node()) {
+    while (!nd->__is_nil_node()) {
       nd = nd->left;
     }
-    return nd;
+    return nd->parent;
   }
   static node_pointer __get_max_node(node_pointer nd, node_pointer end) {
     // while (nd->right != NULL && nd->right != end) {
-    while (!nd->right->__is_nil_node()) {
+    while (!nd->__is_nil_node()) {
       nd = nd->right;
     }
-    return nd;
+    return nd->parent;
   }
   bool __is_black_node() { return __node_kind_ & (1 << BLACK); }
   bool __is_red_node() { return __node_kind_ & (1 << RED); }
@@ -422,9 +423,7 @@ public:
     }
 
     // PとGの色を入れ替える
-    int k = g->__get_node_kind();
-    g->__set_node_kind(p->__get_node_kind());
-    p->__set_node_kind(k);
+    __exchange_node_color(p, g);
   }
 
   // 要素を追加
@@ -732,122 +731,390 @@ public:
   // key_compareを返す
   key_compare __key_comp() const { return __comp_; }
 
-  size_type __erase_helper(const Key& key) {
-    LOG(ERROR) << "__erase called";
-    node_pointer target = __find_node_pointer(key);
+  size_type __erase_no_child(node_pointer target) {
+
+    LOG(ERROR) << "__erase no child";
+    // targetの親から見てtargetがleftにある場合
+    if (__has_exist_on_left_from_parent_side(target)) {
+      // TODO メモリ解放
+      __attach_nil_node_to_left(target->parent);
+    } else {
+      // targetの親から見てtargetがrightにある場合
+      if (target->right == __end_node()) {
+        // TODO メモリ解放
+        __attach_end_node(target->parent);
+      } else if (target->right->__is_nil_node()) {
+        __attach_nil_node_to_right(target->parent);
+      } else {
+        // ここに来るのはあり得ない
+        assert(false);
+      }
+    }
+    LOG(ERROR) << "__erase end";
+    return 1;
+  }
+
+  size_type __erase_one_red_child(node_pointer target) {
+
+    // - 形状の例
+    //         P
+    //     +---+
+    //     N
+    // +---+
+    // C
+
+    node_pointer p = target->parent;
+    node_pointer n = target;
+    node_pointer c = NULL;
+    if (__has_only_left_child(n)) {
+      c = n->left;
+    } else {
+      c = n->right;
+    }
+
+    // NがPの左側にある場合
+    if (n == p->left) {
+      p->left = c;
+      c->parent = p;
+      return 1;
+    }
+
+    // NがPの右側にある場合
+    p->right = n;
+    c->parent = p;
+    return 1;
+  }
+
+  size_type __erase_one_red_child_and_repaint_black(node_pointer target) {
+    // targetのchildがtargetの場所に来る
+    // あらかじめchildを覚えておき、削除した後に黒に塗り替える
+    node_pointer child = NULL;
+    if (__has_only_left_child(target)) {
+      child = target->left;
+    } else {
+      child = target->right;
+    }
+
+    // TODO targetがrootの時、rootを付け替える必要がある
+    root_ = child;
+
+    size_type ret = __erase_one_red_child(target);
+
+    // 黒に塗り替える
+    child->__set_black_kind();
+
+    return ret;
+  }
+
+  size_type __erase_one_child(node_pointer target) {
+    // case 0
+    // - targetが赤
+    //  - 条件4、5を破らないのでリバランスは不要
+    if (target->__is_red_node()) {
+      LOG(ERROR) << "__erase_one_child/ target is red";
+      return __erase_one_red_child(target);
+    }
+
+    // - targetが黒で子供が赤
+    //  - targetを子供に置き換えて、黒に塗り替えるだけ
+    if (target->__is_black_node() && __has_only_one_red_child(target)) {
+      LOG(ERROR) << "__erase_one_child/ target is black";
+      LOG(ERROR) << "__erase_one_child/ child is red";
+      return __erase_one_red_child_and_repaint_black(target);
+    }
+
+    // あとは、targetと子供が黒の場合
+    // - 黒を削除すると、条件5を満たすためにリバランスが必要
+    // - 形状は以下の2ケースを考える
+    //  - 最終的には一つの形状に変形していき、処理を委譲する
+
+    LOG(ERROR) << "__erase_one_child/ target and N are black";
+
+    node_pointer p = target->parent;
+    node_pointer n = NULL;
+    node_pointer s = NULL;
+    // Nはtargetの子供
+    if (__has_only_left_child(target)) {
+      LOG(ERROR) << "__erase_one_child/ N on left of target";
+      n = target->left;
+    } else {
+      LOG(ERROR) << "__erase_one_child/ N on right of target";
+      n = target->right;
+    }
+
+    // Sはtargetの兄弟
+    if (target == p->left) {
+      LOG(ERROR) << "__erase_one_child/ S on right of target";
+      s = p->right;
+      p->left = n; // Nをtargetの場所に持ってくる
+    } else {
+      LOG(ERROR) << "__erase_one_child/ S on left of target";
+      s = p->left;
+      p->right = n;
+    }
+    s->parent = p;
+    n->parent = p;
+
+    node_pointer sl = s->left;
+    node_pointer sr = s->right;
+    sl->parent = s;
+    sr->parent = s;
+
+    // (i)                      (ii)
+    //        P                            P
+    //  +-----+------+               +-----+-----+
+    // Nb            S       or      S           N
+    //           +---+---+       +---+---+
+    //          SL      SR      SL       SR
+
+    // case 1
+    // TODO Nがrootの場合は？　
+    // - Nがrootだと葉から根までの全パスから黒ノードが一つ減るだけなので条件5を破らない
+    // - 子をrootに持ってくるだけで良い
+    if (__is_root(n)) {
+      LOG(ERROR) << "__erase_one_child/ case 1: N is root";
+      if (__has_only_left_child(n)) {
+        root_ = n->left;
+        n->left->parent = root_;
+      } else {
+        root_ = n->right;
+        n->right->parent = root_;
+      }
+      return 1;
+    }
+
+    // case 2
+    // - Sが赤の場合
+    //  - SLとSRは黒
+    //  - 左回転して、SとPの色を交換
+
+    //        Pb                            Sb
+    //  +-----+------+                +-----+-----+
+    // Nb            Sr       ->      Pr         SRb
+    //           +---+---+        +---+---+
+    //          SLb     SRb       Nb     SLb
+
+    // 形状が(i)の場合
+    if (p->left == n && p->right == s) {
+      LOG(ERROR) << "__erase_one_child/ case 2: shape is (i)";
+      // Pを中心に左回転する
+      p->right = sl;
+      sl->parent = p;
+      s->left = p;
+      p->parent = s;
+      // SとPの色を交換する
+      __exchange_node_color(s, p);
+    }
+
+    // 形状が(ii)の場合
+    if (p->left == s && p->right == n) {
+      LOG(ERROR) << "__erase_one_child/ case 2: shape is (ii)";
+      // Pを中心に右回転する
+      p->left = sr;
+      sr->parent = p;
+      s->right = p;
+      p->parent = s;
+      // SとPの色を交換する
+      __exchange_node_color(s, p);
+    }
+
+    // case 3
+    // - Sが黒、Pが黒、SLとSRが黒の場合
+    if (n->__is_black_node() && p->__is_black_node() && s->__is_black_node() &&
+        sl->__is_black_node() && sr->__is_black_node()) {
+      LOG(ERROR) << "__erase_one_child/ case 3";
+      // Sを赤に塗り替える
+      // - NからP、SL or SRからPまでのパスで黒ノードの数が等しくなるので、部分的に条件5を満たす
+      s->__set_red_kind();
+      // Pからの深さで黒ノードを一つ減らしたため、他の部分で色の調整を行いたいため、再帰する
+      return __erase_one_child(p);
+    }
+
+    // case 4
+    // - Pが赤、SLが黒、SRが黒
+    if (p->__is_red_node() && sl->__is_black_node() && sr->__is_black_node()) {
+      LOG(ERROR) << "__erase_one_child/ case 4";
+      // PとSの色を入れ替える
+      __exchange_node_color(p, s);
+      // TODO 多分ここで終了？
+      return 1;
+    }
+
+    // case 5
+    // - Pの色はどっちでも良い
+
+    //        P                             P
+    //  +-----+------+                +-----+-----+
+    // Nb            Sb       ->      Nb          SLb
+    //           +---+---+                    +---+---+
+    //          SLr     SRb                  (1)      Sr
+    //       +---+---+                            +---+---+
+    //      (1)     (2)                          (2)     SRb
+
+    // SLが赤、SRが黒、NがPの左側の子供の場合
+    if (sl->__is_red_node() && sr->__is_black_node() && n == p->left) {
+      LOG(ERROR) << "__erase_one_child/ case 5";
+      // Sを中心に右回転
+      s->left = sl->right;
+      sl->right->parent = s;
+      sl->right = s;
+      s->parent = sl;
+      p->right = sl;
+      sl->parent = p;
+      // SLとSの色を入れ替える
+      __exchange_node_color(sl, s);
+    }
+
+    // SLが黒、SRが赤、NがPの右側の子
+    if (sl->__is_black_node() && sr->__is_red_node() && n == p->right) {
+      LOG(ERROR) << "__erase_one_child/ case 5";
+      // Sを中心に左回転
+      s->right = sr->left;
+      sr->left->parent = s;
+      sr->left = s;
+      s->parent = sr;
+      p->left = sr;
+      sr->parent = p;
+      // SRとSの色を入れ替える
+      __exchange_node_color(sr, s);
+    }
+
+    // case 6
+    // - SRが赤、NがPの左側の子供
+    if (sr->__is_red_node() && n == p->left) {
+      LOG(ERROR) << "__erase_one_child/ case 6";
+      // Pを中心に左回転
+      p->right = sl;
+      sl->parent = p;
+      s->left = p;
+      p->parent = s;
+      // PとSの色を交換
+      __exchange_node_color(p, s);
+      // SRを黒に
+      sr->__set_black_kind();
+    }
+
+    // - SLが赤、NがPの右側の子供
+    if (sl->__is_red_node() && n == p->right) {
+      LOG(ERROR) << "__erase_one_child/ case 6";
+      // Pを中心に右回転
+      p->left = sr;
+      sr->parent = p;
+      s->right = p;
+      p->parent = s;
+      // PとSの色を交換する
+      __exchange_node_color(p, s);
+      // SLを黒に
+      sl->__set_black_kind();
+    }
+
+    return 1;
+  }
+
+  //             P1
+  //      +------+------+
+  //      N1           (1)
+  //  +---+---+     +---+---+
+  // CL1     CR1   (2)      P2
+  //                    +---+---+
+  //                            N2
+  //                        +---+---+
+  //                       CL2     CR2
+  void __exchange_place(node_pointer n1, node_pointer n2) {
+    value_type tmp_val = n1->value;
+    int tmp_kind = n1->__node_kind_;
+
+    n1->value = n2->value;
+    n1->__node_kind_ = n2->__node_kind_;
+
+    n2->value = tmp_val;
+    n2->__node_kind_ = tmp_kind;
+
+    // node_pointer p1 = n1->parent;
+    // node_pointer cl1 = n1->left;
+    // node_pointer cr1 = n1->right;
+    // node_pointer p2 = n2->parent;
+    // node_pointer cl2 = n2->left;
+    // node_pointer cr2 = n2->right;
+
+    // // N1があったところにN2を持ってくる
+    // if (n1 == p1->left) {
+    //   p1->left = n2;
+    // } else {
+    //   p1->right = n2;
+    // }
+    // n2->parent = p1;
+    // n2->left = cl1;
+    // cl1->parent = n2;
+    // n2->right = cr1;
+    // cr1->parent = n2;
+
+    // // N2があったところにN1を持ってくる
+    // if (n2 == p2->left) {
+    //   p2->left = n1;
+    // } else {
+    //   p2->right = n1;
+    // }
+    // n1->parent = p2;
+    // n1->left = cl2;
+    // cl2->parent = n1;
+    // n1->right = cr2;
+    // cr2->parent = n1;
+  }
+
+  // 以下の条件を満たすようにする
+  // 1. ノードは赤か黒である
+  // 2. 根は黒である
+  // 3. 全ての葉は黒である
+  // 4. 赤いノードの子は黒である
+  // 5. 全ての葉から根までのパスには、同じ個数の黒いノードがある
+
+  size_type __erase_node_pointer(node_pointer target) {
+    LOG(ERROR) << "__erase_node_pointer/ called";
+
     // keyがなかったら0を返す
     if (target == NULL) {
-      LOG(ERROR) << "__erase not found";
+      LOG(ERROR) << "__erase_node_pointer not found";
       return 0;
     }
 
-    // TODO ノード一個だけの時
-    if (__is_root(target)) {
-      root_->parent = NULL;
-      root_ = NULL;
-      return 1;
+    if (target->__is_nil_node()) {
+      LOG(ERROR) << "__erase_node_pointer target is nil";
+    }
+    if (target->left == NULL) {
+      LOG(ERROR) << "__erase_node_pointer target left is NULL";
+    }
+    if (target->right == NULL) {
+      LOG(ERROR) << "__erase_node_pointer target right is NULL";
     }
 
-    // 削除対象のノードが子を持たない場合
     if (__has_no_child(target)) {
-      LOG(ERROR) << "__erase no child";
-      // targetの親から見てtargetがleftにある場合
-      if (__has_exist_on_left_from_parent_side(target)) {
-        // TODO メモリ解放
-        target->parent->left = NULL;
-      } else {
-        // targetの親から見てtargetがrightにある場合
-
-        // targetのrightがend nodeの場合
-        if (target->right == __end_node()) {
-          // TODO メモリ解放
-          target->parent->right = __end_node();
-        } else if (target->right == NULL) {
-          target->parent->right = NULL;
-        } else {
-          // ここに来るのはあり得ない
-          LOG(ERROR) << "__erase/ " << key;
-          assert(false);
-        }
-      }
-      LOG(ERROR) << "__erase end";
-      return 1;
+      LOG(ERROR) << "__erase_node_pointer target has no child";
+      return __erase_no_child(target);
     }
 
-    // 削除対象のノードが一つだけ子を持つ場合
-    // 左だけ
-    if (__has_only_left_child(target)) {
-      LOG(ERROR) << "__erase/__has_only_left_child";
-      // その左にある子ノードをtargetの親のtargetがあった側につける
-      // targetが親から見てleftにある場合
-      if (__has_exist_on_left_from_parent_side(target)) {
-        // 繋ぎかえ
-        target->parent->left = target->left;
-        target->left->parent = target->parent;
-      } else {
-        LOG(ERROR) << "__erase/__has_only_left_child/"
-                      "__has_exist_on_right_from_parent_side";
-        // rigth側にある場合
-        target->parent->right = target->left;
-        target->left->parent = target->parent;
-      }
-      // targetのrightにend nodeがあったら、一番右にあるノードにend nodeをつける
-      if (target->right == __end_node()) {
-        node::__get_max_node(target->left, __end_node())->right = __end_node();
-      }
-      return 1;
-    }
-    // 右だけ
-    if (__has_only_right_child(target)) {
-      LOG(ERROR) << "__erase/__has_only_right_child";
-      // 同様
-      // 右側にある子ノードをtargetの親のtargetがある側の子とする
-      if (__has_exist_on_left_from_parent_side(target)) {
-        target->parent->left = target->right;
-        target->right->parent = target->parent;
-      } else {
-        target->parent->right = target->right;
-        target->right->parent = target->parent;
-      }
-      return 1;
+    if (__has_one_child(target)) {
+      LOG(ERROR) << "__erase_node_pointer target has one child";
+      return __erase_one_child(target);
     }
 
     // 削除対象のノードが二つ子を持つ場合
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
-    LOG(ERROR) << "__erase/ has two nodes";
-    // 15
+    LOG(ERROR) << "__erase_node_pointer target has two child";
     node_pointer partial_min = node::__get_min_node(target->right);
-    LOG(ERROR) << "__erase/ pmin val: " << partial_min->value;
 
-    // 繋がれているノードを外す
-    if (__has_exist_on_left_from_parent_side(partial_min)) {
-      LOG(ERROR) << "__erase/ pmin on left from parent side";
-      partial_min->parent->left = NULL;
-    } else {
-      LOG(ERROR) << "__erase/ pmin on right from parent side";
-      if (partial_min->right == __end_node()) {
-        LOG(ERROR) << "__erase/ pmin right node is end node";
-        partial_min->parent->right = __end_node();
-      } else {
-        partial_min->parent->right = NULL;
-      }
-    }
+    // targetとpartial_minを入れ替える
+    __exchange_place(target, partial_min);
 
-    // 10
-    // targetと隣接するノードをつなぐ
-    if (__has_exist_on_left_from_parent_side(target)) {
-      target->parent->left = partial_min;
-    } else {
-      LOG(ERROR) << "__erase/ target on right from parent side";
-      target->parent->right = partial_min;
-    }
-    partial_min->parent = target->parent;
-    partial_min->right = target->right;
-    target->right->parent = partial_min;
-    partial_min->left = target->left;
-    target->left->parent = partial_min;
+    // 削除対象のtargetは子を一つ持つ or いないはず。
+    // 再帰して削除処理を委譲する
+    return __erase_node_pointer(partial_min);
+  }
 
-    return 1;
+  size_type __erase_helper(const Key& key) {
+    LOG(ERROR) << "__erase called";
+    node_pointer target = __find_node_pointer(key);
+    return __erase_node_pointer(target);
   }
 
   // __erase
@@ -887,10 +1154,15 @@ private:
   // TODO こういうのはtemplateにしてクラス外にして良い気がする
   bool __has_right_child(node_pointer nd) { return !__has_no_right_child(nd); }
   bool __has_no_right_child(node_pointer nd) {
-    return nd->right == NULL || nd->right == __end_node();
+    // return nd->right == NULL || nd->right == __end_node();
+    // return nd->right->__is_nil_node();
+    return nd->right == NULL;
   }
   bool __has_left_child(node_pointer nd) { return !__has_no_left_child(nd); }
-  bool __has_no_left_child(node_pointer nd) { return nd->left == NULL; }
+  bool __has_no_left_child(node_pointer nd) {
+    // return nd->left->__is_nil_node();
+    return nd->left == NULL;
+  }
   bool __has_both_child(node_pointer nd) {
     return __has_left_child(nd) && __has_right_child(nd);
   }
@@ -902,6 +1174,19 @@ private:
   }
   bool __has_no_child(node_pointer nd) {
     return __has_no_left_child(nd) && __has_no_right_child(nd);
+  }
+  bool __has_one_child(node_pointer nd) {
+    return __has_only_left_child(nd) || __has_only_right_child(nd);
+  }
+  bool __has_only_one_red_child_on_left(node_pointer nd) {
+    return __has_only_left_child(nd) && nd->left->__is_red_node();
+  }
+  bool __has_only_one_red_child_on_right(node_pointer nd) {
+    return __has_only_right_child(nd) && nd->right->__is_red_node();
+  }
+  bool __has_only_one_red_child(node_pointer nd) {
+    return __has_only_one_red_child_on_left(nd) ||
+           __has_only_one_red_child_on_right(nd);
   }
 
   // 自分が親から見て左側にあるか
@@ -937,6 +1222,9 @@ private:
 
   node_pointer __allocate_nil_node() {
     node_pointer n = __allocate();
+    n->left = NULL;
+    n->right = NULL;
+    n->parent = NULL;
     n->__set_nil_kind();
     return n;
   }
@@ -969,6 +1257,12 @@ private:
   void __attach_node_to_right(node_pointer parent, node_pointer child) {
     parent->right = child;
     child->parent = parent;
+  }
+
+  void __exchange_node_color(node_pointer node1, node_pointer node2) {
+    int k = node1->__get_node_kind();
+    node1->__set_node_kind(node2->__get_node_kind());
+    node2->__set_node_kind(k);
   }
 
   void __deallocate_node() {
