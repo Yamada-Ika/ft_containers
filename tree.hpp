@@ -81,7 +81,10 @@ public:
   bool __is_nil_node() {
     return __is_black_node() && __node_kind_ & (1 << NIL);
   }
-  void __set_black_kind() { __node_kind_ = 1 << BLACK; }
+  void __set_black_kind() {
+    LOG(ERROR) << "__set_black_kind/ called";
+    __node_kind_ = 1 << BLACK;
+  }
   void __set_red_kind() { __node_kind_ = 1 << RED; }
   void __set_nil_kind() { __node_kind_ = (1 << BLACK) | (1 << NIL); }
   int __get_node_kind() { return __node_kind_; }
@@ -1024,13 +1027,8 @@ public:
   // TODO 色（kind）も交換するか
   void __exchange_value(node_pointer n1, node_pointer n2) {
     value_type tmp_val = n1->value;
-    // int tmp_kind = n1->__node_kind_;
-
     n1->value = n2->value;
-    // n1->__node_kind_ = n2->__node_kind_;
-
     n2->value = tmp_val;
-    // n2->__node_kind_ = tmp_kind;
   }
 
   // 以下の条件を満たすようにする
@@ -1045,33 +1043,46 @@ public:
 
     // keyがなかったら0を返す
     if (target == NULL) {
-      LOG(ERROR) << "__erase_node_pointer not found";
+      LOG(ERROR) << "__erase_node_pointer/ not found";
       return 0;
     }
 
     if (target->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer target is nil";
+      LOG(ERROR) << "__erase_node_pointer/ target is nil";
     }
     if (target->left == NULL) {
-      LOG(ERROR) << "__erase_node_pointer target left is NULL";
+      LOG(ERROR) << "__erase_node_pointer/ target left is NULL";
     }
     if (target->right == NULL) {
-      LOG(ERROR) << "__erase_node_pointer target right is NULL";
+      LOG(ERROR) << "__erase_node_pointer/ target right is NULL";
     }
     if (target->left->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer target left is nil";
+      LOG(ERROR) << "__erase_node_pointer/ target left is nil";
     }
     if (target->right->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer target right is nil";
+      LOG(ERROR) << "__erase_node_pointer/ target right is nil";
+    }
+
+    if (target->left->__is_red_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target left is red";
+    }
+    if (target->left->__is_black_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target left is black";
+    }
+    if (target->right->__is_red_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target right is red";
+    }
+    if (target->right->__is_black_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target right is black";
     }
 
     if (__has_no_child(target)) {
-      LOG(ERROR) << "__erase_node_pointer target has no child";
+      LOG(ERROR) << "__erase_node_pointer/ target has no child";
       return __erase_no_child(target);
     }
 
     if (__has_one_child(target)) {
-      LOG(ERROR) << "__erase_node_pointer target has one child";
+      LOG(ERROR) << "__erase_node_pointer/ target has one child";
       return __erase_one_child(target);
     }
 
@@ -1092,8 +1103,8 @@ public:
 
     // 削除対象のノードが二つ子を持つ場合
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
-    LOG(ERROR) << "__erase_node_pointer target has two child";
-    LOG(ERROR) << "__erase_node_pointer target val : "
+    LOG(ERROR) << "__erase_node_pointer/ target has two child";
+    LOG(ERROR) << "__erase_node_pointer/ target val : "
                << KeyOfValue()(target->value);
     node_pointer partial_min = node::__get_min_node(target->right);
     // node_pointer partial_min = node::__get_max_node(target->left, end_node_);
@@ -1101,13 +1112,28 @@ public:
     // targetとpartial_minを入れ替える
     __exchange_value(target, partial_min);
 
+    LOG(ERROR) << "__erase_node_pointer/ after __exchange_value";
+
+    if (target->left->__is_red_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target left is red";
+    }
+    if (target->left->__is_black_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target left is black";
+    }
+    if (target->right->__is_red_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target right is red";
+    }
+    if (target->right->__is_black_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ target right is black";
+    }
+
     // 削除対象のtargetは子を一つ持つ or いないはず。
     // 再帰して削除処理を委譲する
     return __erase_node_pointer(partial_min);
   }
 
   size_type __erase_helper(const Key& key) {
-    LOG(ERROR) << "__erase called";
+    LOG(ERROR) << "__erase_helper/ called";
     node_pointer target = __find_node_pointer(key);
     return __erase_node_pointer(target);
   }

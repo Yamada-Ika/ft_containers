@@ -260,8 +260,8 @@ TEST(TreeTest, int_basic_insert2) {
   t.__insert(-1);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->__is_black_node(), true);
-  ASSERT_EQ(root->value, 1);
   ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->value, 1);
   ASSERT_EQ(root->left->value, -1);
 }
 
@@ -272,10 +272,10 @@ TEST(TreeTest, int_basic_insert2_1) {
   t.__insert(-3);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->__is_black_node(), true);
-  ASSERT_EQ(root->value, -2);
-  ASSERT_EQ(root->right->__is_red_node(), true);
-  ASSERT_EQ(root->right->value, -1);
   ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->value, -2);
+  ASSERT_EQ(root->right->value, -1);
   ASSERT_EQ(root->left->value, -3);
 }
 
@@ -286,10 +286,10 @@ TEST(TreeTest, int_basic_insert2_2) {
   t.__insert(3);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->__is_black_node(), true);
-  ASSERT_EQ(root->value, 2);
-  ASSERT_EQ(root->right->__is_red_node(), true);
-  ASSERT_EQ(root->right->value, 3);
   ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->value, 2);
+  ASSERT_EQ(root->right->value, 3);
   ASSERT_EQ(root->left->value, 1);
 }
 
@@ -569,13 +569,20 @@ TEST(TreeTest, int_basic_erase_1_5) {
   t.__insert(2);
   t.__insert(3);
 
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+  ASSERT_EQ(r->__is_black_node(), true);
+  ASSERT_EQ(r->left->__is_red_node(), true);
+  ASSERT_EQ(r->right->__is_red_node(), true);
+
   t.__erase(2);
 
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+  r = t.root();
+
   ASSERT_EQ(t.__size(), 2);
   ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->value, 3);
+  ASSERT_EQ(r->left->__is_black_node(), false);
   ASSERT_EQ(r->left->__is_red_node(), true);
+  ASSERT_EQ(r->value, 3);
   ASSERT_EQ(r->left->value, 1);
 }
 
