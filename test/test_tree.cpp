@@ -29,6 +29,63 @@ TEST(TreeTest, int_basic_begin1) {
   ASSERT_EQ(itr, t.__end());
 }
 
+TEST(TreeTest, int_basic_begin1_1) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+  ++itr;
+
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_basic_begin1_2) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+  t.__insert(4);
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+  ++itr;
+  ASSERT_EQ(*itr, 4);
+  ++itr;
+
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_basic_begin1_3) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+  t.__insert(4);
+  t.__insert(5);
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+  ++itr;
+  ASSERT_EQ(*itr, 4);
+  ++itr;
+  ASSERT_EQ(*itr, 5);
+  ++itr;
+
+  ASSERT_EQ(itr, t.__end());
+}
+
 TEST(TreeTest, int_basic_begin2) {
   ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
   t.__insert(ft::make_pair(1, 1));
@@ -238,19 +295,19 @@ TEST(TreeTest, int_basic_insert1) {
   t.__insert(2);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->__is_black_node(), true);
-  ASSERT_EQ(root->value, 1);
   ASSERT_EQ(root->right->__is_red_node(), true);
-  ASSERT_EQ(root->right->value, 2);
-  ASSERT_EQ(root->right->parent, root);
   ASSERT_EQ(root->right->right->__is_nil_node(), true);
   ASSERT_EQ(root->right->left->__is_nil_node(), true);
+  ASSERT_EQ(root->value, 1);
+  ASSERT_EQ(root->right->value, 2);
+  ASSERT_EQ(root->right->parent, root);
 }
 
 TEST(TreeTest, int_basic_node_kind) {
   ft::__tree<int, int, ft::Identity<int> > t;
   t.__insert(1);
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
-  ASSERT_EQ(root->left->__is_black_node(), true);
+  ASSERT_EQ(root->left->__is_nil_node(), true);
   ASSERT_EQ(root->left->__is_nil_node(), true);
 }
 
@@ -273,7 +330,12 @@ TEST(TreeTest, int_basic_insert2_1) {
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->__is_black_node(), true);
   ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->left->left->__is_nil_node(), true);
+  ASSERT_EQ(root->left->right->__is_nil_node(), true);
   ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->right->left->__is_nil_node(), true);
+  ASSERT_EQ(root->right->right->__is_nil_node(), true);
+
   ASSERT_EQ(root->value, -2);
   ASSERT_EQ(root->right->value, -1);
   ASSERT_EQ(root->left->value, -3);
@@ -287,10 +349,23 @@ TEST(TreeTest, int_basic_insert2_2) {
   ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
   ASSERT_EQ(root->__is_black_node(), true);
   ASSERT_EQ(root->left->__is_red_node(), true);
+  ASSERT_EQ(root->left->left->__is_nil_node(), true);
+  ASSERT_EQ(root->left->right->__is_nil_node(), true);
+
   ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->right->left->__is_nil_node(), true);
+  ASSERT_EQ(root->right->right->__is_nil_node(), true);
+
   ASSERT_EQ(root->value, 2);
   ASSERT_EQ(root->right->value, 3);
   ASSERT_EQ(root->left->value, 1);
+
+  ASSERT_EQ(root->parent, root);
+  ASSERT_EQ(root->left->parent, root);
+  ASSERT_EQ(root->left->left->parent, root->left);
+  ASSERT_EQ(root->left->right->parent, root->left);
+  ASSERT_EQ(root->right->left->parent, root->right);
+  ASSERT_EQ(root->right->right->parent, root->right);
 }
 
 TEST(TreeTest, int_basic_insert3) {
@@ -570,9 +645,6 @@ TEST(TreeTest, int_basic_erase_1_5) {
   t.__insert(3);
 
   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
-  ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->left->__is_red_node(), true);
-  ASSERT_EQ(r->right->__is_red_node(), true);
 
   t.__erase(2);
 
@@ -586,18 +658,137 @@ TEST(TreeTest, int_basic_erase_1_5) {
   ASSERT_EQ(r->left->value, 1);
 }
 
-// TEST(TreeTest, int_basic_erase_1_6) {
-//   ft::__tree<int, int, ft::Identity<int> > t;
-//   t.__insert(1);
-//   t.__insert(2);
-//   t.__insert(3);
+TEST(TreeTest, int_basic_erase_1_6) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
 
-//   t.__erase(3);
+  t.__erase(3);
 
-//   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
-//   ASSERT_EQ(t.__size(), 2);
-//   ASSERT_EQ(r->__is_black_node(), true);
-//   ASSERT_EQ(r->value, 2);
-//   ASSERT_EQ(r->left->__is_red_node(), true);
-//   ASSERT_EQ(r->left->value, 1);
-// }
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+  ASSERT_EQ(t.__size(), 2);
+  ASSERT_EQ(r->__is_black_node(), true);
+  ASSERT_EQ(r->value, 2);
+  ASSERT_EQ(r->left->__is_red_node(), true);
+  ASSERT_EQ(r->left->value, 1);
+}
+
+// __find_node_pointer
+TEST(TreeTest, int_basic_find_node_pointer_1) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(1);
+
+  ASSERT_EQ(ptr->value, 1);
+}
+
+TEST(TreeTest, int_basic_find_node_pointer_2) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(1);
+
+  ASSERT_EQ(ptr->value, 1);
+}
+
+TEST(TreeTest, int_basic_find_node_pointer_3) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(2);
+
+  ASSERT_EQ(ptr->value, 2);
+}
+
+TEST(TreeTest, int_basic_find_node_pointer_4) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(1);
+
+  ASSERT_EQ(ptr->value, 1);
+}
+
+TEST(TreeTest, int_basic_find_node_pointer_5) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(2);
+
+  ASSERT_EQ(ptr->value, 2);
+}
+
+TEST(TreeTest, int_basic_find_node_pointer_6) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(3);
+
+  ASSERT_EQ(ptr->value, 3);
+}
+
+TEST(TreeTest, int_basic_find_node_pointer_7) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+  t.__insert(4);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer ptr =
+      t.__find_node_pointer(4);
+
+  ASSERT_EQ(ptr->value, 4);
+}
+
+// __find
+TEST(TreeTest, int_basic_find_1) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__find(1);
+
+  ASSERT_EQ(*itr, 1);
+}
+
+TEST(TreeTest, int_basic_find_2) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__find(1);
+
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+}
+
+TEST(TreeTest, int_basic_find_3) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(2);
+  t.__insert(3);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__find(1);
+
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+}

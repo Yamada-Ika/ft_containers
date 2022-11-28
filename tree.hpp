@@ -268,6 +268,15 @@ public:
     node_pointer g;
     node_pointer u;
 
+    // p : nの親
+    // g : pの親
+    // u : gの子
+    //              g
+    //       +------+------+
+    //       p             u
+    //   +---+---+
+    //   n
+
     // case 1
     // - Nがroot
     if (__is_root(n)) {
@@ -315,34 +324,12 @@ public:
     }
 
     // 残りは以下のパターン
-
-    // (i)
-    //      Gb
-    //   +---+---+
-    //   Pr      Ub
-    // +--+--+
-    //       Nr
-
-    // (ii)
-    //      Gb
-    //   +---+---+
-    //   Pr      Ub
-    // +--+--+
-    // Nr
-
-    // (iii)
-    //      Gb
-    //   +---+---+
-    //   Ub      Pr
-    //        +--+--+
-    //       Nr
-
-    // (iv)
-    //      Gb
-    //   +---+---+
-    //   Ub      Pr
-    //        +--+--+
-    //              Nr
+    // (i)　　　　　　　　　　　　　　　　　　　　　　(ii)              (iii)             (iv)
+    //        Gb　　　　　　　　　　　　　　　　　　　      Gb              Gb                Gb
+    //    +---+---+　　　　　　　　　　　　　　　　　　+---+---+       +---+---+         +---+---+
+    //    Pr      Ub       Pr      Ub      Ub      Pr        Ub      Pr
+    // +--+--+          +--+--+                 +--+--+           +--+--+
+    //       Nr        Nr                      Nr                       Nr
 
     // case 3
     // - Uが黒の場合
@@ -350,8 +337,7 @@ public:
     LOG(ERROR) << "__rebalance_tree/ U is black";
 
     // - (i)を(ii)に変形
-    if (__has_exist_on_left_from_parent_side(p) &&
-        __has_exist_on_right_from_parent_side(n)) {
+    if (p == g->left && u == g->right && n == p->right) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (i)";
       // rotate left
       p->right = n->left;
@@ -362,8 +348,7 @@ public:
     }
 
     // - (iii)を(iv)に変形
-    if (__has_exist_on_right_from_parent_side(p) &&
-        __has_exist_on_right_from_parent_side(n)) {
+    if (p == g->right && u == g->left && n == p->left) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (iii)";
 
       // rotate right
@@ -385,6 +370,7 @@ public:
       if (__is_root(g)) {
         LOG(ERROR) << "__rebalance_tree/ G is root";
         root_ = p;
+        root_->parent = root_;
       }
 
       // rotate right
@@ -410,6 +396,7 @@ public:
       if (__is_root(g)) {
         LOG(ERROR) << "__rebalance_tree/ G is root";
         root_ = p;
+        root_->parent = root_;
       }
 
       g->right = p->left;
@@ -431,8 +418,6 @@ public:
 
   // 要素を追加
   ft::pair<iterator, bool> __insert_helper(const_reference value) {
-    LOG(ERROR) << "__insert_helper/ called";
-
     node_pointer inserted_node = NULL;
     bool has_inserted = false;
 
@@ -467,13 +452,8 @@ public:
     LOG(ERROR) << "__insert_helper/ loop";
     while (true) {
       if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
-        LOG(ERROR) << "__insert/ nd value < nd->value";
         nd = nd->left;
-        LOG(ERROR) << "__insert/ nd is nil node : " << std::boolalpha
-                   << nd->__is_nil_node();
         if (nd->__is_nil_node()) {
-          LOG(ERROR) << "__insert/ nd is nil";
-
           inserted_node = __allocate_node(value);
 
           // leftにノードをつける
@@ -486,18 +466,12 @@ public:
 
           // リバランス
           inserted_node->__set_red_kind();
-          LOG(ERROR) << "__rebalance_tree/ called";
           __rebalance_tree(inserted_node, inserted_node->parent);
-          LOG(ERROR) << "__rebalance_tree/ finished";
           break;
         }
       } else if (KeyOfValue()(value) > KeyOfValue()(nd->value)) {
-        LOG(ERROR) << "__insert/ nd value > nd->value";
         nd = nd->right;
         if (nd == __end_node()) {
-          LOG(ERROR) << "__insert/ nd is end node";
-          LOG(ERROR) << "__insert/ nd key : " << KeyOfValue()(value);
-
           inserted_node = __allocate_node(value);
 
           // rightにノードをつける
@@ -514,14 +488,11 @@ public:
 
           // リバランス
           inserted_node->__set_red_kind();
-          LOG(ERROR) << "__rebalance_tree/ called";
           __rebalance_tree(inserted_node, inserted_node->parent);
-          LOG(ERROR) << "__rebalance_tree/ finished";
           break;
         }
         // TODO rightがend nodeじゃない時もある
         if (nd->__is_nil_node()) {
-          LOG(ERROR) << "__insert/ nd is nil";
           inserted_node = __allocate_node(value);
 
           // rightにノードをつける　
@@ -534,9 +505,7 @@ public:
 
           // リバランス
           inserted_node->__set_red_kind();
-          LOG(ERROR) << "__rebalance_tree/ called";
           __rebalance_tree(inserted_node, inserted_node->parent);
-          LOG(ERROR) << "__rebalance_tree/ finished";
           break;
         }
       } else {
@@ -572,10 +541,7 @@ public:
   }
 
   // ノードの要素を返す
-  size_type __size() const {
-    LOG(ERROR) << "__size/ " << __tree_size_;
-    return __tree_size_;
-  }
+  size_type __size() const { return __tree_size_; }
 
   bool __empty() const { return __size() == 0; }
 
@@ -1047,35 +1013,6 @@ public:
       return 0;
     }
 
-    if (target->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target is nil";
-    }
-    if (target->left == NULL) {
-      LOG(ERROR) << "__erase_node_pointer/ target left is NULL";
-    }
-    if (target->right == NULL) {
-      LOG(ERROR) << "__erase_node_pointer/ target right is NULL";
-    }
-    if (target->left->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target left is nil";
-    }
-    if (target->right->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target right is nil";
-    }
-
-    if (target->left->__is_red_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target left is red";
-    }
-    if (target->left->__is_black_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target left is black";
-    }
-    if (target->right->__is_red_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target right is red";
-    }
-    if (target->right->__is_black_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target right is black";
-    }
-
     if (__has_no_child(target)) {
       LOG(ERROR) << "__erase_node_pointer/ target has no child";
       return __erase_no_child(target);
@@ -1104,8 +1041,6 @@ public:
     // 削除対象のノードが二つ子を持つ場合
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
     LOG(ERROR) << "__erase_node_pointer/ target has two child";
-    LOG(ERROR) << "__erase_node_pointer/ target val : "
-               << KeyOfValue()(target->value);
     node_pointer partial_min = node::__get_min_node(target->right);
     // node_pointer partial_min = node::__get_max_node(target->left, end_node_);
 
@@ -1113,19 +1048,6 @@ public:
     __exchange_value(target, partial_min);
 
     LOG(ERROR) << "__erase_node_pointer/ after __exchange_value";
-
-    if (target->left->__is_red_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target left is red";
-    }
-    if (target->left->__is_black_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target left is black";
-    }
-    if (target->right->__is_red_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target right is red";
-    }
-    if (target->right->__is_black_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ target right is black";
-    }
 
     // 削除対象のtargetは子を一つ持つ or いないはず。
     // 再帰して削除処理を委譲する
@@ -1147,16 +1069,13 @@ public:
     return 0;
   }
 
-  // iterator __erase(iterator pos)
   iterator __erase(iterator pos) {
     iterator res = pos;
-
     ++res;
     __erase(KeyOfValue()(*pos));
     return res;
   }
 
-  // iterator __erase(iterator first, iterator last)
   iterator __erase(iterator first, iterator last) {
     for (; first != last;) {
       first = __erase(first);
