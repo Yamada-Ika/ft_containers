@@ -62,15 +62,12 @@ public:
   }
 
   static node_pointer __get_min_node(node_pointer nd) {
-    // while (nd->left != NULL) {
-    // while (!nd->left->__is_nil_node()) {
     while (!nd->__is_nil_node()) {
       nd = nd->left;
     }
     return nd->parent;
   }
   static node_pointer __get_max_node(node_pointer nd, node_pointer end) {
-    // while (nd->right != NULL && nd->right != end) {
     while (!nd->__is_nil_node()) {
       nd = nd->right;
     }
@@ -284,6 +281,7 @@ public:
       // 条件2より黒にする
       n->__set_black_kind();
       // ノードがrootしか存在しないので、全ての葉から根までのパスに黒いノードは1個のため条件5もクリア
+      // TODO rootのparentをつける
       return;
     }
 
@@ -303,7 +301,7 @@ public:
     g = p->parent;
     // Uが赤か黒の場合が残っている
     // UはGの右か左
-    if (__has_exist_on_left_from_parent_side(p)) {
+    if (p == g->left) {
       u = g->right;
     } else {
       u = g->left;
@@ -333,7 +331,7 @@ public:
 
     // case 3
     // - Uが黒の場合
-    // 上記のパターンの(i)と(iii)を(ii)と(iv)に変形し、case 4に委譲する
+    //   - 上記のパターンの(i)を(ii)に、(iii)を(iv)に変形し、case 4に委譲する
     LOG(ERROR) << "__rebalance_tree/ U is black";
 
     // - (i)を(ii)に変形
@@ -361,9 +359,7 @@ public:
 
     // case 4
     // - (ii)の場合
-    if (__has_exist_on_left_from_parent_side(p) &&
-        __has_exist_on_left_from_parent_side(n) &&
-        __has_exist_on_right_from_parent_side(u)) {
+    if (p == g->left && u == g->right && n == p->left) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (ii)";
 
       // TODO Gがrootだと、rootが指すポインタを書き換える必要がある
@@ -387,9 +383,7 @@ public:
     }
 
     // - (iv)の場合
-    if (__has_exist_on_left_from_parent_side(u) &&
-        __has_exist_on_right_from_parent_side(p) &&
-        __has_exist_on_right_from_parent_side(n)) {
+    if (p == g->right && u == g->left && n == p->right) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (iv)";
 
       // TODO Gがrootだと、rootが指すポインタを書き換える必要がある
@@ -401,13 +395,16 @@ public:
 
       g->right = p->left;
       p->left->parent = g;
-      // // TODO 必要な気がする, いらない？
-      // p->parent = g->parent;
-      // if (__has_exist_on_left_from_parent_side(g)) {
-      //   g->parent->left = p;
-      // } else {
-      //   g->parent->right = p;
-      // }
+
+      // TODO Gの親の子がPになる
+      node_pointer gp = g->parent;
+      if (g == gp->left) {
+        gp->left = p;
+      } else {
+        gp->right = p;
+      }
+      p->parent = gp;
+
       g->parent = p;
       p->left = g;
     }
