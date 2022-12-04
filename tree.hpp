@@ -78,10 +78,7 @@ public:
   bool __is_nil_node() {
     return __is_black_node() && __node_kind_ & (1 << NIL);
   }
-  void __set_black_kind() {
-    LOG(ERROR) << "__set_black_kind/ called";
-    __node_kind_ = 1 << BLACK;
-  }
+  void __set_black_kind() { __node_kind_ = 1 << BLACK; }
   void __set_red_kind() { __node_kind_ = 1 << RED; }
   void __set_nil_kind() { __node_kind_ = (1 << BLACK) | (1 << NIL); }
   int __get_node_kind() { return __node_kind_; }
@@ -158,7 +155,8 @@ struct __tree_iterator {
       nd = nd->parent;
     }
     // 左の子以下のノードはすでに訪れているので親に移動
-    return nd->parent;
+    // return nd->parent;
+    return nd;
   }
 
   __node_pointer __prev_node(__node_pointer nd) {
@@ -177,7 +175,8 @@ struct __tree_iterator {
       LOG(ERROR) << "__prev_node/ loop";
     }
     // 以下のノードは訪れているので親を返す
-    return nd->parent;
+    // return nd->parent;
+    return nd;
   }
 
   friend bool operator==(const Self& lhs, const Self& rhs) {
@@ -251,6 +250,90 @@ public:
     return reverse_iterator(iterator(__begin_node(), __end_node()));
   }
 
+  //  * PはGの左にある場合もある
+  //      G                         G
+  //  +---+---+                 +---+---+
+  //          P                         N
+  //      +---+---+                 +---+---+
+  //      S       N                 P       NR
+  //          +---+---+         +---+---+
+  //         NL       NR        S       NL
+  //
+
+  //          P                         N
+  //      +---+---+                 +---+---+
+  //      S       N                 P       NR
+  //          +---+---+         +---+---+
+  //         NL       NR        S       NL
+  void __rotate_left(node_pointer p, node_pointer n) {
+    LOG(ERROR) << "__rotate_left/ called";
+    node_pointer g = p->parent;
+    node_pointer s = p->left;
+    node_pointer nl = n->left;
+    node_pointer nr = n->right;
+
+    p->right = nl;
+    nl->parent = p;
+
+    // Pがrootの場合
+    if (__is_root(p)) {
+      root_ = n;
+      root_->parent = n;
+    } else {
+      if (p == g->left) {
+        g->left = n;
+      } else {
+        g->right = n;
+      }
+      n->parent = g;
+    }
+
+    n->left = p;
+    p->parent = n;
+  }
+
+  //
+  //               G                     G
+  //           +---+---+             +---+---+
+  //           P                     N
+  //       +---+---+             +---+---+
+  //       N       S            NL       P
+  //   +---+---+                     +---+---+
+  //   NL     NR                    NR       S
+  //
+  //
+  //           P                     N
+  //       +---+---+             +---+---+
+  //       N       S            NL       P
+  //   +---+---+                     +---+---+
+  //   NL     NR                    NR       S
+  //
+  void __rotate_right(node_pointer p, node_pointer n) {
+    node_pointer g = p->parent;
+    node_pointer s = p->right;
+    node_pointer nl = n->left;
+    node_pointer nr = n->right;
+
+    p->left = nr;
+    nr->parent = p;
+
+    // Pがrootの場合
+    if (__is_root(p)) {
+      root_ = n;
+      root_->parent = n;
+    } else {
+      if (p == g->left) {
+        g->left = n;
+      } else {
+        g->right = n;
+      }
+      n->parent = g;
+    }
+
+    n->right = p;
+    p->parent = n;
+  }
+
   node_pointer __end_node() const { return end_node_; }
 
   // 以下の条件を満たすようにする
@@ -281,7 +364,7 @@ public:
       // 条件2より黒にする
       n->__set_black_kind();
       // ノードがrootしか存在しないので、全ての葉から根までのパスに黒いノードは1個のため条件5もクリア
-      // TODO rootのparentをつける
+      // TODO rootのparentをつける？
       return;
     }
 
@@ -300,7 +383,7 @@ public:
     // 条件4よりGは黒である
     g = p->parent;
     // Uが赤か黒の場合が残っている
-    // UはGの右か左
+    // UとPはGの子
     if (p == g->left) {
       u = g->right;
     } else {
@@ -337,76 +420,39 @@ public:
     // - (i)を(ii)に変形
     if (p == g->left && u == g->right && n == p->right) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (i)";
-      // rotate left
-      p->right = n->left;
-      n->left = p;
-      p->parent = n;
-      n->parent = g;
-      g->left = n;
+      __rotate_left(p, n);
+      // PとNの名称を入れ替える　
+      node_pointer tmp = n;
+      n = p;
+      p = tmp;
     }
 
     // - (iii)を(iv)に変形
     if (p == g->right && u == g->left && n == p->left) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (iii)";
-
-      // rotate right
-      p->left = n->right;
-      n->right = p;
-      p->parent = n;
-      n->parent = g;
-      g->right = n;
+      __rotate_right(p, n);
+      // PとNの名称を入れ替える　
+      node_pointer tmp = n;
+      n = p;
+      p = tmp;
     }
 
     // case 4
     // - (ii)の場合
     if (p == g->left && u == g->right && n == p->left) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (ii)";
-
-      // TODO Gがrootだと、rootが指すポインタを書き換える必要がある
-      if (__is_root(g)) {
-        LOG(ERROR) << "__rebalance_tree/ G is root";
-        root_ = p;
-        root_->parent = root_;
-      }
-
-      // rotate right
-      g->left = p->right;
-      p->parent = g->parent; // TODO 必要だとは思う
-      // // TODO これも必要だとは思う, いらない？
-      // if (__has_exist_on_left_from_parent_side(g)) {
-      //   g->parent->left = p;
-      // } else {
-      //   g->parent->right = p;
-      // }
-      g->parent = p;
-      p->right = g;
+      __rotate_right(g, p);
     }
 
     // - (iv)の場合
+    //         Gb
+    //     +---+---+
+    //    Ub      Pr
+    //         +--+--+
+    //               Nr
     if (p == g->right && u == g->left && n == p->right) {
       LOG(ERROR) << "__rebalance_tree/ tree shape is (iv)";
-
-      // TODO Gがrootだと、rootが指すポインタを書き換える必要がある
-      if (__is_root(g)) {
-        LOG(ERROR) << "__rebalance_tree/ G is root";
-        root_ = p;
-        root_->parent = root_;
-      }
-
-      g->right = p->left;
-      p->left->parent = g;
-
-      // TODO Gの親の子がPになる
-      node_pointer gp = g->parent;
-      if (g == gp->left) {
-        gp->left = p;
-      } else {
-        gp->right = p;
-      }
-      p->parent = gp;
-
-      g->parent = p;
-      p->left = g;
+      __rotate_left(g, p);
     }
 
     // PとGの色を入れ替える
@@ -602,6 +648,8 @@ public:
     return const_iterator(ptr, __end_node());
   }
 
+  //     10
+  //   5   15
   node_pointer __lower_bound_pointer(const Key& k) const {
     // TODO うまくinsertと共通化したい
     if (__empty()) {
@@ -616,17 +664,22 @@ public:
       } else if (k > KeyOfValue()(nd->value)) {
         nd = nd->right;
       } else {
-        LOG(ERROR) << "__find/ found";
+        LOG(ERROR) << "__lower_bound_pointer/ found";
         break;
       }
-      if (nd == NULL || nd == end_node_) {
-        LOG(ERROR) << "__find/ not found";
+      // TODO end nodeまで到達するとこれ以上のノードは存在しないので、見つからなかったとする
+      if (nd == end_node_) {
+        return NULL;
+      }
+      if (nd->__is_nil_node()) {
+        LOG(ERROR) << "__lower_bound_pointer/ not found";
         // ここで一個前のノードの値をチェック
         // k > nd->valueならそのノードを返す
-        if (k < KeyOfValue()(prev_parent->value)) {
-          return prev_parent;
+        if (k > KeyOfValue()(nd->parent->value)) {
+          LOG(ERROR) << "__lower_bound_pointer/ hoge";
+          return nd->parent->parent;
         }
-        return NULL;
+        return nd->parent;
       }
       prev_parent = nd;
     }
@@ -636,49 +689,36 @@ public:
   // upper bound
   // lower boundの不等号変わったやつ
   iterator __uppper_bound(const Key& k) {
-    node_pointer ptr = __upper_bound_pointer(k);
-    if (ptr == NULL) {
+    iterator itr = __lower_bound(k);
+
+    // itrがendの場合、見つかってないのでendを返す
+    if (itr == __end()) {
       return __end();
     }
-    return iterator(ptr, __end_node());
+
+    // itrのkeyとkが同じの場合、インクリメントしたイテレータを返す
+    if (k == KeyOfValue()(*itr)) {
+      return ++itr;
+    }
+
+    // itrのkeyはkより大きいのでそのまま返す
+    return itr;
   }
   const_iterator __upper_bound(const Key& k) {
-    node_pointer ptr = __upper_bound_pointer(k);
-    if (ptr == NULL) {
+    iterator itr = __lower_bound(k);
+
+    // itrがendの場合、見つかってないのでendを返す
+    if (itr == __end()) {
       return __end();
     }
-    return const_iterator(ptr, __end_node());
-  }
 
-  node_pointer __upper_bound_pointer(const Key& k) {
-    // TODO うまくinsertと共通化したい
-    if (__empty()) {
-      return NULL;
+    // itrのkeyとkが同じの場合、インクリメントしたイテレータを返す
+    if (k == KeyOfValue()(*itr)) {
+      return ++itr;
     }
-    // ノードを辿って適切な場所にノードを作成
-    node_pointer prev_parent = root_;
-    node_pointer nd = root_;
-    while (true) {
-      if (k < KeyOfValue()(nd->value)) {
-        nd = nd->left;
-      } else if (k > KeyOfValue()(nd->value)) {
-        nd = nd->right;
-      } else {
-        // upper boundはkeyが一致するノードを検索対象に含まない
-        // より大きい値を持つノードを訪ねるために右の子に移動
-        nd = nd->right;
-      }
-      if (nd == NULL || nd == end_node_) {
-        LOG(ERROR) << "__find/ not found";
-        // ここで一個前のノードの値をチェック
-        if (k < KeyOfValue()(prev_parent->value)) {
-          return prev_parent;
-        }
-        return NULL;
-      }
-      prev_parent = nd;
-    }
-    return nd;
+
+    // itrのkeyはkより大きいのでそのまま返す
+    return itr;
   }
 
   // count
