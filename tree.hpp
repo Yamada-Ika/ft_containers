@@ -1021,17 +1021,127 @@ public:
   //      +------+------+
   //      N1           (1)
   //  +---+---+     +---+---+
-  // CL1     CR1   (2)      P2
+  // NL1     NR1   (2)      P2
   //                    +---+---+
   //                            N2
   //                        +---+---+
-  //                       CL2     CR2
+  //                       NL2     NR2
 
   // TODO 色（kind）も交換するか
-  void __exchange_value(node_pointer n1, node_pointer n2) {
-    value_type tmp_val = n1->value;
-    n1->value = n2->value;
-    n2->value = tmp_val;
+  void __exchange_node(node_pointer n1, node_pointer n2) {
+    // これだとmapからtreeを使うときコンパイルエラーになる
+    // error: assignment of read-only member ‘ft::pair<const int, int>::first’
+
+    // value_type tmp_val = n1->value;
+    // n1->value = n2->value;
+    // n2->value = tmp_val;
+
+    node_pointer p1 = n1->parent, nl1 = n1->left, nr1 = n1->right;
+    node_pointer p2 = n2->parent, nl2 = n2->left, nr2 = n2->right;
+
+    //              N1
+    //       +------+------+
+    //      N2            NR1
+    //  +---+---+
+    // NL2     NR2
+    // TODO N1とN2が親子
+    if (p2 == n1) {
+      LOG(ERROR) << "__exchange_node/ p2 == n1";
+      if (nl1 == n2) {
+        LOG(ERROR) << "__exchange_node/ nl1 == n2";
+        if (n1 == root_) {
+          LOG(ERROR) << "__exchange_node/ n1 == root_";
+          root_ = n2;
+          root_->parent = root_;
+        } else {
+          if (n1 == p1->left) {
+            p1->left = n2;
+          } else {
+            p1->right = n2;
+          }
+          n2->parent = p1;
+        }
+
+        n2->right = nr1;
+        nr1->parent = n2;
+        n2->left = n1;
+        n1->parent = n2;
+
+        n1->left = nl2;
+        nl2->parent = n1;
+        n1->right = nr2;
+        nr2->parent = n1;
+      } else if (nr1 == n2) {
+        //             N1
+        //      +------+------+
+        //     NL1            N2
+        //                +---+---+
+        //               NL2      NR2
+        LOG(ERROR) << "__exchange_node/ nr1 == n2";
+        if (n1 == root_) {
+          LOG(ERROR) << "__exchange_node/ n1 == root_";
+          root_ = n2;
+          root_->parent = root_;
+        } else {
+          if (n1 == p1->left) {
+            p1->left = n2;
+          } else {
+            p1->right = n2;
+          }
+          n2->parent = p1;
+        }
+
+        n2->left = nl1;
+        nl1->parent = n2;
+        n2->right = n1;
+        n1->parent = n2;
+
+        n1->left = nl2;
+        nl2->parent = n1;
+        n1->right = nr2;
+        nr2->parent = n1;
+      } else {
+        assert(false);
+      }
+
+      // TODO 色も交換する？
+      __exchange_node_color(n1, n2);
+      return;
+    }
+
+    // N2をN1の場所に持ってくる
+    // N1がrootだった時
+    if (n1 == root_) {
+      LOG(ERROR) << "__exchange_node/ n1 == root_";
+      root_ = n2;
+      root_->parent = root_;
+    } else {
+      if (n1 == p1->left) {
+        p1->left = n2;
+      } else {
+        p1->right = n2;
+      }
+      n2->parent = p1;
+    }
+    n2->left = nl1;
+    nl1->parent = n2;
+    n2->right = nr1;
+    nr1->parent = n2;
+
+    // N1をN2の場所に持ってくる
+    if (n2 == p2->left) {
+      p2->left = n1;
+    } else {
+      p2->right = n1;
+    }
+    n1->parent = p2;
+    n1->left = nl2;
+    nl2->parent = n1;
+    n1->right = nr2;
+    nr2->parent = n1;
+
+    // TODO 色も交換する？
+    __exchange_node_color(n1, n2);
   }
 
   // 以下の条件を満たすようにする
@@ -1041,54 +1151,66 @@ public:
   // 4. 赤いノードの子は黒である
   // 5. 全ての葉から根までのパスには、同じ個数の黒いノードがある
 
-  size_type __erase_node_pointer(node_pointer target) {
+  size_type __erase_node_pointer(node_pointer n) {
     LOG(ERROR) << "__erase_node_pointer/ called";
 
     // keyがなかったら0を返す
-    if (target == NULL) {
+    if (n == NULL) {
       LOG(ERROR) << "__erase_node_pointer/ not found";
       return 0;
     }
 
-    if (__has_no_child(target)) {
-      LOG(ERROR) << "__erase_node_pointer/ target has no child";
-      return __erase_no_child(target);
+    if (__has_no_child(n)) {
+      LOG(ERROR) << "__erase_node_pointer/ n has no child";
+      return __erase_no_child(n);
     }
 
-    if (__has_one_child(target)) {
-      LOG(ERROR) << "__erase_node_pointer/ target has one child";
-      return __erase_one_child(target);
+    if (__has_one_child(n)) {
+      LOG(ERROR) << "__erase_node_pointer/ n has one child";
+      return __erase_one_child(n);
     }
 
     // TODO targetの子供が両方ともnilの場合
     // 無限ループ回避するため
-    if (target->left->__is_nil_node() && target->right->__is_nil_node()) {
-      node_pointer p = target->parent;
-      node_pointer cr = target->right;
+    if (n->left->__is_nil_node() && n->right->__is_nil_node()) {
+      LOG(ERROR) << "__erase_node_pointer/ both nodes are nil";
 
-      if (target == p->left) {
-        p->left = cr;
-      } else {
-        p->right = cr;
+      node_pointer p = n->parent;
+      node_pointer nr = n->right;
+
+      if (p == root_) {
+        LOG(ERROR) << "__erase_node_pointer/ p == root_";
       }
-      cr->parent = p;
+      if (nr == end_node_) {
+        LOG(ERROR) << "__erase_node_pointer/ nr == end_node_";
+        assert(nr->__is_nil_node());
+      }
+
+      if (n == p->left) {
+        LOG(ERROR) << "__erase_node_pointer/ p->left = nr";
+        p->left = nr;
+      } else {
+        LOG(ERROR) << "__erase_node_pointer/ p->right = nr";
+        p->right = nr;
+      }
+      nr->parent = p;
       return 1;
     }
 
     // 削除対象のノードが二つ子を持つ場合
     // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
-    LOG(ERROR) << "__erase_node_pointer/ target has two child";
-    node_pointer partial_min = node::__get_min_node(target->right);
-    // node_pointer partial_min = node::__get_max_node(target->left, end_node_);
+    LOG(ERROR) << "__erase_node_pointer/ n has two child";
+    node_pointer partial_min = node::__get_min_node(n->right);
+    // node_pointer partial_min = node::__get_max_node(n->left, end_node_);
 
     // targetとpartial_minを入れ替える
-    __exchange_value(target, partial_min);
+    __exchange_node(n, partial_min);
 
-    LOG(ERROR) << "__erase_node_pointer/ after __exchange_value";
+    LOG(ERROR) << "__erase_node_pointer/ after __exchange_node";
 
     // 削除対象のtargetは子を一つ持つ or いないはず。
     // 再帰して削除処理を委譲する
-    return __erase_node_pointer(partial_min);
+    return __erase_node_pointer(n);
   }
 
   size_type __erase_helper(const Key& key) {
