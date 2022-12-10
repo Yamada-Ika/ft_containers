@@ -150,13 +150,24 @@ struct __tree_iterator {
     if (!nd->right->__is_nil_node()) {
       return __node<T, Allocator>::__get_min_node(nd->right);
     }
+
+    //                       G
+    //               +-------+-------+
+    //               P
+    //         +-----+-----+
+    //         N           S
+    //     +---+---+   +---+---+
+    //    NL      　　　　           SR
+    //                     +---+---+
+    //                             NE
+
     // 左の子がいるノードまで親を辿る
-    while (nd->left->__is_nil_node()) {
+    __node_pointer p = nd->parent;
+    while (nd == p->right && nd->left->__is_nil_node()) {
       nd = nd->parent;
     }
-    // 左の子以下のノードはすでに訪れているので親に移動
-    // return nd->parent;
-    return nd;
+
+    return nd->parent;
   }
 
   __node_pointer __prev_node(__node_pointer nd) {
@@ -170,13 +181,14 @@ struct __tree_iterator {
       return __node<T, Allocator>::__get_max_node(nd->left, __end_node_);
     }
     // 右の子がいるノードまで親を辿る
-    while (nd->right->__is_nil_node()) {
+    __node_pointer p = nd->parent;
+    while (nd == p->left && nd->right->__is_nil_node()) {
       nd = nd->parent;
       LOG(ERROR) << "__prev_node/ loop";
     }
     // 以下のノードは訪れているので親を返す
     // return nd->parent;
-    return nd;
+    return nd->parent;
   }
 
   friend bool operator==(const Self& lhs, const Self& rhs) {
@@ -360,25 +372,26 @@ public:
     // case 1
     // - Nがroot
     if (__is_root(n)) {
-      LOG(ERROR) << "__rebalance_tree/ N is root";
+      LOG(ERROR) << "__rebalance_tree/ case 1: N is root";
       // 条件2より黒にする
       n->__set_black_kind();
       // ノードがrootしか存在しないので、全ての葉から根までのパスに黒いノードは1個のため条件5もクリア
       // TODO rootのparentをつける？
+      LOG(ERROR) << "__rebalance_tree/ finish";
       return;
     }
 
     // - Pが黒
     if (p->__is_black_node()) {
-      LOG(ERROR) << "__rebalance_tree/ P is black";
+      LOG(ERROR) << "__rebalance_tree/ case 1: P is black";
       // Nは赤なので条件4はクリア。Nが挿入された場所は元々nilであるため、nilからrootまでのパスの黒ノードの数は変わらない
       // 従って条件5もクリア
+      LOG(ERROR) << "__rebalance_tree/ finish";
       return;
     }
 
     // case 2
     // - Pが赤
-    LOG(ERROR) << "__rebalance_tree/ P is red";
     // Pが赤の場合、rootではないため、Gが存在する
     // 条件4よりGは黒である
     g = p->parent;
@@ -392,7 +405,7 @@ public:
 
     // - Uが赤
     if (u->__is_red_node()) {
-      LOG(ERROR) << "__rebalance_tree/ U is red";
+      LOG(ERROR) << "__rebalance_tree/ case 2: U is red";
       // Gは黒、その下層のPとUは赤である。色を交換して、Gを赤、PとUを黒にしても条件5を満たしたままのはず
       // Nを黒にすると条件5を満たさないのでだめ
       g->__set_red_kind();
@@ -457,6 +470,7 @@ public:
 
     // PとGの色を入れ替える
     __exchange_node_color(p, g);
+    LOG(ERROR) << "__rebalance_tree/ finish";
   }
 
   // 要素を追加
@@ -466,33 +480,24 @@ public:
 
     // 初めて要素を追加
     if (__empty()) {
-      LOG(ERROR) << "__insert/ node is root";
-
-      // TODO とりあえず左側に
+      LOG(ERROR) << "__insert_helper/ node is root";
       inserted_node = __allocate_node(value);
-
+      // rootにつける
       root_ = inserted_node;
-      root_->parent = root_; // TODO 根の親は自分自身を指しておく
-
+      root_->parent = root_;
       // TODO 最後のイテレータのためだけにつける
       __attach_end_node(inserted_node);
       __attach_nil_node_to_left(inserted_node);
-
       has_inserted = true;
-
       // リバランス
       inserted_node->__set_red_kind();
       __rebalance_tree(inserted_node, inserted_node);
-      LOG(ERROR) << "__rebalance_tree/ finished";
-
       return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
     }
 
     // ノードを辿って適切な場所にノードを作成
-    // node_pointer prev_parent = root_;
     node_pointer nd = root_;
 
-    LOG(ERROR) << "__insert_helper/ loop";
     while (true) {
       if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
         nd = nd->left;
@@ -564,7 +569,6 @@ public:
   ft::pair<iterator, bool> __insert(const_reference value) {
     LOG(ERROR) << "__insert/ called";
     ft::pair<iterator, bool> p = __insert_helper(value);
-    LOG(ERROR) << "__insert_helper/ finished";
     if (p.second) {
       ++__tree_size_;
     }
