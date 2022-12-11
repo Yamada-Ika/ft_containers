@@ -86,9 +86,7 @@ public:
                         Compare, Allocator>::iterator itr = __tree_.__find(key);
     // 見つからなかったら挿入
     if (itr == end()) {
-      // pair<Key, T> p(key, T());
-      insert(*itr);
-      return itr->second;
+      return insert(ft::make_pair(key, T())).first->second;
     }
     return itr->second;
   }
