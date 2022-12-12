@@ -732,13 +732,85 @@ TEST(TreeTest, int_basic_insert2_7) {
   ASSERT_EQ(root->right->right->value, 3);
 }
 
-// //                1b
-// //           +-----+-----+
-// //          -2r         2b
-// //       +---+---+  +---+---+
-// //     -3b      -1b         3r
-// //  +---+---+
-// // -4r
+TEST(TreeTest, int_basic_insert2_8) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(1);
+  t.__insert(-10);
+  t.__insert(10);
+  t.__insert(-5);
+  t.__insert(15);
+  t.__insert(20);
+  t.__insert(-12);
+  t.__insert(100);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer root = t.root();
+
+  ASSERT_EQ(root->__is_black_node(), true);
+
+  ASSERT_EQ(root->left->__is_black_node(), true);
+  ASSERT_EQ(root->left->left->__is_red_node(), true);
+  ASSERT_EQ(root->left->right->__is_red_node(), true);
+
+  ASSERT_EQ(root->left->left->left->__is_nil_node(), true);
+  ASSERT_EQ(root->left->left->right->__is_nil_node(), true);
+
+  ASSERT_EQ(root->left->right->left->__is_nil_node(), true);
+  ASSERT_EQ(root->left->right->right->__is_nil_node(), true);
+
+  ASSERT_EQ(root->right->__is_red_node(), true);
+  ASSERT_EQ(root->right->left->__is_black_node(), true);
+  ASSERT_EQ(root->right->right->__is_black_node(), true);
+
+  ASSERT_EQ(root->right->left->left->__is_nil_node(), true);
+  ASSERT_EQ(root->right->left->right->__is_nil_node(), true);
+
+  ASSERT_EQ(root->right->right->right->__is_red_node(), true);
+  ASSERT_EQ(root->right->right->right->left->__is_nil_node(), true);
+  ASSERT_EQ(root->right->right->right->right->__is_nil_node(), true);
+
+  ASSERT_EQ(root->parent, root);
+
+  ASSERT_EQ(root->left->parent, root);
+  ASSERT_EQ(root->left->left->parent, root->left);
+  ASSERT_EQ(root->left->right->parent, root->left);
+
+  ASSERT_EQ(root->left->left->left->parent, root->left->left);
+  ASSERT_EQ(root->left->left->right->parent, root->left->left);
+
+  ASSERT_EQ(root->left->right->left->parent, root->left->right);
+  ASSERT_EQ(root->left->right->right->parent, root->left->right);
+
+  ASSERT_EQ(root->right->parent, root);
+  ASSERT_EQ(root->right->left->parent, root->right);
+  ASSERT_EQ(root->right->right->parent, root->right);
+
+  ASSERT_EQ(root->right->left->left->parent, root->right->left);
+  ASSERT_EQ(root->right->left->right->parent, root->right->left);
+
+  ASSERT_EQ(root->right->right->left->parent, root->right->right);
+  ASSERT_EQ(root->right->right->right->parent, root->right->right);
+
+  ASSERT_EQ(root->right->right->right->left->parent, root->right->right->right);
+  ASSERT_EQ(root->right->right->right->right->parent,
+            root->right->right->right);
+
+  ASSERT_EQ(root->value, 1);
+  ASSERT_EQ(root->left->value, -10);
+  ASSERT_EQ(root->left->left->value, -12);
+  ASSERT_EQ(root->left->right->value, -5);
+  ASSERT_EQ(root->right->value, 15);
+  ASSERT_EQ(root->right->left->value, 10);
+  ASSERT_EQ(root->right->right->value, 20);
+  ASSERT_EQ(root->right->right->right->value, 100);
+}
+
+//                1b
+//           +-----+-----+
+//          -2r         2b
+//       +---+---+  +---+---+
+//     -3b      -1b         3r
+//  +---+---+
+// -4r
 
 TEST(TreeTest, int_basic_insert4) {
   ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
@@ -1219,127 +1291,127 @@ TEST(TreeTest, int_basic_erase_1_1) {
   ASSERT_EQ(t.__size(), 0);
 }
 
-TEST(TreeTest, int_basic_erase_1_2) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__erase(2);
+// TEST(TreeTest, int_basic_erase_1_2) {
+//   ft::__tree<int, int, ft::Identity<int> > t;
+//   t.__insert(1);
+//   t.__insert(2);
+//   t.__erase(2);
 
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+//   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-  ASSERT_EQ(t.__size(), 1);
+//   ASSERT_EQ(t.__size(), 1);
 
-  ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->left->__is_nil_node(), true);
-  ASSERT_EQ(r->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->__is_black_node(), true);
+//   ASSERT_EQ(r->left->__is_nil_node(), true);
+//   ASSERT_EQ(r->right->__is_nil_node(), true);
 
-  ASSERT_EQ(r->parent, r);
+//   ASSERT_EQ(r->parent, r);
 
-  ASSERT_EQ(r->value, 1);
-}
+//   ASSERT_EQ(r->value, 1);
+// }
 
-TEST(TreeTest, int_basic_erase_1_3) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
+// TEST(TreeTest, int_basic_erase_1_3) {
+//   ft::__tree<int, int, ft::Identity<int> > t;
+//   t.__insert(1);
+//   t.__insert(2);
 
-  t.__erase(1);
+//   t.__erase(1);
 
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+//   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-  ASSERT_EQ(t.__size(), 1);
+//   ASSERT_EQ(t.__size(), 1);
 
-  ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->left->__is_nil_node(), true);
-  ASSERT_EQ(r->right->__is_black_node(), true);
-  ASSERT_EQ(r->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->__is_black_node(), true);
+//   ASSERT_EQ(r->left->__is_nil_node(), true);
+//   ASSERT_EQ(r->right->__is_black_node(), true);
+//   ASSERT_EQ(r->right->__is_nil_node(), true);
 
-  ASSERT_EQ(r->parent, r);
+//   ASSERT_EQ(r->parent, r);
 
-  ASSERT_EQ(r->value, 2);
-}
+//   ASSERT_EQ(r->value, 2);
+// }
 
-TEST(TreeTest, int_basic_erase_1_4) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__insert(3);
+// TEST(TreeTest, int_basic_erase_1_4) {
+//   ft::__tree<int, int, ft::Identity<int> > t;
+//   t.__insert(1);
+//   t.__insert(2);
+//   t.__insert(3);
 
-  t.__erase(1);
+//   t.__erase(1);
 
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+//   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-  ASSERT_EQ(t.__size(), 2);
+//   ASSERT_EQ(t.__size(), 2);
 
-  ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->left->__is_nil_node(), true);
-  ASSERT_EQ(r->right->__is_red_node(), true);
-  ASSERT_EQ(r->right->right->__is_nil_node(), true);
-  ASSERT_EQ(r->right->left->__is_nil_node(), true);
+//   ASSERT_EQ(r->__is_black_node(), true);
+//   ASSERT_EQ(r->left->__is_nil_node(), true);
+//   ASSERT_EQ(r->right->__is_red_node(), true);
+//   ASSERT_EQ(r->right->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->right->left->__is_nil_node(), true);
 
-  ASSERT_EQ(r->parent, r);
-  ASSERT_EQ(r->left->parent, r);
-  ASSERT_EQ(r->right->parent, r);
-  ASSERT_EQ(r->right->left->parent, r->right);
-  ASSERT_EQ(r->right->right->parent, r->right);
+//   ASSERT_EQ(r->parent, r);
+//   ASSERT_EQ(r->left->parent, r);
+//   ASSERT_EQ(r->right->parent, r);
+//   ASSERT_EQ(r->right->left->parent, r->right);
+//   ASSERT_EQ(r->right->right->parent, r->right);
 
-  ASSERT_EQ(r->value, 2);
-  ASSERT_EQ(r->right->value, 3);
-}
+//   ASSERT_EQ(r->value, 2);
+//   ASSERT_EQ(r->right->value, 3);
+// }
 
-TEST(TreeTest, int_basic_erase_1_5) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__insert(3);
+// TEST(TreeTest, int_basic_erase_1_5) {
+//   ft::__tree<int, int, ft::Identity<int> > t;
+//   t.__insert(1);
+//   t.__insert(2);
+//   t.__insert(3);
 
-  t.__erase(2);
+//   t.__erase(2);
 
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+//   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-  ASSERT_EQ(t.__size(), 2);
+//   ASSERT_EQ(t.__size(), 2);
 
-  ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->left->__is_black_node(), false);
-  ASSERT_EQ(r->left->__is_red_node(), true);
-  ASSERT_EQ(r->left->left->__is_nil_node(), true);
-  ASSERT_EQ(r->left->right->__is_nil_node(), true);
-  ASSERT_EQ(r->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->__is_black_node(), true);
+//   ASSERT_EQ(r->left->__is_black_node(), false);
+//   ASSERT_EQ(r->left->__is_red_node(), true);
+//   ASSERT_EQ(r->left->left->__is_nil_node(), true);
+//   ASSERT_EQ(r->left->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->right->__is_nil_node(), true);
 
-  ASSERT_EQ(r->parent, r);
-  ASSERT_EQ(r->left->parent, r);
-  ASSERT_EQ(r->left->left->parent, r->left);
-  ASSERT_EQ(r->left->right->parent, r->left);
-  ASSERT_EQ(r->right->parent, r);
+//   ASSERT_EQ(r->parent, r);
+//   ASSERT_EQ(r->left->parent, r);
+//   ASSERT_EQ(r->left->left->parent, r->left);
+//   ASSERT_EQ(r->left->right->parent, r->left);
+//   ASSERT_EQ(r->right->parent, r);
 
-  ASSERT_EQ(r->value, 3);
-  ASSERT_EQ(r->left->value, 1);
-}
+//   ASSERT_EQ(r->value, 3);
+//   ASSERT_EQ(r->left->value, 1);
+// }
 
-TEST(TreeTest, int_basic_erase_1_6) {
-  ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__insert(3);
+// TEST(TreeTest, int_basic_erase_1_6) {
+//   ft::__tree<int, int, ft::Identity<int> > t;
+//   t.__insert(1);
+//   t.__insert(2);
+//   t.__insert(3);
 
-  t.__erase(3);
+//   t.__erase(3);
 
-  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+//   ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-  ASSERT_EQ(t.__size(), 2);
+//   ASSERT_EQ(t.__size(), 2);
 
-  ASSERT_EQ(r->__is_black_node(), true);
-  ASSERT_EQ(r->left->__is_red_node(), true);
-  ASSERT_EQ(r->left->left->__is_nil_node(), true);
-  ASSERT_EQ(r->left->right->__is_nil_node(), true);
-  ASSERT_EQ(r->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->__is_black_node(), true);
+//   ASSERT_EQ(r->left->__is_red_node(), true);
+//   ASSERT_EQ(r->left->left->__is_nil_node(), true);
+//   ASSERT_EQ(r->left->right->__is_nil_node(), true);
+//   ASSERT_EQ(r->right->__is_nil_node(), true);
 
-  ASSERT_EQ(r->parent, r);
-  ASSERT_EQ(r->left->parent, r);
-  ASSERT_EQ(r->left->left->parent, r->left);
-  ASSERT_EQ(r->left->right->parent, r->left);
-  ASSERT_EQ(r->right->parent, r);
+//   ASSERT_EQ(r->parent, r);
+//   ASSERT_EQ(r->left->parent, r);
+//   ASSERT_EQ(r->left->left->parent, r->left);
+//   ASSERT_EQ(r->left->right->parent, r->left);
+//   ASSERT_EQ(r->right->parent, r);
 
-  ASSERT_EQ(r->value, 2);
-  ASSERT_EQ(r->left->value, 1);
-}
+//   ASSERT_EQ(r->value, 2);
+//   ASSERT_EQ(r->left->value, 1);
+// }

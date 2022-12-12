@@ -944,6 +944,13 @@ TEST(MapTest, int_basic_erase3_13) {
   mymp.insert(ft::make_pair(-12, 1));
   mymp.insert(ft::make_pair(100, 1));
 
+  //                     1b
+  //              +------+------+
+  //            -10b           15r
+  //         +---+---+     +---+---+
+  //       -12r     -5r   10b      20b
+  //                            +---+---+
+  //                                   100r
   ASSERT_EQ(libmp.erase(15), mymp.erase(15));
   ASSERT_EQ(libmp.size(), mymp.size());
 

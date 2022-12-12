@@ -571,33 +571,103 @@ private:
     node_pointer cl = n->left;
     node_pointer cr = n->right;
 
-    // 子を持たない
-    if (cl->__is_nil_node() && cr->__is_nil_node()) {
-      LOG(ERROR) << "__erase_node_pointer/ n has no child";
-      return __erase_no_child(n);
+    // TODO この処理実はいらない説
+    // // 子を持たない
+    // // if (cl->__is_nil_node() && cr->__is_nil_node()) {
+    // if (cl == NULL && cr == NULL) {
+    //   LOG(ERROR) << "__erase_node_pointer/ n has no child";
+    //   return __erase_no_child(n);
+    // }
+
+    // TODO 要素がrootだけの時
+    if (n == n->parent && cl->__is_nil_node() && cr->__is_nil_node()) {
+      root_ = NULL;
+      return 1;
     }
 
-    //　子を1つ持つ
-    if ((!cl->__is_nil_node() && cr->__is_nil_node()) ||
+    if ((cl->__is_nil_node() && cr->__is_nil_node()) ||
+        (!cl->__is_nil_node() && cr->__is_nil_node()) ||
         (cl->__is_nil_node() && !cr->__is_nil_node())) {
       LOG(ERROR) << "__erase_node_pointer/ n has one child";
       return __erase_one_child(n);
     }
 
     // 子を2つ持つ
-    // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよいらしい
     LOG(ERROR) << "__erase_node_pointer/ n has two child";
     node_pointer partial_min = node::__get_min_node(n->right);
-    // node_pointer partial_min = node::__get_max_node(n->left, end_node_);
-
     // targetとpartial_minを入れ替える
     __exchange_node(n, partial_min);
-
     LOG(ERROR) << "__erase_node_pointer/ after __exchange_node";
-
     // 削除対象のtargetは子を一つ持つ or いないはず。
     // 再帰して削除処理を委譲する
     return __erase_node_pointer(n);
+
+    // LOG(ERROR) << "__erase_node_pointer/ n has one child";
+    // return __erase_one_child(n);
+
+    // //　子を1つ持つ
+    // if ((!cl->__is_nil_node() && cr->__is_nil_node()) ||
+    //     (cl->__is_nil_node() && !cr->__is_nil_node())) {
+    //   LOG(ERROR) << "__erase_node_pointer/ n has one child";
+    //   return __erase_one_child(n);
+    // }
+
+    // // 子を2つ持つ
+    // // - targetの右側部分木の最小ノードをtargetの位置に持ってこればよい
+    // LOG(ERROR) << "__erase_node_pointer/ n has two child";
+
+    // // 両方の子がnilの場合、__exchange_nodeでなんやかんやするのがだるいので先にケア
+    // if (cl->__is_nil_node() && cr->__is_nil_node()) {
+    //   node_pointer p = n->parent;
+
+    //   // Nがroot
+    //   if (n->parent == n) {
+    //     root_ = NULL;
+    //   } else {
+    //     if (n == p->left) {
+    //       p->left = cr;
+    //     } else {
+    //       p->right = cr;
+    //     }
+    //     cr->parent = p;
+    //   }
+
+    //   return 1;
+    // }
+
+    // node_pointer partial_min = node::__get_min_node(n->right);
+    // // node_pointer partial_min = node::__get_max_node(n->left, end_node_);
+
+    // // targetとpartial_minを入れ替える
+    // __exchange_node(n, partial_min);
+
+    // LOG(ERROR) << "__erase_node_pointer/ after __exchange_node";
+
+    // // 削除対象のtargetは子を一つ持つ or いないはず。
+    // // 再帰して削除処理を委譲する
+    // return __erase_node_pointer(n);
+  }
+
+  // Nの子はNULL
+  size_type __erase_no_child(node_pointer n) {
+    LOG(ERROR) << "__erase_no_child/ called";
+
+    node_pointer p = n->parent;
+    node_pointer nr = n->right;
+
+    // Nがrootの場合
+    if (n->parent == n) {
+      root_ = NULL;
+    } else {
+      if (n == p->left) {
+        p->left = nr;
+      } else {
+        p->right = nr;
+      }
+    }
+
+    // nr->parent = p;
+    return 1;
   }
 
   size_type __erase_one_child(node_pointer target) {
@@ -611,13 +681,14 @@ private:
       return __erase_one_red_child(target);
     }
 
-    // - targetが黒で子供が赤
-    //  - targetを子供に置き換えて、黒に塗り替えるだけ
+    // - targetが黒で子が赤
+    //  - targetを子に置き換えて、黒に塗り替えるだけ
     node_pointer tl = target->left, tr = target->right;
     if (target->__is_black_node() &&
         ((tl->__is_nil_node() && tr->__is_red_node()) ||
          (tl->__is_red_node() && tr->__is_nil_node()))) {
-      LOG(ERROR) << "__erase_one_child/ case 0: black target has one red child";
+      LOG(ERROR)
+          << "__erase_one_child/ case 0: black target is black, child is red";
       return __erase_one_red_child_and_repaint_black(target);
     }
 
@@ -988,23 +1059,6 @@ private:
     }
     c->parent = p;
 
-    return 1;
-  }
-
-  size_type __erase_no_child(node_pointer n) {
-    LOG(ERROR) << "__erase_no_child/ called";
-
-    node_pointer p = n->parent;
-    node_pointer nr = n->right;
-
-    if (n == p->left) {
-      LOG(ERROR) << "__erase_no_child/ p->left = nr";
-      p->left = nr;
-    } else {
-      LOG(ERROR) << "__erase_no_child/ p->right = nr";
-      p->right = nr;
-    }
-    nr->parent = p;
     return 1;
   }
 

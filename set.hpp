@@ -58,8 +58,8 @@ public:
 
   bool empty() const { return __tree_.__empty(); }
   size_type size() const { return __tree_.__size(); }
-  size_type max_size() const;
-  void clear();
+  size_type max_size() const { return __tree_.__max_size(); }
+  void clear() { erase(begin(), end()); }
   ft::pair<iterator, bool> insert(const value_type& value) {
     return __tree_.__insert(value);
   }
@@ -70,9 +70,11 @@ public:
       insert(*itr);
     }
   }
-  //   iterator erase(iterator pos);
-  //   iterator erase(iterator first, iterator last);
-  //   size_type erase(const Key& key);
+  iterator erase(iterator pos) { return __tree_.__erase(pos); }
+  iterator erase(iterator first, iterator last) {
+    return __tree_.__erase(first, last);
+  }
+  size_type erase(const Key& key) { return __tree_.__erase(key); }
   void swap(set& other);
   size_type count(const Key& key) const { return __tree_.__count(key); }
   iterator find(const Key& key) { return __tree_.__find(key); }
