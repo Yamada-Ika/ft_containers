@@ -12,6 +12,9 @@ template <class Key, class T, class Compare = ft::less<Key>,
           class Allocator = std::allocator<ft::pair<const Key, T> > >
 class map {
 public:
+  /*
+  *  Member types
+  */
   typedef Key key_type;
   typedef T mapped_type;
   typedef ft::pair<const Key, T> value_type;
@@ -19,8 +22,7 @@ public:
   typedef std::ptrdiff_t difference_type;
   typedef Compare key_compare;
   typedef Allocator allocator_type;
-  // typedef value_type& reference;
-  // typedef const value_type& const_reference;
+  typedef value_type& reference;
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
@@ -31,7 +33,9 @@ public:
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  // TODO いつ使う
+  /*
+  *  Member classes
+  */
   class value_compare {
     friend class map<Key, T, Compare, Allocator>;
 
@@ -49,47 +53,63 @@ public:
     value_compare(Compare c) : comp(c) {}
   };
 
+  /*
+  *  Member functions
+  */
   map() {}
-  explicit map(const Compare& comp, const Allocator& alloc = Allocator());
+  explicit map(const Compare& comp, const Allocator& alloc = Allocator())
+      : __tree_(comp, alloc) {}
   template <class InputIt>
   map(InputIt first, InputIt last, const Compare& comp = Compare(),
-      const Allocator& alloc = Allocator());
-  map(const map& other);
+      const Allocator& alloc = Allocator())
+      : __tree_(comp, alloc) {
+    insert(first, last);
+  }
+  map(const map& other) { *this = other; }
 
-  ~map() {}
+  ~map() { __tree_.~__tree(); }
 
-  map& operator=(const map& other);
+  map& operator=(const map& other) {
+    if (this == &other)
+      return *this;
 
-  // TODO テスト
+    __tree_ = other.__tree_;
+    return *this;
+  }
+
   allocator_type get_allocator() const {
     return allocator_type(__tree_.__get_allocator());
   }
+
+  /*
+  *  Member functions
+  */
   T& at(const Key& key) {
-    typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
-                        Compare, Allocator>::iterator itr = __tree_.__find(key);
+    iterator itr = find(key);
     if (itr == end()) {
       throw std::out_of_range("Error: index is out of range.");
     }
     return itr->second;
   }
   const T& at(const Key& key) const {
-    typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
-                        Compare, Allocator>::const_iterator itr =
-        __tree_.__find(key);
+    iterator itr = find(key);
     if (itr == end()) {
       throw std::out_of_range("Error: index is out of range.");
     }
     return itr->second;
   }
   T& operator[](const Key& key) {
-    typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
-                        Compare, Allocator>::iterator itr = __tree_.__find(key);
+    iterator itr = find(key);
     // 見つからなかったら挿入
     if (itr == end()) {
       return insert(ft::make_pair(key, T())).first->second;
     }
     return itr->second;
   }
+
+  /*
+  *  Iterators
+  */
   iterator begin() { return __tree_.__begin(); }
   const_iterator begin() const { return __tree_.__begin(); }
   iterator end() { return __tree_.__end(); }
@@ -167,7 +187,6 @@ public:
   }
 
 private:
-  // typedef typename ft::__tree<value_type, Compare, Allocator> __tree;
   typedef typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
                               Compare, Allocator>
       __tree;

@@ -209,16 +209,13 @@ template <typename Key, typename Val, typename KeyOfValue,
           typename Allocator = std::allocator<Key> >
 class __tree {
 public:
-  // typedef Key value_type;
   typedef Key key_type;
   typedef Val value_type;
-  // typedef ft::pair<const Key, Val> value_type;
   typedef Compare key_compare;
   typedef std::size_t size_type;
   typedef Allocator allocator_type;
   typedef value_type& reference;
   typedef const value_type& const_reference;
-  // typedef __node<Key, Allocator> node;
   typedef __node<value_type, Allocator> node;
   typedef typename Allocator::template rebind<node>::other node_allocator;
   typedef typename node::node_pointer node_pointer;
@@ -1097,14 +1094,15 @@ private:
     node_pointer prev_parent = root_;
     node_pointer nd = root_;
     while (true) {
-      if (k < KeyOfValue()(nd->value)) {
+      if (__comp_(k, KeyOfValue()(nd->value))) {
         nd = nd->left;
-      } else if (k > KeyOfValue()(nd->value)) {
+      } else if (__comp_(KeyOfValue()(nd->value), k)) {
         nd = nd->right;
       } else {
         LOG(ERROR) << "__lower_bound_pointer/ found";
         break;
       }
+
       // TODO end nodeまで到達するとこれ以上のノードは存在しないので、見つからなかったとする
       if (nd == end_node_) {
         return NULL;
@@ -1113,10 +1111,11 @@ private:
         LOG(ERROR) << "__lower_bound_pointer/ not found";
         // ここで一個前のノードの値をチェック
         // k > nd->valueならそのノードを返す
-        if (k > KeyOfValue()(nd->parent->value)) {
+        if (__comp_(KeyOfValue()(nd->parent->value), k)) {
           LOG(ERROR) << "__lower_bound_pointer/ hoge";
           return nd->parent->parent;
         }
+
         return nd->parent;
       }
       prev_parent = nd;
@@ -1275,58 +1274,46 @@ private:
     node_pointer nd = root_;
 
     while (true) {
-      if (KeyOfValue()(value) < KeyOfValue()(nd->value)) {
+      if (__comp_(KeyOfValue()(value), KeyOfValue()(nd->value))) {
         nd = nd->left;
         if (nd->__is_nil_node()) {
           inserted_node = __allocate_node(value);
-
           // leftにノードをつける
           __attach_node_to_left(nd->parent, inserted_node);
-
           // nil nodeをつける
           __attach_nil_nodes(inserted_node);
-
           has_inserted = true;
-
           // リバランス
           inserted_node->__set_red_kind();
           __rebalance_tree(inserted_node, inserted_node->parent);
           break;
         }
-      } else if (KeyOfValue()(value) > KeyOfValue()(nd->value)) {
+      } else if (__comp_(KeyOfValue()(nd->value), KeyOfValue()(value))) {
         nd = nd->right;
         if (nd == __end_node()) {
           inserted_node = __allocate_node(value);
-
           // rightにノードをつける
           __attach_node_to_right(nd->parent, inserted_node);
-
           // TODO 最後のイテレータのためだけにつける
           __attach_end_node(inserted_node);
-
           // nil nodeをつける
           __attach_nil_node_to_left(inserted_node);
-
           // prev_parent->right->right->parent = prev_parent->right;
           has_inserted = true;
-
           // リバランス
           inserted_node->__set_red_kind();
           __rebalance_tree(inserted_node, inserted_node->parent);
           break;
         }
+
         // TODO rightがend nodeじゃない時もある
         if (nd->__is_nil_node()) {
           inserted_node = __allocate_node(value);
-
           // rightにノードをつける　
           __attach_node_to_right(nd->parent, inserted_node);
-
           // nil nodeをつける
           __attach_nil_nodes(inserted_node);
-
           has_inserted = true;
-
           // リバランス
           inserted_node->__set_red_kind();
           __rebalance_tree(inserted_node, inserted_node->parent);
@@ -1336,7 +1323,6 @@ private:
         has_inserted = false;
         break;
       }
-      // prev_parent = nd;
     }
 
     return ft::make_pair(iterator(inserted_node, __end_node()), has_inserted);
