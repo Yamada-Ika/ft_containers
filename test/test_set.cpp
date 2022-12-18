@@ -619,237 +619,395 @@ TEST(SetTest, int_basic_erase_1_2) {
   LOG(ERROR) << "@@@ int_basic_erase_1_2/ end";
 }
 
-// //  swap
-// //  count
-// TEST(SetTest, int_basic_count) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+TEST(SetTest, int_basic_erase_2_1) {
+  std::set<int> libdata;
+  libdata.insert(1);
+  libdata.insert(2);
+  libdata.insert(3);
+  libdata.insert(4);
 
-//   ASSERT_EQ(libst.count(1), myst.count(1));
-// }
+  ft::set<int> mydata;
+  mydata.insert(1);
+  mydata.insert(2);
+  mydata.insert(3);
+  mydata.insert(4);
 
-// TEST(SetTest, int_basic_count1) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
+  ASSERT_EQ(libdata.erase(1), mydata.erase(1));
+  ASSERT_EQ(libdata.erase(2), mydata.erase(2));
+  ASSERT_EQ(libdata.erase(3), mydata.erase(3));
 
-//   ASSERT_EQ(libst.count(1), myst.count(1));
-// }
+  std::set<int>::iterator libitr = libdata.begin();
+  ft::set<int>::iterator myitr = mydata.begin();
 
-// TEST(SetTest, int_basic_count2) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   libst.insert(2);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
-//   myst.insert(2);
+  ASSERT_EQ(libdata.size(), mydata.size());
 
-//   ASSERT_EQ(libst.count(2), myst.count(2));
-// }
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr, libdata.end());
+  ASSERT_EQ(myitr, mydata.end());
+}
 
-// TEST(SetTest, int_basic_count3) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   libst.insert(2);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
-//   myst.insert(2);
+TEST(SetTest, int_basic_erase_2_2) {
+  std::set<int> libdata;
+  libdata.insert(1);
+  libdata.insert(2);
+  libdata.insert(3);
+  libdata.insert(4);
 
-//   ASSERT_EQ(libst.count(42), myst.count(42));
-// }
+  ft::set<int> mydata;
+  mydata.insert(1);
+  mydata.insert(2);
+  mydata.insert(3);
+  mydata.insert(4);
 
-// //  find
-// TEST(SetTest, int_basic_find) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+  ASSERT_EQ(libdata.erase(1), mydata.erase(1));
+  ASSERT_EQ(libdata.erase(2), mydata.erase(2));
+  ASSERT_EQ(libdata.erase(3), mydata.erase(3));
+  ASSERT_EQ(libdata.erase(4), mydata.erase(4));
 
-//   ASSERT_EQ(*(libst.find(1)), *(myst.find(1)));
-// }
+  ASSERT_EQ(libdata.size(), mydata.size());
+}
 
-// TEST(SetTest, int_basic_find1) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+TEST(SetTest, int_basic_erase_2_3) {
+  std::set<int> libdata;
+  libdata.insert(10);
+  libdata.insert(1);
+  libdata.insert(3);
+  libdata.insert(2);
+  libdata.insert(5);
+  libdata.insert(6);
 
-//   ASSERT_EQ(libst.find(42) == libst.end(), myst.find(42) == myst.end());
-// }
+  ft::set<int> mydata;
+  mydata.insert(10);
+  mydata.insert(1);
+  mydata.insert(3);
+  mydata.insert(2);
+  mydata.insert(5);
+  mydata.insert(6);
 
-// TEST(SetTest, int_basic_find2) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   libst.insert(42);
-//   libst.insert(3);
-//   libst.insert(-100);
-//   libst.insert(-10);
-//   libst.insert(4);
-//   libst.insert(5);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
-//   myst.insert(42);
-//   myst.insert(3);
-//   myst.insert(-100);
-//   myst.insert(-10);
-//   myst.insert(4);
-//   myst.insert(5);
+  ASSERT_EQ(libdata.erase(1), mydata.erase(1));
 
-//   std::set<int>::iterator libitr = libst.find(42);
-//   ft::set<int>::iterator myitr = myst.find(42);
+  std::set<int>::iterator libitr = libdata.begin();
+  ft::set<int>::iterator myitr = mydata.begin();
 
-//   ASSERT_EQ(*libitr, *myitr);
-// }
+  ASSERT_EQ(libdata.size(), mydata.size());
 
-// //  equal_range
-// TEST(SetTest, int_basic_equal_range) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr, libdata.end());
+  ASSERT_EQ(myitr, mydata.end());
 
-//   std::pair<std::set<int>::iterator, std::set<int>::iterator> libp =
-//       libst.equal_range(1);
-//   ft::pair<ft::set<int>::iterator, ft::set<int>::iterator> myp =
-//       myst.equal_range(1);
+  ASSERT_EQ(libdata.erase(5), mydata.erase(5));
+  ASSERT_EQ(libdata.size(), mydata.size());
+  libitr = libdata.begin();
+  myitr = mydata.begin();
 
-//   ASSERT_EQ(*(libp.first), *(myp.first));
-//   ASSERT_EQ(libp.second == libst.end(), myp.second == myst.end());
-// }
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr, libdata.end());
+  ASSERT_EQ(myitr, mydata.end());
 
-// TEST(SetTest, int_basic_equal_range1) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   libst.insert(3);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
-//   myst.insert(3);
+  ASSERT_EQ(libdata.erase(2), mydata.erase(2));
+  ASSERT_EQ(libdata.size(), mydata.size());
+  libitr = libdata.begin();
+  myitr = mydata.begin();
 
-//   std::pair<std::set<int>::iterator, std::set<int>::iterator> libp =
-//       libst.equal_range(1);
-//   ft::pair<ft::set<int>::iterator, ft::set<int>::iterator> myp =
-//       myst.equal_range(1);
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr, libdata.end());
+  ASSERT_EQ(myitr, mydata.end());
 
-//   ASSERT_EQ(*(libp.first), *(myp.first));
-//   ASSERT_EQ(*(libp.second), *(myp.second));
-// }
+  ASSERT_EQ(libdata.erase(3), mydata.erase(3));
+  ASSERT_EQ(libdata.size(), mydata.size());
+  libitr = libdata.begin();
+  myitr = mydata.begin();
 
-// //  lower_bound
-// TEST(SetTest, int_basic_lower_bound) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr, libdata.end());
+  ASSERT_EQ(myitr, mydata.end());
 
-//   std::set<int>::iterator libitr = libst.lower_bound(1);
-//   ft::set<int>::iterator myitr = myst.lower_bound(1);
+  ASSERT_EQ(libdata.erase(10), mydata.erase(10));
+  ASSERT_EQ(libdata.size(), mydata.size());
+  libitr = libdata.begin();
+  myitr = mydata.begin();
 
-//   ASSERT_EQ(*libitr, *myitr);
-// }
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr, libdata.end());
+  ASSERT_EQ(myitr, mydata.end());
 
-// TEST(SetTest, int_basic_lower_bound1) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+  ASSERT_EQ(libdata.erase(6), mydata.erase(6));
+  ASSERT_EQ(libdata.size(), mydata.size());
+}
 
-//   std::set<int>::iterator libitr = libst.lower_bound(2);
-//   ft::set<int>::iterator myitr = myst.lower_bound(2);
+//  swap
+//  count
+TEST(SetTest, int_basic_count) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
 
-//   ASSERT_EQ(libitr == libst.end(), myitr == myst.end());
-// }
+  ASSERT_EQ(libst.count(1), myst.count(1));
+}
 
-// TEST(SetTest, int_basic_lower_bound2) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   libst.insert(3);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
-//   myst.insert(3);
+TEST(SetTest, int_basic_count1) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
 
-//   std::set<int>::iterator libitr = libst.lower_bound(2);
-//   ft::set<int>::iterator myitr = myst.lower_bound(2);
+  ASSERT_EQ(libst.count(1), myst.count(1));
+}
 
-//   ASSERT_EQ(*libitr, *myitr);
-//   ++libitr;
-//   ++myitr;
-//   ASSERT_EQ(*libitr, *myitr);
-//   ++libitr;
-//   ++myitr;
-// }
+TEST(SetTest, int_basic_count2) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  libst.insert(2);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+  myst.insert(2);
 
-// //  upper_bound
-// TEST(SetTest, int_basic_upper_bound) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   ft::set<int> myst;
-//   myst.insert(1);
+  ASSERT_EQ(libst.count(2), myst.count(2));
+}
 
-//   std::set<int>::iterator libitr = libst.lower_bound(1);
-//   ft::set<int>::iterator myitr = myst.lower_bound(1);
+TEST(SetTest, int_basic_count3) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  libst.insert(2);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+  myst.insert(2);
 
-//   ASSERT_EQ(libitr == libst.end(), myitr == myst.end());
-// }
+  ASSERT_EQ(libst.count(42), myst.count(42));
+}
 
-// TEST(SetTest, int_basic_upper_bound1) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
+//  find
+TEST(SetTest, int_basic_find) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
 
-//   std::set<int>::iterator libitr = libst.lower_bound(1);
-//   ft::set<int>::iterator myitr = myst.lower_bound(1);
+  ASSERT_EQ(*(libst.find(1)), *(myst.find(1)));
+}
 
-//   ASSERT_EQ(*libitr, *myitr);
-// }
+TEST(SetTest, int_basic_find1) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
 
-// TEST(SetTest, int_basic_upper_bound2) {
-//   std::set<int> libst;
-//   libst.insert(1);
-//   libst.insert(2);
-//   libst.insert(3);
-//   libst.insert(42);
-//   libst.insert(10);
-//   ft::set<int> myst;
-//   myst.insert(1);
-//   myst.insert(2);
-//   myst.insert(3);
-//   myst.insert(42);
-//   myst.insert(10);
+  ASSERT_EQ(libst.find(42) == libst.end(), myst.find(42) == myst.end());
+}
 
-//   std::set<int>::iterator libitr = libst.lower_bound(1);
-//   ft::set<int>::iterator myitr = myst.lower_bound(1);
+TEST(SetTest, int_basic_find2) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  libst.insert(42);
+  libst.insert(3);
+  libst.insert(-100);
+  libst.insert(-10);
+  libst.insert(4);
+  libst.insert(5);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+  myst.insert(42);
+  myst.insert(3);
+  myst.insert(-100);
+  myst.insert(-10);
+  myst.insert(4);
+  myst.insert(5);
 
-//   ASSERT_EQ(*libitr, *myitr);
-//   ++libitr;
-//   ++myitr;
-//   ASSERT_EQ(*libitr, *myitr);
-//   ++libitr;
-//   ++myitr;
-//   ASSERT_EQ(*libitr, *myitr);
-//   ++libitr;
-//   ++myitr;
-//   ASSERT_EQ(*libitr, *myitr);
-//   ++libitr;
-//   ++myitr;
-// }
+  std::set<int>::iterator libitr = libst.find(42);
+  ft::set<int>::iterator myitr = myst.find(42);
 
-// //  key_comp
-// //  value_comp
+  ASSERT_EQ(*libitr, *myitr);
+}
+
+//  equal_range
+TEST(SetTest, int_basic_equal_range) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
+
+  std::pair<std::set<int>::iterator, std::set<int>::iterator> libp =
+      libst.equal_range(1);
+  ft::pair<ft::set<int>::iterator, ft::set<int>::iterator> myp =
+      myst.equal_range(1);
+
+  ASSERT_EQ(*(libp.first), *(myp.first));
+  ASSERT_EQ(libp.second == libst.end(), myp.second == myst.end());
+}
+
+TEST(SetTest, int_basic_equal_range1) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  libst.insert(3);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+  myst.insert(3);
+
+  std::pair<std::set<int>::iterator, std::set<int>::iterator> libp =
+      libst.equal_range(1);
+  ft::pair<ft::set<int>::iterator, ft::set<int>::iterator> myp =
+      myst.equal_range(1);
+
+  ASSERT_EQ(*(libp.first), *(myp.first));
+  ASSERT_EQ(*(libp.second), *(myp.second));
+}
+
+//  lower_bound
+TEST(SetTest, int_basic_lower_bound) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
+
+  std::set<int>::iterator libitr = libst.lower_bound(1);
+  ft::set<int>::iterator myitr = myst.lower_bound(1);
+
+  ASSERT_EQ(*libitr, *myitr);
+}
+
+TEST(SetTest, int_basic_lower_bound1) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
+
+  std::set<int>::iterator libitr = libst.lower_bound(2);
+  ft::set<int>::iterator myitr = myst.lower_bound(2);
+
+  ASSERT_EQ(libitr == libst.end(), myitr == myst.end());
+}
+
+TEST(SetTest, int_basic_lower_bound2) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  libst.insert(3);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+  myst.insert(3);
+
+  std::set<int>::iterator libitr = libst.lower_bound(2);
+  ft::set<int>::iterator myitr = myst.lower_bound(2);
+
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+}
+
+//  upper_bound
+TEST(SetTest, int_basic_upper_bound) {
+  std::set<int> libst;
+  libst.insert(1);
+  ft::set<int> myst;
+  myst.insert(1);
+
+  std::set<int>::iterator libitr = libst.lower_bound(1);
+  ft::set<int>::iterator myitr = myst.lower_bound(1);
+
+  ASSERT_EQ(libitr == libst.end(), myitr == myst.end());
+}
+
+TEST(SetTest, int_basic_upper_bound1) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+
+  std::set<int>::iterator libitr = libst.lower_bound(1);
+  ft::set<int>::iterator myitr = myst.lower_bound(1);
+
+  ASSERT_EQ(*libitr, *myitr);
+}
+
+TEST(SetTest, int_basic_upper_bound2) {
+  std::set<int> libst;
+  libst.insert(1);
+  libst.insert(2);
+  libst.insert(3);
+  libst.insert(42);
+  libst.insert(10);
+  ft::set<int> myst;
+  myst.insert(1);
+  myst.insert(2);
+  myst.insert(3);
+  myst.insert(42);
+  myst.insert(10);
+
+  std::set<int>::iterator libitr = libst.lower_bound(1);
+  ft::set<int>::iterator myitr = myst.lower_bound(1);
+
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(*libitr, *myitr);
+  ++libitr;
+  ++myitr;
+}
+
+//  key_comp
+//  value_comp

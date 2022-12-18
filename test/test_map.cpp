@@ -1078,6 +1078,173 @@ TEST(MapTest, int_basic_erase3_15) {
   ASSERT_EQ(mymp.end(), myitr);
 }
 
+TEST(MapTest, int_basic_erase4_1) {
+  std::map<int, int> libmp;
+  libmp.insert(std::make_pair(1, 1));
+  libmp.insert(std::make_pair(-10, 1));
+  libmp.insert(std::make_pair(-5, 1));
+  libmp.insert(std::make_pair(-100, 1));
+  libmp.insert(std::make_pair(10, 1));
+  libmp.insert(std::make_pair(12, 1));
+  libmp.insert(std::make_pair(5, 1));
+  ft::map<int, int> mymp;
+  mymp.insert(ft::make_pair(1, 1));
+  mymp.insert(ft::make_pair(-10, 1));
+  mymp.insert(ft::make_pair(-5, 1));
+  mymp.insert(ft::make_pair(-100, 1));
+  mymp.insert(ft::make_pair(10, 1));
+  mymp.insert(ft::make_pair(12, 1));
+  mymp.insert(ft::make_pair(5, 1));
+
+  ASSERT_EQ(libmp.erase(-10), mymp.erase(-10));
+  ASSERT_EQ(libmp.size(), mymp.size());
+
+  std::map<int, int>::iterator libitr = libmp.begin();
+  ft::map<int, int>::iterator myitr = mymp.begin();
+
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+
+  ASSERT_EQ(libmp.end(), libitr);
+  ASSERT_EQ(mymp.end(), myitr);
+
+  ASSERT_EQ(libmp.erase(10), mymp.erase(10));
+  ASSERT_EQ(libmp.size(), mymp.size());
+
+  libitr = libmp.begin();
+  myitr = mymp.begin();
+
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+
+  ASSERT_EQ(libmp.end(), libitr);
+  ASSERT_EQ(mymp.end(), myitr);
+
+  ASSERT_EQ(libmp.erase(-100), mymp.erase(-100));
+  ASSERT_EQ(libmp.size(), mymp.size());
+
+  libitr = libmp.begin();
+  myitr = mymp.begin();
+
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+
+  ASSERT_EQ(libmp.end(), libitr);
+  ASSERT_EQ(mymp.end(), myitr);
+
+  ASSERT_EQ(libmp.erase(12), mymp.erase(12));
+  ASSERT_EQ(libmp.size(), mymp.size());
+
+  libitr = libmp.begin();
+  myitr = mymp.begin();
+
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+
+  ASSERT_EQ(libmp.end(), libitr);
+  ASSERT_EQ(mymp.end(), myitr);
+
+  ASSERT_EQ(libmp.erase(5), mymp.erase(5));
+  ASSERT_EQ(libmp.size(), mymp.size());
+
+  libitr = libmp.begin();
+  myitr = mymp.begin();
+
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+
+  ASSERT_EQ(libmp.end(), libitr);
+  ASSERT_EQ(mymp.end(), myitr);
+
+  ASSERT_EQ(libmp.erase(1), mymp.erase(1));
+  ASSERT_EQ(libmp.size(), mymp.size());
+
+  libitr = libmp.begin();
+  myitr = mymp.begin();
+
+  ASSERT_EQ(libitr->first, myitr->first);
+  ASSERT_EQ(libitr->second, myitr->second);
+  ++libitr;
+  ++myitr;
+
+  ASSERT_EQ(libmp.end(), libitr);
+  ASSERT_EQ(mymp.end(), myitr);
+
+  ASSERT_EQ(libmp.erase(-5), mymp.erase(-5));
+  ASSERT_EQ(libmp.size(), mymp.size());
+  ASSERT_EQ(libmp.empty(), mymp.empty());
+}
+
 // swap
 // count
 TEST(MapTest, int_basic_count) {

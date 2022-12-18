@@ -633,6 +633,15 @@ private:
     // - 形状は以下の2ケースを考える
     //  - 最終的には一つの形状に変形していき、処理を委譲する
 
+    // case 1
+    // - Nがrootだと葉から根までの全パスから黒ノードが一つ減るだけなので条件5を破らない
+    // - 子をrootに持ってくるだけで良い
+    if (n->parent == n) {
+      LOG(ERROR) << "__erase/ case 1: N is root";
+      return 1;
+    }
+    LOG(ERROR) << "__erase/ case 1: not match";
+
     //        P
     //  +-----+------+
     // N             S
@@ -664,15 +673,6 @@ private:
     sr->parent = s;
 
     LOG(ERROR) << "__erase/ prepare finish";
-
-    // case 1
-    // - Nがrootだと葉から根までの全パスから黒ノードが一つ減るだけなので条件5を破らない
-    // - 子をrootに持ってくるだけで良い
-    if (n->parent == n) {
-      LOG(ERROR) << "__erase/ case 1: N is root";
-      return 1;
-    }
-    LOG(ERROR) << "__erase/ case 1: not match";
 
     // (i)                      (ii)
     //        P                            P
@@ -863,8 +863,7 @@ private:
     if (target->__is_black_node() &&
         ((tl->__is_nil_node() && tr->__is_red_node()) ||
          (tl->__is_red_node() && tr->__is_nil_node()))) {
-      LOG(ERROR) << "__erase/ case 0: black target "
-                    "is black, child is red";
+      LOG(ERROR) << "__erase/ case 0: target is black, child is red";
       return __erase_own_and_repaint_after_replace_child(target);
     }
 
@@ -1050,14 +1049,27 @@ private:
     node_pointer p = target->parent;
     node_pointer n = target;
     node_pointer c = NULL;
-    if (!n->left->__is_nil_node()) {
-      c = n->left;
-    } else {
+
+    if (n->left->__is_nil_node() && n->right == __end_node()) {
+      LOG(ERROR) << "__erase_own_and_replace_child/ end node";
       c = n->right;
+    } else {
+      if (!n->left->__is_nil_node()) {
+        LOG(ERROR) << "__erase_own_and_replace_child/ left";
+        c = n->left;
+      } else {
+        LOG(ERROR) << "__erase_own_and_replace_child/ right";
+        c = n->right;
+      }
     }
 
     // Nがroot
     if (n->parent == n) {
+      // TODO end nodeをつけないといけない
+      if (n->right == __end_node()) {
+        c->right = __end_node();
+        c->right->parent = c;
+      }
       root_ = c;
       root_->parent = root_;
       return 1;

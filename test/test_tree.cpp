@@ -1949,26 +1949,393 @@ TEST(TreeTest, int_erase_iterator_1_5) {
   ASSERT_EQ(t.__size(), 0);
 }
 
+//               20b
+//        +------+------+
+//       10b           200r
+//    +---+---+     +---+---+
+//    1r            1b     500b
+//                      +---+---+
+//                    300r
 TEST(TreeTest, int_erase_iterator_1_6) {
   ft::__tree<int, int, ft::Identity<int> > t;
-  t.__insert(1);
-  t.__insert(2);
-  t.__insert(-1);
+  t.__insert(100);
+  t.__insert(20);
   t.__insert(10);
-  t.__insert(-10);
-  t.__insert(5);
-  t.__insert(3);
+  t.__insert(200);
+  t.__insert(1);
+  t.__insert(500);
+  t.__insert(300);
+
+  t.__erase(100);
+  t.__erase(20);
+  t.__erase(10);
+  t.__erase(200);
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+  ASSERT_EQ(r->__is_black_node(), true);
+  ASSERT_EQ(r->left->__is_black_node(), true);
+  ASSERT_EQ(r->right->__is_black_node(), true);
+  ASSERT_EQ(r->left->left->__is_nil_node(), true);
+  ASSERT_EQ(r->left->right->__is_nil_node(), true);
+  ASSERT_EQ(r->right->left->__is_nil_node(), true);
+  ASSERT_EQ(r->right->right->__is_nil_node(), true);
+
+  ASSERT_EQ(r->value, 300);
+  ASSERT_EQ(r->left->value, 1);
+  ASSERT_EQ(r->right->value, 500);
+
+  ASSERT_EQ(r->parent, r);
+  ASSERT_EQ(r->left->parent, r);
+  ASSERT_EQ(r->right->parent, r);
+  ASSERT_EQ(r->left->left->parent, r->left);
+  ASSERT_EQ(r->left->right->parent, r->left);
+  ASSERT_EQ(r->right->left->parent, r->right);
+  ASSERT_EQ(r->right->right->parent, r->right);
+
+  ASSERT_EQ(t.__size(), 3);
 
   t.__erase(1);
-  t.__erase(2);
-  t.__erase(-1);
-  t.__erase(10);
-  t.__erase(-10);
-  LOG(ERROR) << "-------int_erase_iterator_1_6";
-  t.__erase(5);
-  LOG(ERROR) << "+++++++int_erase_iterator_1_6";
-  t.__erase(3);
+  t.__erase(500);
+  t.__erase(300);
 
   ASSERT_EQ(t.__empty(), true);
   ASSERT_EQ(t.__size(), 0);
+}
+
+TEST(TreeTest, int_erase_iterator_2_1) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__erase(10);
+  t.__insert(20);
+  t.__erase(20);
+  t.__insert(30);
+  t.__erase(30);
+
+  ASSERT_EQ(t.__empty(), true);
+  ASSERT_EQ(t.__size(), 0);
+}
+
+TEST(TreeTest, int_erase_iterator_3_2) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__insert(20);
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__insert(10);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 10);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_erase_iterator_3_3) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__insert(20);
+  t.__insert(30);
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(*itr, 30);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__insert(10);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 10);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(*itr, 30);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_erase_iterator_3_4) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__insert(20);
+  t.__insert(30);
+  t.__insert(40);
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(*itr, 30);
+  ++itr;
+  ASSERT_EQ(*itr, 40);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__insert(10);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 10);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(*itr, 30);
+  ++itr;
+  ASSERT_EQ(*itr, 40);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_erase_iterator_3_5) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__insert(20);
+  t.__insert(30);
+  t.__insert(40);
+  t.__insert(50);
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(*itr, 30);
+  ++itr;
+  ASSERT_EQ(*itr, 40);
+  ++itr;
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__insert(10);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 10);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(*itr, 30);
+  ++itr;
+  ASSERT_EQ(*itr, 40);
+  ++itr;
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_erase_iterator_3_6) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__insert(1);
+  t.__insert(20);
+  t.__insert(2);
+  t.__insert(3);
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__insert(10);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+  ++itr;
+  ASSERT_EQ(*itr, 10);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+}
+
+TEST(TreeTest, int_erase_iterator_3_7) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(10);
+  t.__insert(1);
+  t.__insert(20);
+  t.__insert(2);
+  t.__insert(3);
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 3);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(3);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 2);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(2);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(1);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 20);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(20);
+
+  ASSERT_EQ(t.__size(), 0);
+}
+
+// libmp.insert(std::make_pair(1, 1));
+// libmp.insert(std::make_pair(-10, 1));
+// libmp.insert(std::make_pair(-5, 1));
+// libmp.insert(std::make_pair(-100, 1));
+// libmp.insert(std::make_pair(10, 1));
+// libmp.insert(std::make_pair(12, 1));
+// libmp.insert(std::make_pair(5, 1));
+
+TEST(TreeTest, int_erase_iterator_3_8) {
+  ft::__tree<int, int, ft::Identity<int> > t;
+  t.__insert(100);
+  t.__insert(10);
+  t.__insert(50);
+  t.__insert(1);
+  t.__insert(1000);
+  t.__insert(1200);
+  t.__insert(500);
+
+  t.__erase(10);
+
+  ft::__tree<int, int, ft::Identity<int> >::iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(*itr, 100);
+  ++itr;
+  ASSERT_EQ(*itr, 500);
+  ++itr;
+  ASSERT_EQ(*itr, 1000);
+  ++itr;
+  ASSERT_EQ(*itr, 1200);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(1000);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+  ++itr;
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(*itr, 100);
+  ++itr;
+  ASSERT_EQ(*itr, 500);
+  ++itr;
+  ASSERT_EQ(*itr, 1200);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(1);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(*itr, 100);
+  ++itr;
+  ASSERT_EQ(*itr, 500);
+  ++itr;
+  ASSERT_EQ(*itr, 1200);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(1200);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(*itr, 100);
+  ++itr;
+  ASSERT_EQ(*itr, 500);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(500);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(*itr, 100);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
+  ASSERT_EQ(r->__is_black_node(), true);
+  ASSERT_EQ(r->left->__is_red_node(), true);
+  ASSERT_EQ(r->right->__is_nil_node(), true);
+  ASSERT_EQ(r->right, t.__end_node());
+
+  ASSERT_EQ(r->value, 100);
+  ASSERT_EQ(r->left->value, 50);
+
+  ASSERT_EQ(r->parent, r);
+  ASSERT_EQ(r->left->parent, r);
+  ASSERT_EQ(r->right->parent, r);
+
+  t.__erase(100);
+
+  r = t.root();
+  ASSERT_EQ(r->__is_black_node(), true);
+  ASSERT_EQ(r->left->__is_nil_node(), true);
+  ASSERT_EQ(r->right->__is_nil_node(), true);
+  ASSERT_EQ(r->left->__is_black_node(), true);
+  ASSERT_EQ(r->right->__is_black_node(), true);
+  ASSERT_EQ(r->right, t.__end_node());
+
+  ASSERT_EQ(r->value, 50);
+
+  ASSERT_EQ(r->parent, r);
+  ASSERT_EQ(r->left->parent, r);
+  ASSERT_EQ(r->right->parent, r);
+
+  itr = t.__begin();
+  ASSERT_EQ(*itr, 50);
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+
+  t.__erase(50);
+
+  ASSERT_EQ(t.__size(), 0);
+  ASSERT_EQ(t.__empty(), true);
 }
