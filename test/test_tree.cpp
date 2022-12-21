@@ -280,6 +280,18 @@ TEST(TreeTest, int_basic_begin4) {
   ASSERT_EQ(itr, t.__end());
 }
 
+TEST(TreeTest, int_basic_begin_const) {
+  ft::__tree<int, int, ft::Identity<int> > data;
+  data.__insert(1);
+  const ft::__tree<int, int, ft::Identity<int> > t(data.__begin(),
+                                                   data.__end());
+  ft::__tree<int, int, ft::Identity<int> >::__const_iterator itr = t.__begin();
+  ASSERT_EQ(*itr, 1);
+
+  ++itr;
+  ASSERT_EQ(itr, t.__end());
+}
+
 // __end
 TEST(TreeTest, int_basic_end) {
   ft::__tree<int, int, ft::Identity<int> > t;

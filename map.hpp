@@ -29,7 +29,7 @@ public:
   typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
                           Allocator>::iterator iterator;
   typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
-                          Allocator>::const_iterator const_iterator;
+                          Allocator>::__const_iterator const_iterator;
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -92,7 +92,7 @@ public:
     return itr->second;
   }
   const T& at(const Key& key) const {
-    iterator itr = find(key);
+    const_iterator itr = find(key);
     if (itr == end()) {
       throw std::out_of_range("Error: index is out of range.");
     }
@@ -142,10 +142,10 @@ public:
   iterator find(const Key& key) { return __tree_.__find(key); }
   const_iterator find(const Key& key) const { return __tree_.__find(key); }
   ft::pair<iterator, iterator> equal_range(const Key& key) {
-    return ft::make_pair(lower_bound(key), upper_bound(key));
+    return __tree_.__equal_range(key);
   }
   ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
-    return ft::make_pair(lower_bound(key), upper_bound(key));
+    return __tree_.__equal_range_const(key);
   }
   iterator lower_bound(const Key& key) { return __tree_.__lower_bound(key); }
   const_iterator lower_bound(const Key& key) const {

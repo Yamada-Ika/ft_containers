@@ -80,6 +80,12 @@
 		"__hash_table": "cpp",
 		"__split_buffer": "cpp",
 		"__tree": "cpp",
-		"filesystem": "cpp"
+		"filesystem": "cpp",
+		"__debug": "cpp",
+		"__string": "cpp",
+		"bitset": "cpp",
+		"locale": "cpp",
+		"__config": "cpp",
+		"version": "cpp"
 	},
 }

@@ -15,6 +15,9 @@ template <class Key, class Compare = ft::less<Key>,
           class Allocator = std::allocator<Key> >
 class set {
 public:
+  /*
+  *  Member types
+  */
   typedef Key key_type;
   typedef Key value_type;
   typedef std::size_t size_type;
@@ -30,23 +33,44 @@ public:
       typename __tree<Key, Key, ft::Identity<Key>, Compare, Allocator>::iterator
           iterator;
   typedef typename __tree<Key, Key, ft::Identity<Key>, Compare,
-                          Allocator>::const_iterator const_iterator;
+                          Allocator>::__const_iterator const_iterator;
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
   typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+  /*
+  *  Member types
+  */
   set() {}
-  explicit set(const Compare& comp, const Allocator& alloc = Allocator());
+
+  explicit set(const Compare& comp, const Allocator& alloc = Allocator())
+      : __tree_(comp, alloc) {}
+
   template <class InputIt>
   set(InputIt first, InputIt last, const Compare& comp = Compare(),
-      const Allocator& alloc = Allocator());
-  set(const set& other);
+      const Allocator& alloc = Allocator())
+      : __tree_(comp, alloc) {
+    insert(first, last);
+  }
 
-  ~set() {}
+  set(const set& other) { *this = other; }
 
-  set& operator=(const set& other);
+  ~set() { __tree_.~__tree(); }
 
-  allocator_type get_allocator() const;
+  set& operator=(const set& other) {
+    if (this == &other)
+      return *this;
 
+    __tree_ = other.__tree_;
+    return *this;
+  }
+
+  allocator_type get_allocator() const {
+    return allocator_type(__tree_.__get_allocator());
+  }
+
+  /*
+  *  Iterators
+  */
   iterator begin() { return __tree_.__begin(); }
   const_iterator begin() const { return __tree_.__begin(); }
   iterator end() { return __tree_.__end(); }
@@ -56,9 +80,16 @@ public:
   reverse_iterator rend() { return __tree_.__rend(); }
   const_reverse_iterator rend() const { return __tree_.__rend(); }
 
+  /*
+  *  Capacity
+  */
   bool empty() const { return __tree_.__empty(); }
   size_type size() const { return __tree_.__size(); }
   size_type max_size() const { return __tree_.__max_size(); }
+
+  /*
+  *  Modifiers
+  */
   void clear() { erase(begin(), end()); }
   ft::pair<iterator, bool> insert(const value_type& value) {
     return __tree_.__insert(value);
@@ -76,14 +107,15 @@ public:
   }
   size_type erase(const Key& key) { return __tree_.__erase(key); }
   void swap(set& other);
+
   size_type count(const Key& key) const { return __tree_.__count(key); }
   iterator find(const Key& key) { return __tree_.__find(key); }
   const_iterator find(const Key& key) const { return __tree_.__find(key); }
   ft::pair<iterator, iterator> equal_range(const Key& key) {
-    return ft::make_pair(lower_bound(key), upper_bound(key));
+    return __tree_.__equal_range(key);
   }
   ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
-    return ft::make_pair(lower_bound(key), upper_bound(key));
+    return __tree_.__equal_range_const(key);
   }
   iterator lower_bound(const Key& key) { return __tree_.__lower_bound(key); }
   const_iterator lower_bound(const Key& key) const {

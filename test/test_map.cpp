@@ -366,26 +366,47 @@ TEST(MapTest, int_basic_begin_const) {
   ASSERT_EQ(libitr->second, myitr->second);
 }
 
-TEST(MapTest, int_basic_begin_const1) {
-  std::map<int, int> liborg;
-  liborg.insert(std::make_pair(1, 1));
-  liborg.insert(std::make_pair(2, 1));
-  const std::map<int, int> libmp(liborg.begin(), liborg.end());
+// TEST(MapTest, int_basic_begin_const1) {
+//   std::map<int, int> liborg;
+//   liborg.insert(std::make_pair(1, 1));
+//   liborg.insert(std::make_pair(2, 1));
+//   const std::map<int, int> libmp(liborg.begin(), liborg.end());
 
-  ft::map<int, int> myorg;
-  myorg.insert(ft::make_pair(1, 1));
-  myorg.insert(ft::make_pair(2, 1));
-  const ft::map<int, int> mymp(myorg.begin(), myorg.end());
+//   ft::map<int, int> myorg;
+//   myorg.insert(ft::make_pair(1, 1));
+//   myorg.insert(ft::make_pair(2, 1));
+//   const ft::map<int, int> mymp(myorg.begin(), myorg.end());
 
-  std::map<int, int>::iterator libitr = libmp.begin();
-  ft::map<int, int>::iterator myitr = mymp.begin();
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-  libitr++;
-  mymp++;
-  ASSERT_EQ(libitr->first, myitr->first);
-  ASSERT_EQ(libitr->second, myitr->second);
-}
+//   std::map<int, int>::const_iterator libitr = libmp.begin();
+//   ft::map<int, int>::const_iterator myitr = mymp.begin();
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   libitr++;
+//   mymp++;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+// }
+
+// TEST(MapTest, int_basic_begin_const2) {
+//   std::map<int, int> liborg;
+//   liborg.insert(std::make_pair(1, 1));
+//   liborg.insert(std::make_pair(2, 1));
+//   const std::map<int, int> libmp(liborg.begin(), liborg.end());
+
+//   ft::map<int, int> myorg;
+//   myorg.insert(ft::make_pair(1, 1));
+//   myorg.insert(ft::make_pair(2, 1));
+//   const ft::map<int, int> mymp(myorg.begin(), myorg.end());
+
+//   std::map<int, int>::const_iterator libitr = libmp.begin();
+//   ft::map<int, int>::const_iterator myitr = mymp.begin();
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+//   ++libitr;
+//   ++mymp;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+// }
 
 // end
 TEST(MapTest, int_basic_end) {
@@ -425,6 +446,25 @@ TEST(MapTest, int_basic_end1) {
   ASSERT_EQ(libitr->first, myitr->first);
   ASSERT_EQ(libitr->second, myitr->second);
 }
+
+// TEST(MapTest, int_basic_end_const1) {
+//   std::map<int, int> liborg;
+//   liborg.insert(std::make_pair(1, 1));
+//   liborg.insert(std::make_pair(2, 1));
+//   const std::map<int, int> libmp(liborg.begin(), liborg.end());
+
+//   ft::map<int, int> myorg;
+//   myorg.insert(ft::make_pair(1, 1));
+//   myorg.insert(ft::make_pair(2, 1));
+//   const ft::map<int, int> mymp(myorg.begin(), myorg.end());
+
+//   std::map<int, int>::const_iterator libitr = libmp.end();
+//   ft::map<int, int>::const_iterator myitr = mymp.end();
+//   libitr--;
+//   mymp--;
+//   ASSERT_EQ(libitr->first, myitr->first);
+//   ASSERT_EQ(libitr->second, myitr->second);
+// }
 
 // rbegin
 TEST(MapTest, int_basic_rbegin) {

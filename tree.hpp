@@ -26,7 +26,7 @@ public:
   typedef typename allocator_type::pointer pointer;
   typedef typename allocator_type::const_pointer const_pointer;
   typedef pointer iterator;
-  typedef const_pointer const_iterator;
+  typedef const_pointer __const_iterator;
   typedef __node Self;
   typedef __node* node_pointer;
 
@@ -162,15 +162,106 @@ private:
       return __node<T, Allocator>::__get_min_node(nd->right);
     }
 
-    //                       G
-    //               +-------+-------+
-    //               P
-    //         +-----+-----+
-    //         N           S
-    //     +---+---+   +---+---+
-    //    NL      　　　　           SR
-    //                     +---+---+
-    //                             NE
+    // 左の子がいるノードまで親を辿る
+    __node_pointer p = nd->parent;
+    while (nd == p->right && nd->left->__is_nil_node()) {
+      nd = nd->parent;
+    }
+
+    return nd->parent;
+  }
+
+  __node_pointer __prev_node(__node_pointer nd) {
+    // TODO end nodeなら親を返すだけで良い
+    if (nd == __end_node_) {
+      return nd->parent;
+    }
+    // 左の子がある場合
+    // - 左の子を根とする部分木の一番右したの子を返す
+    if (!nd->left->__is_nil_node()) {
+      return __node<T, Allocator>::__get_max_node(nd->left, __end_node_);
+    }
+    // 右の子がいるノードまで親を辿る
+    __node_pointer p = nd->parent;
+    while (nd == p->left && nd->right->__is_nil_node()) {
+      nd = nd->parent;
+    }
+    // 以下のノードは訪れているので親を返す
+    // return nd->parent;
+    return nd->parent;
+  }
+};
+
+// const用のイテレータ
+template <typename T, typename Allocator>
+struct __const_tree_iterator {
+  typedef T value_type;
+  typedef const T& reference;
+  typedef T* pointer;
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef std::ptrdiff_t difference_type;
+  typedef __const_tree_iterator<T, Allocator> Self;
+  typedef typename __node<T, Allocator>::node_pointer __node_pointer;
+
+  // constructor
+  __const_tree_iterator() : __node_pointer_(NULL), __end_node_(NULL) {}
+  explicit __const_tree_iterator(const __node_pointer& bgn,
+                                 const __node_pointer& end)
+      : __node_pointer_(bgn), __end_node_(end) {}
+  __const_tree_iterator(const Self& other) { *this = other; }
+  Self& operator=(const Self& other) {
+    if (this == &other) {
+      return *this;
+    }
+    // TODO メモリ解放しないといけないかも？
+    __node_pointer_ = other.__node_pointer_;
+    __end_node_ = other.__end_node_;
+    return *this;
+  }
+
+  reference operator*() const { return __node_pointer_->value; }
+  pointer operator->() const { return &__node_pointer_->value; }
+  Self& operator++() {
+    __node_pointer_ = __next_node(__node_pointer_);
+    return *this;
+  }
+  Self operator++(int) {
+    Self tmp = *this;
+    operator++();
+    return tmp;
+  }
+  Self& operator--() {
+    __node_pointer_ = __prev_node(__node_pointer_);
+    return *this;
+  }
+  Self operator--(int) {
+    Self tmp = *this;
+    operator--();
+    return tmp;
+  }
+
+  friend bool operator==(const Self& lhs, const Self& rhs) {
+    return *lhs == *rhs;
+  }
+  friend bool operator!=(const Self& lhs, const Self& rhs) {
+    return !(lhs == rhs);
+  }
+
+private:
+  __node_pointer __node_pointer_;
+  __node_pointer __end_node_;
+
+  __node_pointer __next_node(__node_pointer nd) {
+    // TODO end nodeなら親を返すだけで良い
+    if (nd->right == __end_node_) {
+      return __end_node_;
+    }
+
+    // 　右の子がある場合
+    // 　- 右の子を根とする部分木の一番左下の子を返す
+    if (!nd->right->__is_nil_node()) {
+      return __node<T, Allocator>::__get_min_node(nd->right);
+    }
 
     // 左の子がいるノードまで親を辿る
     __node_pointer p = nd->parent;
@@ -195,7 +286,6 @@ private:
     __node_pointer p = nd->parent;
     while (nd == p->left && nd->right->__is_nil_node()) {
       nd = nd->parent;
-      LOG(ERROR) << "__prev_node/ loop";
     }
     // 以下のノードは訪れているので親を返す
     // return nd->parent;
@@ -220,13 +310,19 @@ public:
   typedef typename Allocator::template rebind<node>::other node_allocator;
   typedef typename node::node_pointer node_pointer;
   typedef __tree_iterator<value_type, Allocator> iterator;
-  typedef const iterator const_iterator;
+  typedef __const_tree_iterator<value_type, Allocator> __const_iterator;
   typedef typename std::reverse_iterator<iterator> reverse_iterator;
-  typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef typename std::reverse_iterator<__const_iterator>
+      __const_reverse_iterator;
 
   __tree()
       : node_alloc_(node_allocator()), root_(NULL),
         end_node_(__allocate_end_node()), __tree_size_(0) {}
+  __tree(iterator first, iterator last)
+      : node_alloc_(node_allocator()), root_(NULL),
+        end_node_(__allocate_end_node()), __tree_size_(0) {
+    __insert(first, last);
+  }
   explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
       : node_alloc_(node_allocator()), root_(NULL),
         end_node_(__allocate_end_node()), __comp_(comp), __tree_size_(0) {}
@@ -235,22 +331,26 @@ public:
   ~__tree() {}
 
   iterator __begin() { return iterator(__begin_node(), __end_node()); }
-  const_iterator __begin() const {
-    return iterator(__begin_node(), __end_node());
+  __const_iterator __begin() const {
+    return __const_iterator(__begin_node(), __end_node());
   }
   iterator __end() { return iterator(__end_node(), __end_node()); }
-  const_iterator __end() const { return iterator(__end_node(), __end_node()); }
+  __const_iterator __end() const {
+    return __const_iterator(__end_node(), __end_node());
+  }
   reverse_iterator __rbegin() {
     return reverse_iterator(iterator(__end_node(), __end_node()));
   }
-  const_reverse_iterator __rbegin() const {
-    return reverse_iterator(__end_node(), __end_node());
+  __const_reverse_iterator __rbegin() const {
+    return __const_reverse_iterator(
+        __const_iterator(__end_node(), __end_node()));
   }
   reverse_iterator __rend() {
     return reverse_iterator(iterator(__begin_node(), __end_node()));
   }
-  const_reverse_iterator __rend() const {
-    return reverse_iterator(iterator(__begin_node(), __end_node()));
+  __const_reverse_iterator __rend() const {
+    return __const_reverse_iterator(
+        __const_iterator(__begin_node(), __end_node()));
   }
 
   node_pointer __end_node() const { return end_node_; }
@@ -267,6 +367,12 @@ public:
 
   //  Inserts value in the position as close as possible to the position just prior to pos.
   iterator __insert(iterator pos, const_reference value) { return __end(); }
+
+  void __insert(iterator first, iterator last) {
+    for (iterator itr = first; itr != last; ++itr) {
+      __insert(*itr);
+    }
+  }
 
   // ノードの要素を返す
   size_type __size() const { return __tree_size_; }
@@ -287,8 +393,8 @@ public:
     // 一致してない == 見つからなかった
     return __end();
   }
-  const_iterator __find(const key_type& key) const {
-    const_iterator target = __lower_bound(key);
+  __const_iterator __find(const key_type& key) const {
+    __const_iterator target = __lower_bound_const(key);
     // 見つからなかったか
     if (target == __end()) {
       return __end();
@@ -301,6 +407,18 @@ public:
     return __end();
   }
 
+  // equal_range
+  ft::pair<iterator, iterator> __equal_range(const Key& key) {
+    return ft::make_pair(__lower_bound(key), __uppper_bound(key));
+  }
+  // ft::pair<__const_iterator, __const_iterator> __equal_range(const Key& key) const {
+  //   return ft::make_pair(__lower_bound(key), __upper_bound(key));
+  // }
+  ft::pair<__const_iterator, __const_iterator>
+  __equal_range_const(const Key& key) const {
+    return ft::make_pair(__lower_bound_const(key), __upper_bound_const(key));
+  }
+
   // lower_bound　
   // keyと一緒か大きい最初？一番近いイテレータを返す
   iterator __lower_bound(const Key& key) {
@@ -310,12 +428,19 @@ public:
     }
     return iterator(ptr, __end_node());
   }
-  const_iterator __lower_bound(const Key& key) const {
+  // __const_iterator __lower_bound(const Key& key) const {
+  //   node_pointer ptr = __lower_bound_pointer(key);
+  //   if (ptr == NULL) {
+  //     return __end();
+  //   }
+  //   return __const_iterator(ptr, __end_node());
+  // }
+  __const_iterator __lower_bound_const(const Key& key) const {
     node_pointer ptr = __lower_bound_pointer(key);
     if (ptr == NULL) {
       return __end();
     }
-    return const_iterator(ptr, __end_node());
+    return __const_iterator(ptr, __end_node());
   }
 
   // upper bound
@@ -336,8 +461,24 @@ public:
     // itrのkeyはkより大きいのでそのまま返す
     return itr;
   }
-  const_iterator __upper_bound(const Key& k) {
-    iterator itr = __lower_bound(k);
+  // __const_iterator __upper_bound(const Key& k) const {
+  //   __const_iterator itr = __lower_bound(k);
+
+  //   // itrがendの場合、見つかってないのでendを返す
+  //   if (itr == __end()) {
+  //     return __end();
+  //   }
+
+  //   // itrのkeyとkが同じの場合、インクリメントしたイテレータを返す
+  //   if (k == KeyOfValue()(*itr)) {
+  //     return ++itr;
+  //   }
+
+  //   // itrのkeyはkより大きいのでそのまま返す
+  //   return itr;
+  // }
+  __const_iterator __upper_bound_const(const Key& k) const {
+    __const_iterator itr = __lower_bound_const(k);
 
     // itrがendの場合、見つかってないのでendを返す
     if (itr == __end()) {
