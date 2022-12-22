@@ -106,8 +106,18 @@ public:
     return __tree_.__erase(first, last);
   }
   size_type erase(const Key& key) { return __tree_.__erase(key); }
-  void swap(set& other);
+  void swap(set& other) {
+    set tmp;
+    tmp.insert(other.begin(), other.end());
+    other.clear();
+    other.insert(begin(), end());
+    clear();
+    insert(tmp.begin(), tmp.end());
+  }
 
+  /*
+  *  Lookup
+  */
   size_type count(const Key& key) const { return __tree_.__count(key); }
   iterator find(const Key& key) { return __tree_.__find(key); }
   const_iterator find(const Key& key) const { return __tree_.__find(key); }
@@ -119,14 +129,46 @@ public:
   }
   iterator lower_bound(const Key& key) { return __tree_.__lower_bound(key); }
   const_iterator lower_bound(const Key& key) const {
-    return __tree_.__lower_bound(key);
+    return __tree_.__lower_bound_const(key);
   }
   iterator upper_bound(const Key& key) { return __tree_.__upper_bound(key); }
   const_iterator upper_bound(const Key& key) const {
     return __tree_.__upper_bound(key);
   }
+
+  /*
+  *  Observers
+  */
   key_compare key_comp() const { return __tree_.__key_comp(); }
   value_compare value_comp() const { return key_comp(); }
+
+  /*
+  *  Non-member functions
+  */
+  friend bool operator==(const ft::set<Key, Compare, Alloc>& lhs,
+                         const ft::set<Key, Compare, Alloc>& rhs) {
+    return lhs.__tree_ == rhs.__tree_;
+  }
+  friend bool operator!=(const ft::set<Key, Compare, Alloc>& lhs,
+                         const ft::set<Key, Compare, Alloc>& rhs) {
+    return lhs.__tree_ != rhs.__tree_;
+  }
+  friend bool operator<(const ft::set<Key, Compare, Alloc>& lhs,
+                        const ft::set<Key, Compare, Alloc>& rhs) {
+    return lhs.__tree_ < rhs.__tree_;
+  }
+  friend bool operator>(const ft::set<Key, Compare, Alloc>& lhs,
+                        const ft::set<Key, Compare, Alloc>& rhs) {
+    return lhs.__tree_ >= rhs.__tree_;
+  }
+  friend bool operator>=(const ft::set<Key, Compare, Alloc>& lhs,
+                         const ft::set<Key, Compare, Alloc>& rhs) {
+    return lhs.__tree_ > rhs.__tree_;
+  }
+  friend bool operator<=(const ft::set<Key, Compare, Alloc>& lhs,
+                         const ft::set<Key, Compare, Alloc>& rhs) {
+    return lhs.__tree_ <= rhs.__tree_;
+  }
 
 private:
   typedef typename ft::__tree<key_type, key_type, ft::Identity<value_type>,
@@ -136,29 +178,14 @@ private:
   __tree __tree_;
 };
 
-// compare operators
+/*
+*  Non-member functions
+*/
 template <class Key, class Compare, class Alloc>
-bool operator==(const ft::set<Key, Compare, Alloc>& lhs,
-                const ft::set<Key, Compare, Alloc>& rhs);
-template <class Key, class Compare, class Alloc>
-bool operator!=(const ft::set<Key, Compare, Alloc>& lhs,
-                const ft::set<Key, Compare, Alloc>& rhs);
-template <class Key, class Compare, class Alloc>
-bool operator<(const ft::set<Key, Compare, Alloc>& lhs,
-               const ft::set<Key, Compare, Alloc>& rhs);
-template <class Key, class Compare, class Alloc>
-bool operator>(const ft::set<Key, Compare, Alloc>& lhs,
-               const ft::set<Key, Compare, Alloc>& rhs);
-template <class Key, class Compare, class Alloc>
-bool operator>=(const ft::set<Key, Compare, Alloc>& lhs,
-                const ft::set<Key, Compare, Alloc>& rhs);
-template <class Key, class Compare, class Alloc>
-bool operator<=(const ft::set<Key, Compare, Alloc>& lhs,
-                const ft::set<Key, Compare, Alloc>& rhs);
-
-// swap
-template <class Key, class Compare, class Alloc>
-void swap(ft::set<Key, Compare, Alloc>& lhs, ft::set<Key, Compare, Alloc>& rhs);
+void swap(ft::set<Key, Compare, Alloc>& lhs,
+          ft::set<Key, Compare, Alloc>& rhs) {
+  lhs.swap(rhs);
+}
 
 }; // namespace ft
 

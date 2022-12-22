@@ -1,25 +1,18 @@
-#include "../vector.hpp"
-#include "../stack.hpp"
-#include "../pair.hpp"
-#include <cassert>
 #include <iostream>
-#include <vector>
-#include <stack>
-#include <deque>
 #include <set>
-#include <list>
-#include <map>
-#include <stdio.h>
-#include <utility>
-#include <memory>
 
-int main(int ac, char** av) {
-  std::set<int> st;
-  std::map<int> mp;
+using namespace std;
+int main(void) {
+  // Your code here!
+  set<int> st;
   st.insert(1);
-  std::set<int>::iterator itr = st.begin();
-
-  mp.value_comp();
-
-  std::cerr << *itr << std::endl;
+  st.insert(2);
+  st.insert(3);
+  st.insert(4);
+  auto itr = st.begin();
+  st.erase(itr, ++itr);
+  cout << "size " << st.size() << endl;
+  for (auto e : st) {
+    cout << e << endl;
+  }
 }
