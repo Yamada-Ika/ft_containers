@@ -20,7 +20,6 @@ public:
   typedef T value_type;
   typedef value_type& reference;
   typedef const value_type& const_reference;
-  // typedef Allocator allocator_type;
   typedef typename Allocator::template rebind<__node>::other node_allocator;
   typedef node_allocator allocator_type;
   typedef typename allocator_type::pointer pointer;
@@ -61,18 +60,6 @@ public:
     return *this;
   }
 
-  static node_pointer __get_min_node(node_pointer nd) {
-    while (!nd->__is_nil_node()) {
-      nd = nd->left;
-    }
-    return nd->parent;
-  }
-  static node_pointer __get_max_node(node_pointer nd, node_pointer end) {
-    while (!nd->__is_nil_node()) {
-      nd = nd->right;
-    }
-    return nd->parent;
-  }
   bool __is_black_node() { return __node_kind_ & (1 << BLACK); }
   bool __is_red_node() { return __node_kind_ & (1 << RED); }
   bool __is_nil_node() {
@@ -87,6 +74,68 @@ public:
 private:
   allocator_type node_alloc;
 };
+
+/*
+ * ノードを扱う関数群
+*/
+template <typename NodePtr>
+static NodePtr __get_min_node(NodePtr node) {
+  while (!node->__is_nil_node()) {
+    node = node->left;
+  }
+  return node->parent;
+}
+
+template <typename NodePtr>
+static NodePtr __get_max_node(NodePtr node) {
+  while (!node->__is_nil_node()) {
+    node = node->right;
+  }
+  return node->parent;
+}
+
+template <typename NodePtr>
+static NodePtr __next_node(NodePtr node, NodePtr end_node) {
+  // TODO end nodeなら親を返すだけで良い
+  if (node->right == end_node) {
+    return end_node;
+  }
+
+  // 　右の子がある場合
+  // 　- 右の子を根とする部分木の一番左下の子を返す
+  if (!node->right->__is_nil_node()) {
+    return __get_min_node(node->right);
+  }
+
+  // 左の子がいるノードまで親を辿る
+  NodePtr p = node->parent;
+  while (node == p->right && node->left->__is_nil_node()) {
+    node = node->parent;
+  }
+
+  return node->parent;
+}
+
+template <typename NodePtr>
+static NodePtr __prev_node(NodePtr node, NodePtr end_node) {
+  // TODO end nodeなら親を返すだけで良い
+  if (node == end_node) {
+    return node->parent;
+  }
+  // 左の子がある場合
+  // - 左の子を根とする部分木の一番右したの子を返す
+  if (!node->left->__is_nil_node()) {
+    return __get_max_node(node->left);
+  }
+  // 右の子がいるノードまで親を辿る
+  NodePtr p = node->parent;
+  while (node == p->left && node->right->__is_nil_node()) {
+    node = node->parent;
+  }
+  // 以下のノードは訪れているので親を返す
+  // return node->parent;
+  return node->parent;
+}
 
 // tree用のイテレータ
 // ・イテレータをnextするアルゴリズム
@@ -121,7 +170,7 @@ struct __tree_iterator {
   reference operator*() const { return __node_pointer_->value; }
   pointer operator->() const { return &__node_pointer_->value; }
   Self& operator++() {
-    __node_pointer_ = __next_node(__node_pointer_);
+    __node_pointer_ = __next_node(__node_pointer_, __end_node_);
     return *this;
   }
   Self operator++(int) {
@@ -130,7 +179,7 @@ struct __tree_iterator {
     return tmp;
   }
   Self& operator--() {
-    __node_pointer_ = __prev_node(__node_pointer_);
+    __node_pointer_ = __prev_node(__node_pointer_, __end_node_);
     return *this;
   }
   Self operator--(int) {
@@ -149,47 +198,6 @@ struct __tree_iterator {
 private:
   __node_pointer __node_pointer_;
   __node_pointer __end_node_;
-
-  __node_pointer __next_node(__node_pointer nd) {
-    // TODO end nodeなら親を返すだけで良い
-    if (nd->right == __end_node_) {
-      return __end_node_;
-    }
-
-    // 　右の子がある場合
-    // 　- 右の子を根とする部分木の一番左下の子を返す
-    if (!nd->right->__is_nil_node()) {
-      return __node<T, Allocator>::__get_min_node(nd->right);
-    }
-
-    // 左の子がいるノードまで親を辿る
-    __node_pointer p = nd->parent;
-    while (nd == p->right && nd->left->__is_nil_node()) {
-      nd = nd->parent;
-    }
-
-    return nd->parent;
-  }
-
-  __node_pointer __prev_node(__node_pointer nd) {
-    // TODO end nodeなら親を返すだけで良い
-    if (nd == __end_node_) {
-      return nd->parent;
-    }
-    // 左の子がある場合
-    // - 左の子を根とする部分木の一番右したの子を返す
-    if (!nd->left->__is_nil_node()) {
-      return __node<T, Allocator>::__get_max_node(nd->left, __end_node_);
-    }
-    // 右の子がいるノードまで親を辿る
-    __node_pointer p = nd->parent;
-    while (nd == p->left && nd->right->__is_nil_node()) {
-      nd = nd->parent;
-    }
-    // 以下のノードは訪れているので親を返す
-    // return nd->parent;
-    return nd->parent;
-  }
 };
 
 // const用のイテレータ
@@ -222,7 +230,7 @@ struct __const_tree_iterator {
   reference operator*() const { return __node_pointer_->value; }
   pointer operator->() const { return &__node_pointer_->value; }
   Self& operator++() {
-    __node_pointer_ = __next_node(__node_pointer_);
+    __node_pointer_ = __next_node(__node_pointer_, __end_node_);
     return *this;
   }
   Self operator++(int) {
@@ -231,7 +239,7 @@ struct __const_tree_iterator {
     return tmp;
   }
   Self& operator--() {
-    __node_pointer_ = __prev_node(__node_pointer_);
+    __node_pointer_ = __prev_node(__node_pointer_, __end_node_);
     return *this;
   }
   Self operator--(int) {
@@ -250,47 +258,6 @@ struct __const_tree_iterator {
 private:
   __node_pointer __node_pointer_;
   __node_pointer __end_node_;
-
-  __node_pointer __next_node(__node_pointer nd) {
-    // TODO end nodeなら親を返すだけで良い
-    if (nd->right == __end_node_) {
-      return __end_node_;
-    }
-
-    // 　右の子がある場合
-    // 　- 右の子を根とする部分木の一番左下の子を返す
-    if (!nd->right->__is_nil_node()) {
-      return __node<T, Allocator>::__get_min_node(nd->right);
-    }
-
-    // 左の子がいるノードまで親を辿る
-    __node_pointer p = nd->parent;
-    while (nd == p->right && nd->left->__is_nil_node()) {
-      nd = nd->parent;
-    }
-
-    return nd->parent;
-  }
-
-  __node_pointer __prev_node(__node_pointer nd) {
-    // TODO end nodeなら親を返すだけで良い
-    if (nd == __end_node_) {
-      return nd->parent;
-    }
-    // 左の子がある場合
-    // - 左の子を根とする部分木の一番右したの子を返す
-    if (!nd->left->__is_nil_node()) {
-      return __node<T, Allocator>::__get_max_node(nd->left, __end_node_);
-    }
-    // 右の子がいるノードまで親を辿る
-    __node_pointer p = nd->parent;
-    while (nd == p->left && nd->right->__is_nil_node()) {
-      nd = nd->parent;
-    }
-    // 以下のノードは訪れているので親を返す
-    // return nd->parent;
-    return nd->parent;
-  }
 };
 
 // 二分探索木を表すクラス
@@ -559,16 +526,9 @@ private:
   // node操作するメソッド ここから
   // TODO こういうのはtemplateにしてクラス外にして良い気がする
   bool __has_right_child(node_pointer nd) { return !__has_no_right_child(nd); }
-  bool __has_no_right_child(node_pointer nd) {
-    // return nd->right == NULL || nd->right == __end_node();
-    // return nd->right->__is_nil_node();
-    return nd->right == NULL;
-  }
+  bool __has_no_right_child(node_pointer nd) { return nd->right == NULL; }
   bool __has_left_child(node_pointer nd) { return !__has_no_left_child(nd); }
-  bool __has_no_left_child(node_pointer nd) {
-    // return nd->left->__is_nil_node();
-    return nd->left == NULL;
-  }
+  bool __has_no_left_child(node_pointer nd) { return nd->left == NULL; }
   bool __has_both_child(node_pointer nd) {
     return __has_left_child(nd) && __has_right_child(nd);
   }
@@ -681,7 +641,7 @@ private:
     if (__empty()) {
       return __end_node();
     }
-    return node::__get_min_node(root_);
+    return __get_min_node(root_);
   }
 
   size_type __erase_helper(const Key& key) {
@@ -732,7 +692,7 @@ private:
 
     // 子を2つ持つ
     LOG(ERROR) << "__erase_node_pointer/ n has two child";
-    node_pointer partial_min = node::__get_min_node(n->right);
+    node_pointer partial_min = __get_min_node(n->right);
     // targetとpartial_minを入れ替える
     __exchange_node(n, partial_min);
     LOG(ERROR) << "__erase_node_pointer/ after __exchange_node";

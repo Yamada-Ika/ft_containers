@@ -145,28 +145,28 @@ public:
   /*
   *  Non-member functions
   */
-  friend bool operator==(const ft::set<Key, Compare, Alloc>& lhs,
-                         const ft::set<Key, Compare, Alloc>& rhs) {
+  friend bool operator==(const ft::set<Key, Compare, Allocator>& lhs,
+                         const ft::set<Key, Compare, Allocator>& rhs) {
     return lhs.__tree_ == rhs.__tree_;
   }
-  friend bool operator!=(const ft::set<Key, Compare, Alloc>& lhs,
-                         const ft::set<Key, Compare, Alloc>& rhs) {
+  friend bool operator!=(const ft::set<Key, Compare, Allocator>& lhs,
+                         const ft::set<Key, Compare, Allocator>& rhs) {
     return lhs.__tree_ != rhs.__tree_;
   }
-  friend bool operator<(const ft::set<Key, Compare, Alloc>& lhs,
-                        const ft::set<Key, Compare, Alloc>& rhs) {
+  friend bool operator<(const ft::set<Key, Compare, Allocator>& lhs,
+                        const ft::set<Key, Compare, Allocator>& rhs) {
     return lhs.__tree_ < rhs.__tree_;
   }
-  friend bool operator>(const ft::set<Key, Compare, Alloc>& lhs,
-                        const ft::set<Key, Compare, Alloc>& rhs) {
-    return lhs.__tree_ >= rhs.__tree_;
-  }
-  friend bool operator>=(const ft::set<Key, Compare, Alloc>& lhs,
-                         const ft::set<Key, Compare, Alloc>& rhs) {
+  friend bool operator>(const ft::set<Key, Compare, Allocator>& lhs,
+                        const ft::set<Key, Compare, Allocator>& rhs) {
     return lhs.__tree_ > rhs.__tree_;
   }
-  friend bool operator<=(const ft::set<Key, Compare, Alloc>& lhs,
-                         const ft::set<Key, Compare, Alloc>& rhs) {
+  friend bool operator>=(const ft::set<Key, Compare, Allocator>& lhs,
+                         const ft::set<Key, Compare, Allocator>& rhs) {
+    return lhs.__tree_ >= rhs.__tree_;
+  }
+  friend bool operator<=(const ft::set<Key, Compare, Allocator>& lhs,
+                         const ft::set<Key, Compare, Allocator>& rhs) {
     return lhs.__tree_ <= rhs.__tree_;
   }
 

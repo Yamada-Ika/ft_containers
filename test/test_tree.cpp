@@ -2351,3 +2351,40 @@ TEST(TreeTest, int_erase_iterator_3_8) {
   ASSERT_EQ(t.__size(), 0);
   ASSERT_EQ(t.__empty(), true);
 }
+
+TEST(TreeTest, int_comp_operator_1) {
+  ft::__tree<int, int, ft::Identity<int> > t1;
+  t1.__insert(1);
+  t1.__insert(2);
+  t1.__insert(3);
+  t1.__insert(4);
+  t1.__insert(5);
+  ft::__tree<int, int, ft::Identity<int> > t2;
+  t2.__insert(1);
+  t2.__insert(2);
+  t2.__insert(3);
+  t2.__insert(4);
+  t2.__insert(5);
+
+  ASSERT_EQ(t1 == t2, true);
+  ASSERT_EQ(t1 != t2, false);
+  ASSERT_EQ(t1 < t2, false);
+  ASSERT_EQ(t1 > t2, false);
+  ASSERT_EQ(t1 <= t2, true);
+  ASSERT_EQ(t1 >= t2, true);
+}
+
+TEST(TreeTest, int_comp_operator_2) {
+  ft::__tree<int, int, ft::Identity<int> > t1;
+  t1.__insert(1);
+
+  ft::__tree<int, int, ft::Identity<int> > t2;
+  t2.__insert(1);
+
+  ASSERT_EQ(t1 == t2, true);
+  ASSERT_EQ(t1 != t2, false);
+  ASSERT_EQ(t1 < t2, false);
+  ASSERT_EQ(t1 > t2, false);
+  ASSERT_EQ(t1 <= t2, true);
+  ASSERT_EQ(t1 >= t2, true);
+}
