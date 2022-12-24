@@ -758,15 +758,6 @@ private:
     node_pointer sl = s->left;
     node_pointer sr = s->right;
 
-    if (sl == NULL) {
-      LOG(ERROR) << "__erase/ sl == NULL";
-      assert(false);
-    }
-    if (sr == NULL) {
-      LOG(ERROR) << "__erase/ sr == NULL";
-      assert(false);
-    }
-
     sl->parent = s;
     sr->parent = s;
 
@@ -939,8 +930,6 @@ private:
       sl->__set_black_kind();
       return 1;
     }
-    LOG(ERROR) << "__erase/ unreachable";
-    assert(false);
     return 1;
   }
 
@@ -1068,8 +1057,6 @@ private:
         nl2->parent = n1;
         n1->right = nr2;
         nr2->parent = n1;
-      } else {
-        assert(false);
       }
 
       // TODO 色も交換する？

@@ -5,6 +5,7 @@
 #include <glog/logging.h>
 #include "is_integral.hpp"
 #include "utils.hpp"
+#include <cassert>
 
 namespace ft {
 

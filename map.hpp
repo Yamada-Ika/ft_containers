@@ -149,11 +149,11 @@ public:
   }
   iterator lower_bound(const Key& key) { return __tree_.__lower_bound(key); }
   const_iterator lower_bound(const Key& key) const {
-    return __tree_.__lower_bound(key);
+    return __tree_.__lower_bound_const(key);
   }
-  iterator upper_bound(const Key& key) { return __tree_.__upper_bound(key); }
+  iterator upper_bound(const Key& key) { return __tree_.__uppper_bound(key); }
   const_iterator upper_bound(const Key& key) const {
-    return __tree_.__upper_bound(key);
+    return __tree_.__upper_bound_const(key);
   }
 
   // TODO テスト
