@@ -2,7 +2,6 @@
 #define DEQUE_HPP
 
 #include <memory>
-#include <glog/logging.h>
 #include "is_integral.hpp"
 #include "utils.hpp"
 #include <cassert>
@@ -33,9 +32,7 @@ public:
   typedef deque_iterator Self;
 
   deque_iterator(pointer first, pointer pos, size_type size, size_type cap)
-      : first_(first), pos_(pos), size_(size), cap_(cap) {
-    LOG(ERROR) << "deque_iterator construct";
-  }
+      : first_(first), pos_(pos), size_(size), cap_(cap) {}
   deque_iterator(const Self& other) { *this = other; }
   ~deque_iterator() {}
   deque_iterator& operator=(const deque_iterator& other) {
@@ -111,9 +108,7 @@ public:
       //         |
       //        pos_
       size_type pos_to_r_buf_boundry = first_ + cap_ - pos_;
-      LOG(ERROR) << "operator[] n : " << n;
       n = (n - pos_to_r_buf_boundry) % cap_;
-      LOG(ERROR) << "operator[] n : " << n;
       return first_[n];
     }
     return pos_[n];
@@ -202,7 +197,7 @@ public:
 
   explicit deque(size_type count, const T& value = T(),
                  const Allocator& alloc = Allocator())
-      : alloc_(alloc), first_(allocate(buffer_size)), front_(NULL), back_{NULL},
+      : alloc_(alloc), first_(allocate(buffer_size)), front_(NULL), back_(NULL),
         current_bufsize(buffer_size) {
     assign_fill(count, value);
   }
@@ -225,7 +220,12 @@ public:
     assign_fill(count, value);
   }
 
-  deque(const deque& other) : deque(other.size()) { *this = other; }
+  deque(const deque& other)
+      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(NULL),
+        back_(NULL), current_bufsize(buffer_size) {
+    assign_fill(other.size(), T());
+    *this = other;
+  }
 
   pointer allocate(size_type sz) { return alloc_.allocate(sz); }
 
@@ -282,7 +282,6 @@ public:
     // TODO リファクタ
     if (size() == 0) {
       for (InputIt itr = first; itr != last; ++itr) {
-        LOG(ERROR) << "*itr " << *itr;
         push_back(*itr);
       }
       return;
@@ -427,18 +426,12 @@ public:
 
     push_back(at(old_size - 1));
     for (size_type i = old_size - 1; i >= pos_at; --i) {
-      LOG(ERROR) << "i " << i;
       at(i + 1) = at(i);
       if (i == 0) {
         break;
       }
     }
-    LOG(ERROR) << "after loop";
-    LOG(ERROR) << "pos_at     " << pos_at;
-    LOG(ERROR) << "old_size   " << old_size;
     at(pos_at) = value;
-    LOG(ERROR) << "first_     " << first_;
-    LOG(ERROR) << "pointer_at " << pointer_at(pos_at);
     return begin() + pos_at;
   }
   iterator insert(const_iterator pos, size_type count, const T& value) {
@@ -472,7 +465,6 @@ public:
       back_ = front_ + 1;
       return;
     }
-    LOG(ERROR) << "push_back last_index : " << last_index();
     // TODO　サイズチェック
     first_[last_index()] = value;
     // TODO mod
@@ -496,14 +488,12 @@ public:
     // TODO 初めてpush_frontされたらfront_とback_はNULL
     if (front_ == NULL && back_ == NULL) {
       size_type index_to_be_first = 0;
-      LOG(ERROR) << "push_front index_to_be_first : " << index_to_be_first;
       first_[index_to_be_first] = value;
       front_ = &(first_[index_to_be_first]);
       back_ = front_ + 1;
       return;
     }
     size_type index_to_be_first = calc_index_to_be_first(); // TODO mod
-    LOG(ERROR) << "push_front index_to_be_first : " << index_to_be_first;
     first_[index_to_be_first] = value;
     front_ = &(first_[index_to_be_first]);
   }
@@ -605,9 +595,6 @@ private:
       if (&front_[pos] >= &first_[current_bufsize]) {
         // front_が差している場所をインデックスに換算
         size_type index_at_front = front_ - first_;
-        LOG(ERROR) << "index_at_front  : " << index_at_front;
-        LOG(ERROR) << "return value at first["
-                   << (index_at_front + pos) % current_bufsize << "]";
         return first_ + (index_at_front + pos) % current_bufsize;
       }
       // 超えていなかったら

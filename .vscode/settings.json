@@ -1,5 +1,5 @@
 {
-	"clang-format.executable": "/usr/bin/clang-format",
+	"clang-format.executable": "/opt/homebrew/bin/clang-format",
 	"editor.formatOnSave": true,
 	"[cpp]": {
 		"editor.defaultFormatter": "xaver.clang-format"
@@ -87,6 +87,16 @@
 		"locale": "cpp",
 		"__config": "cpp",
 		"version": "cpp",
-		"*.txt": "cpp"
+		"*.txt": "cpp",
+		"__bits": "cpp",
+		"__errc": "cpp",
+		"__locale": "cpp",
+		"__mutex_base": "cpp",
+		"__node_handle": "cpp",
+		"__nullptr": "cpp",
+		"__threading_support": "cpp",
+		"__tuple": "cpp",
+		"complex": "cpp",
+		"ios": "cpp"
 	},
 }

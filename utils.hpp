@@ -2,7 +2,6 @@
 #define UTILS_HPP
 
 #include <cstddef>
-#include <glog/logging.h>
 
 namespace ft {
 // std::copy

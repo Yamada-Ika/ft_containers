@@ -118,10 +118,18 @@ public:
   const_reverse_iterator rbegin() const { return __tree_.__rbegin(); }
   reverse_iterator rend() { return __tree_.__rend(); }
   const_reverse_iterator rend() const { return __tree_.__rend(); }
-  bool empty() { return __tree_.__empty(); }
+
+  /*
+  *  Capacity
+  */
+  bool empty() const { return __tree_.__empty(); }
   size_type size() const { return __tree_.__size(); }
   size_type max_size() const { return __tree_.__max_size(); }
-  void clear();
+
+  /*
+  *  Modifiers
+  */
+  void clear() { erase(begin(), end()); }
   ft::pair<iterator, bool> insert(const value_type& value) {
     return __tree_.__insert(value);
   }
@@ -137,7 +145,18 @@ public:
     return __tree_.__erase(first, last);
   }
   size_type erase(const Key& key) { return __tree_.__erase(key); }
-  void swap(map& other);
+  void swap(map& other) {
+    map tmp;
+    tmp.insert(other.begin(), other.end());
+    other.clear();
+    other.insert(begin(), end());
+    clear();
+    insert(tmp.begin(), tmp.end());
+  }
+
+  /*
+  *  Lookup
+  */
   size_type count(const Key& key) const { return __tree_.__count(key); }
   iterator find(const Key& key) { return __tree_.__find(key); }
   const_iterator find(const Key& key) const { return __tree_.__find(key); }
@@ -156,11 +175,15 @@ public:
     return __tree_.__upper_bound_const(key);
   }
 
-  // TODO テスト
+  /*
+  *  Observers
+  */
   key_compare key_comp() const { return __tree_.__key_comp(); }
   value_compare value_comp() const { return value_compare(key_comp()); }
 
-  // compare functions
+  /*
+  *  Non-member functions
+  */
   friend bool operator==(const ft::map<Key, T, Compare, Allocator>& lhs,
                          const ft::map<Key, T, Compare, Allocator>& rhs) {
     return lhs.__tree_ == rhs.__tree_;
@@ -196,7 +219,10 @@ private:
 
 // swap
 template <class Key, class Compare, class Alloc>
-void swap(ft::map<Key, Compare, Alloc>& lhs, ft::map<Key, Compare, Alloc>& rhs);
+void swap(ft::map<Key, Compare, Alloc>& lhs,
+          ft::map<Key, Compare, Alloc>& rhs) {
+  lhs.swap(rhs);
+}
 }; // namespace ft
 
 #endif

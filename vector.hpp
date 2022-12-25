@@ -5,7 +5,6 @@
 #include "is_integral.hpp"
 #include <memory>
 #include <iostream>
-#include <glog/logging.h>
 
 namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
@@ -31,12 +30,7 @@ public:
   // ---- Constructor ----
   vector()
       : first(allocate(0)), last(first), reserved_last(first + size()),
-        alloc(allocator_type()) {
-    LOG(ERROR) << "constructor called";
-    LOG(ERROR) << "first         " << first;
-    LOG(ERROR) << "last          " << last;
-    LOG(ERROR) << "reserved_last " << reserved_last;
-  }
+        alloc(allocator_type()) {}
 
   explicit vector(const allocator_type& alloc) : alloc(alloc) {
     first = allocate(0);
@@ -67,12 +61,6 @@ public:
     last = first;
     reserved_last = first + size();
     resize(count, value);
-    LOG(ERROR) << "constructor called";
-    LOG(ERROR) << "first         " << first;
-    LOG(ERROR) << "last          " << last;
-    LOG(ERROR) << "reserved_last " << reserved_last;
-    LOG(ERROR) << "size          " << size();
-    LOG(ERROR) << "capacity      " << capacity();
   }
 
   template <typename InputIterator>
@@ -90,14 +78,15 @@ public:
   }
 
   // TODO deep copy
-  vector(const vector& other) : vector(other.size()) { *this = other; }
+  vector(const vector& other)
+      : first(allocate(0)), last(first), reserved_last(first + size()),
+        alloc(allocator_type()) {
+    resize(other.size(), T());
+    *this = other;
+  }
 
   // ---- Destructor ----
   ~vector() {
-    LOG(ERROR) << "destructor called";
-    LOG(ERROR) << "first         " << first;
-    LOG(ERROR) << "last          " << last;
-    LOG(ERROR) << "reserved_last " << reserved_last;
     clear();      // Call destructor
     deallocate(); // Deallocate memory
   }
@@ -220,8 +209,6 @@ public:
 
   // reserve : reserves storage
   void reserve(size_type sz) {
-    LOG(ERROR) << "reserve called";
-    LOG(ERROR) << "capacity " << capacity();
     if (sz <= capacity()) {
       return;
     }
@@ -250,11 +237,6 @@ public:
          riter != rend; ++riter) {
       destroy(&*riter);
     }
-    LOG(ERROR) << "after reserve called";
-    LOG(ERROR) << "first         " << first;
-    LOG(ERROR) << "last          " << last;
-    LOG(ERROR) << "reserved_last " << reserved_last;
-    LOG(ERROR) << "capacity      " << capacity();
   }
 
   // capacity : returns the number of elements that can be held in currently allocated storage
@@ -280,7 +262,6 @@ public:
   // iterator insert(const_iterator pos, InputIt first, InputIt last);
   template <class InputIt>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
-    LOG(ERROR) << "insert before dispatch";
     // 曖昧さ回避
     typedef typename ft::is_integral<InputIt>::type integral;
     return insert_dispatch(pos, first, last, integral());
@@ -289,7 +270,6 @@ public:
   template <class InputIt>
   iterator insert_dispatch(const_iterator pos, InputIt first, InputIt last,
                            false_type) {
-    LOG(ERROR) << "insert with iterator";
     size_type insert_from = pos - begin();
     iterator pos_itr = const_cast<iterator>(pos);
     for (iterator itr = first; itr != last; ++itr) {
@@ -302,12 +282,10 @@ public:
   template <class Integral>
   iterator insert_dispatch(const_iterator pos, Integral count, Integral value,
                            true_type) {
-    LOG(ERROR) << "insert with integral value";
     return insert_fill(pos, count, value);
   }
 
   iterator insert_fill(const_iterator pos, size_type count, const T& value) {
-    LOG(ERROR) << "insert called";
     // posにおけるインデックス
     size_type insert_from = pos - begin();
     size_type insert_to = insert_from + count - 1;
@@ -319,17 +297,9 @@ public:
       reserve(size() + count);
     }
 
-    LOG(ERROR) << "insert_from " << insert_from;
-    LOG(ERROR) << "insert_to   " << insert_to;
-    LOG(ERROR) << "size        " << size();
-    LOG(ERROR) << "capacity    " << capacity();
-
     // 後ろからposまで値をムーブ
-    LOG(ERROR) << "move to backward";
     for (size_type i = size() + count - 1; i > insert_to; --i) {
       first[i] = first[i - count];
-      LOG(ERROR) << "l1 first[" << i << "] " << first[i];
-      LOG(ERROR) << "l1 first[" << i - count << "] " << first[i - count];
       // ラップアラウンドによる意図せぬループを防ぐ
       if (i == 0) {
         break;
@@ -339,10 +309,8 @@ public:
     // TODO ラップアラウンド
     for (size_type i = insert_from; i <= insert_to; ++i) {
       first[i] = value;
-      LOG(ERROR) << "l2 first[" << i << "] " << first[i];
       ++last; //　挿入した分要素が増える
     }
-    LOG(ERROR) << "size         " << size();
     return begin() + insert_from;
   }
 
@@ -362,8 +330,6 @@ public:
     // TODO ラップアラウンド対策
     for (size_type i = erased_from; i + count <= size() - 1; ++i) {
       first[i] = first[i + count];
-      LOG(ERROR) << "first[" << i << "] " << first[i];
-      LOG(ERROR) << "first[" << i + count << "] " << first[i + count];
     }
     last -= count;
     // posの一個後ろのイテレータを返す
