@@ -188,7 +188,7 @@ struct __tree_iterator {
   }
 
   friend bool operator==(const Self& lhs, const Self& rhs) {
-    return *lhs == *rhs;
+    return lhs.__node_pointer_ == rhs.__node_pointer_;
   }
   friend bool operator!=(const Self& lhs, const Self& rhs) {
     return !(lhs == rhs);
@@ -269,6 +269,7 @@ public:
   typedef Val value_type;
   typedef Compare key_compare;
   typedef std::size_t size_type;
+  typedef std::ptrdiff_t difference_type;
   typedef Allocator allocator_type;
   typedef value_type& reference;
   typedef const value_type& const_reference;
@@ -464,7 +465,12 @@ public:
   }
 
   // max_size
-  size_type __max_size() const { return node_alloc_.max_size(); }
+  size_type __max_size() const {
+    // allocator_type alloc;
+    return ft::min<size_type>(node_alloc_.max_size(),
+                              std::numeric_limits<difference_type>::max());
+    // return alloc.max_size();
+  }
 
   // rootを返す
   // For testable

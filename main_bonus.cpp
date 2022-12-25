@@ -30,7 +30,16 @@ static void assert_eq(T1 expected, T2 got, const char* filename, int lineno) {
   assert(expected == got);
 }
 
+template <typename T1, typename T2>
+static void assert_neq(T1 expected, T2 got, const char* filename, int lineno) {
+  if (expected == got) {
+    dprintf(STDERR_FILENO, "%s:%d assertion failed\n", filename, lineno);
+  }
+  assert(expected != got);
+}
+
 #define ASSERT_EQ(exp, got) assert_eq(exp, got, __FILE__, __LINE__)
+#define ASSERT_NEQ(exp, got) assert_neq(exp, got, __FILE__, __LINE__)
 
 template <typename T>
 static void assertVector(std::vector<T>& libvec, ft::vector<T>& myvec) {
@@ -3492,10 +3501,28 @@ void test_set() {
   }
 
   {
+    std::cerr << "test_set/case 1 start" << std::endl;
     std::set<int> libdata;
     libdata.insert(1);
     ft::set<int> mydata;
     mydata.insert(1);
+
+    std::set<int>::iterator libditr = libdata.begin();
+    ft::set<int>::iterator myditr = mydata.begin();
+
+    ASSERT_EQ(*libditr, *myditr);
+    ++libditr;
+    ++myditr;
+    ASSERT_EQ(libditr, libdata.end());
+    ASSERT_EQ(myditr, mydata.end());
+
+    std::cerr << "size lib " << libdata.size() << ", my " << mydata.size()
+              << std::endl;
+    // ASSERT_NEQ(mydata.begin(), mydata.end());
+    if (mydata.begin() == mydata.end()) {
+      std::cerr << "error hoge" << std::endl;
+      std::exit(1);
+    }
 
     const std::set<int> libst(libdata.begin(), libdata.end());
     const ft::set<int> myst(mydata.begin(), mydata.end());
@@ -3503,6 +3530,8 @@ void test_set() {
     std::set<int>::const_iterator libitr = libst.begin();
     ft::set<int>::const_iterator myitr = myst.begin();
 
+    std::cerr << "size lib " << libst.size() << ", my " << myst.size()
+              << std::endl;
     ASSERT_EQ(libst.size(), myst.size());
 
     ASSERT_EQ(*libitr, *myitr);
@@ -4255,6 +4284,8 @@ void test_set() {
   {
     std::set<int> libst;
     ft::set<int> myst;
+    std::cerr << "lib max_size " << libst.max_size() << std::endl;
+    std::cerr << "my  max_size " << myst.max_size() << std::endl;
     ASSERT_EQ(libst.max_size(), myst.max_size());
   }
 

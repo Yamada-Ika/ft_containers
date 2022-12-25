@@ -49,6 +49,7 @@ public:
   set(InputIt first, InputIt last, const Compare& comp = Compare(),
       const Allocator& alloc = Allocator())
       : __tree_(comp, alloc) {
+    std::cerr << "set/constructor with iterator" << std::endl;
     insert(first, last);
   }
 
@@ -97,8 +98,9 @@ public:
   // iterator insert(iterator pos, const value_type& value);
   template <class InputIt>
   void insert(InputIt first, InputIt last) {
-    for (InputIt itr = first; itr != last; ++itr) {
-      insert(*itr);
+    for (; first != last; ++first) {
+      std::cerr << "set/insert loop" << std::endl;
+      insert(*first);
     }
   }
   iterator erase(iterator pos) { return __tree_.__erase(pos); }
