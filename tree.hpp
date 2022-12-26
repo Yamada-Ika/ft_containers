@@ -9,6 +9,7 @@
 #include "pair.hpp"
 #include "utils.hpp"
 #include <functional>
+#include <limits>
 
 namespace ft {
 
@@ -466,10 +467,21 @@ public:
 
   // max_size
   size_type __max_size() const {
-    // allocator_type alloc;
+    allocator_type alloc;
+    // return alloc.max_size();
+
+    // std::cerr << "alloc.max_size() " << alloc.max_size() << std::endl;
+    // std::cerr << "node_alloc_.max_size() " << node_alloc_.max_size()
+    //           << std::endl;
+    // std::cerr << "(std::numeric_limits<difference_type>::max() / "
+    //              "sizeof(value_type))                      "
+    //           << (std::numeric_limits<difference_type>::max() /
+    //               sizeof(value_type))
+    //           << std::endl;
+    // std::cerr << "std::numeric_limits<difference_type>::max() "
+    //           << std::numeric_limits<difference_type>::max() << std::endl;
     return ft::min<size_type>(node_alloc_.max_size(),
                               std::numeric_limits<difference_type>::max());
-    // return alloc.max_size();
   }
 
   // rootを返す

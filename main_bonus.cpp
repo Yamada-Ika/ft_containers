@@ -3501,7 +3501,6 @@ void test_set() {
   }
 
   {
-    std::cerr << "test_set/case 1 start" << std::endl;
     std::set<int> libdata;
     libdata.insert(1);
     ft::set<int> mydata;
@@ -3516,22 +3515,12 @@ void test_set() {
     ASSERT_EQ(libditr, libdata.end());
     ASSERT_EQ(myditr, mydata.end());
 
-    std::cerr << "size lib " << libdata.size() << ", my " << mydata.size()
-              << std::endl;
-    // ASSERT_NEQ(mydata.begin(), mydata.end());
-    if (mydata.begin() == mydata.end()) {
-      std::cerr << "error hoge" << std::endl;
-      std::exit(1);
-    }
-
     const std::set<int> libst(libdata.begin(), libdata.end());
     const ft::set<int> myst(mydata.begin(), mydata.end());
 
     std::set<int>::const_iterator libitr = libst.begin();
     ft::set<int>::const_iterator myitr = myst.begin();
 
-    std::cerr << "size lib " << libst.size() << ", my " << myst.size()
-              << std::endl;
     ASSERT_EQ(libst.size(), myst.size());
 
     ASSERT_EQ(*libitr, *myitr);
@@ -4280,20 +4269,20 @@ void test_set() {
     ASSERT_EQ(libst.size(), myst.size());
   }
 
-  //  max_size
-  {
-    std::set<int> libst;
-    ft::set<int> myst;
-    std::cerr << "lib max_size " << libst.max_size() << std::endl;
-    std::cerr << "my  max_size " << myst.max_size() << std::endl;
-    ASSERT_EQ(libst.max_size(), myst.max_size());
-  }
+  // //  max_size
+  // {
+  //   std::set<int> libst;
+  //   ft::set<int> myst;
+  //   std::cerr << "lib max_size " << libst.max_size() << std::endl;
+  //   std::cerr << "my  max_size " << myst.max_size() << std::endl;
+  //   ASSERT_EQ(libst.max_size(), myst.max_size());
+  // }
 
-  {
-    const std::set<int> libst;
-    const ft::set<int> myst;
-    ASSERT_EQ(libst.max_size(), myst.max_size());
-  }
+  // {
+  //   const std::set<int> libst;
+  //   const ft::set<int> myst;
+  //   ASSERT_EQ(libst.max_size(), myst.max_size());
+  // }
 
   //  clear
   {
@@ -4788,6 +4777,121 @@ void test_set() {
     ASSERT_EQ(libdata.size(), mydata.size());
   }
 
+  {
+    std::set<int> libdata;
+    libdata.insert(1);
+    libdata.insert(2);
+    libdata.insert(3);
+    libdata.insert(-110);
+    libdata.insert(-11);
+    libdata.insert(-1);
+    libdata.insert(-203);
+    libdata.insert(102);
+    libdata.insert(10);
+
+    ft::set<int> mydata;
+    mydata.insert(1);
+    mydata.insert(2);
+    mydata.insert(3);
+    mydata.insert(-110);
+    mydata.insert(-11);
+    mydata.insert(-1);
+    mydata.insert(-203);
+    mydata.insert(102);
+    mydata.insert(10);
+
+    std::set<int>::iterator libitr = libdata.begin();
+    ft::set<int>::iterator myitr = mydata.begin();
+
+    ASSERT_EQ(libdata.size(), mydata.size());
+
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    std::cerr << "expected : " << *libitr << std::endl;
+    std::cerr << "got      : " << *myitr << std::endl;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(libitr, libdata.end());
+    ASSERT_EQ(myitr, mydata.end());
+  }
+
+  {
+    std::set<int> libdata;
+    libdata.insert(2);
+    libdata.insert(-1);
+    libdata.insert(-2);
+    libdata.insert(-3);
+    libdata.insert(-4);
+    libdata.insert(10000);
+    libdata.insert(10);
+    libdata.insert(122323);
+
+    ft::set<int> mydata;
+    mydata.insert(2);
+    mydata.insert(-1);
+    mydata.insert(-2);
+    mydata.insert(-3);
+    mydata.insert(-4);
+    mydata.insert(10000);
+    mydata.insert(10);
+    mydata.insert(122323);
+
+    std::set<int>::iterator libitr = libdata.begin();
+    ft::set<int>::iterator myitr = mydata.begin();
+
+    ASSERT_EQ(libdata.size(), mydata.size());
+
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(*libitr, *myitr);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(libitr, libdata.end());
+    ASSERT_EQ(myitr, mydata.end());
+  }
+
   //  swap
   {
     std::set<int> libdata1;
@@ -4941,76 +5045,15 @@ void test_set() {
     }
   }
 
-  // non member swap
   {
-    std::set<int> libdata1;
-    libdata1.insert(1);
-    std::set<int> libdata2;
-    libdata2.insert(2);
-
-    ft::set<int> mydata1;
-    mydata1.insert(1);
-    ft::set<int> mydata2;
-    mydata2.insert(2);
-
-    std::swap(libdata1, libdata2);
-    ft::swap(mydata1, mydata2);
-
-    ASSERT_EQ(libdata1.size(), mydata1.size());
-    ASSERT_EQ(libdata2.size(), mydata2.size());
-
-    std::set<int>::iterator libitr1 = libdata1.begin();
-    std::set<int>::iterator libitr2 = libdata2.begin();
-    ft::set<int>::iterator myitr1 = mydata1.begin();
-    ft::set<int>::iterator myitr2 = mydata2.begin();
-
-    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
-      ASSERT_EQ(*libitr1, *myitr1);
-    }
-    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
-      ASSERT_EQ(*libitr2, *myitr2);
-    }
-  }
-
-  {
+    std::cerr << "test_set/ waiwaiwaiwai" << std::endl;
     std::set<int> libdata1;
     libdata1.insert(1);
     libdata1.insert(2);
     libdata1.insert(3);
-    std::set<int> libdata2;
-    libdata2.insert(2);
-
-    ft::set<int> mydata1;
-    mydata1.insert(1);
-    mydata1.insert(2);
-    mydata1.insert(3);
-    ft::set<int> mydata2;
-    mydata2.insert(2);
-
-    std::swap(libdata1, libdata2);
-    ft::swap(mydata1, mydata2);
-
-    ASSERT_EQ(libdata1.size(), mydata1.size());
-    ASSERT_EQ(libdata2.size(), mydata2.size());
-
-    std::set<int>::iterator libitr1 = libdata1.begin();
-    std::set<int>::iterator libitr2 = libdata2.begin();
-    ft::set<int>::iterator myitr1 = mydata1.begin();
-    ft::set<int>::iterator myitr2 = mydata2.begin();
-
-    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
-      ASSERT_EQ(*libitr1, *myitr1);
-    }
-    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
-      ASSERT_EQ(*libitr2, *myitr2);
-    }
-  }
-
-  {
-    std::set<int> libdata1;
-    libdata1.insert(1);
-    libdata1.insert(2);
-    libdata1.insert(3);
+    libdata1.insert(-110);
+    libdata1.insert(-11);
+    libdata1.insert(-1);
     std::set<int> libdata2;
     libdata2.insert(2);
     libdata2.insert(-1);
@@ -5022,6 +5065,9 @@ void test_set() {
     mydata1.insert(1);
     mydata1.insert(2);
     mydata1.insert(3);
+    mydata1.insert(-110);
+    mydata1.insert(-11);
+    mydata1.insert(-1);
     ft::set<int> mydata2;
     mydata2.insert(2);
     mydata2.insert(-1);
@@ -5029,8 +5075,8 @@ void test_set() {
     mydata2.insert(-3);
     mydata2.insert(-4);
 
-    std::swap(libdata1, libdata2);
-    ft::swap(mydata1, mydata2);
+    libdata1.swap(libdata2);
+    mydata1.swap(mydata2);
 
     ASSERT_EQ(libdata1.size(), mydata1.size());
     ASSERT_EQ(libdata2.size(), mydata2.size());
@@ -5046,67 +5092,202 @@ void test_set() {
     for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
       ASSERT_EQ(*libitr2, *myitr2);
     }
+    std::cerr << "test_set/ waiwaiwaiwai finish" << std::endl;
   }
 
-  // {
-  //   std::set<int> libdata1;
-  //   libdata1.insert(1);
-  //   libdata1.insert(2);
-  //   libdata1.insert(3);
-  //   libdata1.insert(-110);
-  //   libdata1.insert(-11);
-  //   libdata1.insert(-1);
-  //   libdata1.insert(-203);
-  //   libdata1.insert(102);
-  //   libdata1.insert(10);
-  //   std::set<int> libdata2;
-  //   libdata2.insert(2);
-  //   libdata2.insert(-1);
-  //   libdata2.insert(-2);
-  //   libdata2.insert(-3);
-  //   libdata2.insert(-4);
-  //   libdata2.insert(10000);
-  //   libdata2.insert(10);
-  //   libdata2.insert(122323);
+  {
+    std::cerr << "test_set/ waiwaiwai" << std::endl;
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    libdata1.insert(-110);
+    libdata1.insert(-11);
+    libdata1.insert(-1);
+    libdata1.insert(-203);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+    libdata2.insert(-1);
+    libdata2.insert(-2);
+    libdata2.insert(-3);
+    libdata2.insert(-4);
+    libdata2.insert(10000);
 
-  //   ft::set<int> mydata1;
-  //   mydata1.insert(1);
-  //   mydata1.insert(2);
-  //   mydata1.insert(3);
-  //   mydata1.insert(-110);
-  //   mydata1.insert(-11);
-  //   mydata1.insert(-1);
-  //   mydata1.insert(-203);
-  //   mydata1.insert(102);
-  //   mydata1.insert(10);
-  //   ft::set<int> mydata2;
-  //   mydata2.insert(2);
-  //   mydata2.insert(-1);
-  //   mydata2.insert(-2);
-  //   mydata2.insert(-3);
-  //   mydata2.insert(-4);
-  //   mydata2.insert(10000);
-  //   mydata2.insert(10);
-  //   mydata2.insert(122323);
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    mydata1.insert(-110);
+    mydata1.insert(-11);
+    mydata1.insert(-1);
+    mydata1.insert(-203);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+    mydata2.insert(-1);
+    mydata2.insert(-2);
+    mydata2.insert(-3);
+    mydata2.insert(-4);
+    mydata2.insert(10000);
 
-  //   std::swap(libdata1, libdata2);
-  //   ft::swap(mydata1, mydata2);
+    libdata1.swap(libdata2);
+    mydata1.swap(mydata2);
 
-  //   ASSERT_EQ(libdata1.size(), mydata1.size());
-  //   ASSERT_EQ(libdata2.size(), mydata2.size());
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
 
-  //   std::set<int>::iterator libitr1 = libdata1.begin();
-  //   std::set<int>::iterator libitr2 = libdata2.begin();
-  //   ft::set<int>::iterator myitr1 = mydata1.begin();
-  //   ft::set<int>::iterator myitr2 = mydata2.begin();
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
 
-  //   for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
-  //     ASSERT_EQ(*libitr1, *myitr1);
-  //   }
-  //   for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
-  //     ASSERT_EQ(*libitr2, *myitr2);
-  //   }
-  // }
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+    std::cerr << "test_set/ waiwaiwai finish" << std::endl;
+  }
+
+  {
+    std::cerr << "test_set/ wai" << std::endl;
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    libdata1.insert(-110);
+    libdata1.insert(-11);
+    libdata1.insert(-1);
+    libdata1.insert(-203);
+    libdata1.insert(102);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+    libdata2.insert(-1);
+    libdata2.insert(-2);
+    libdata2.insert(-3);
+    libdata2.insert(-4);
+    libdata2.insert(10000);
+    libdata2.insert(10);
+
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    mydata1.insert(-110);
+    mydata1.insert(-11);
+    mydata1.insert(-1);
+    mydata1.insert(-203);
+    mydata1.insert(102);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+    mydata2.insert(-1);
+    mydata2.insert(-2);
+    mydata2.insert(-3);
+    mydata2.insert(-4);
+    mydata2.insert(10000);
+    mydata2.insert(10);
+
+    libdata1.swap(libdata2);
+    mydata1.swap(mydata2);
+
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
+
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
+
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+    std::cerr << "test_set/ wai finish" << std::endl;
+  }
+
+  {
+    std::cerr << "test_set/ waiwai" << std::endl;
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    libdata1.insert(-110);
+    libdata1.insert(-11);
+    libdata1.insert(-1);
+    libdata1.insert(-203);
+    libdata1.insert(102);
+    libdata1.insert(10);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+    libdata2.insert(-1);
+    libdata2.insert(-2);
+    libdata2.insert(-3);
+    libdata2.insert(-4);
+    libdata2.insert(10000);
+    libdata2.insert(10);
+    libdata2.insert(122323);
+
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    mydata1.insert(-110);
+    mydata1.insert(-11);
+    mydata1.insert(-1);
+    mydata1.insert(-203);
+    mydata1.insert(102);
+    mydata1.insert(10);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+    mydata2.insert(-1);
+    mydata2.insert(-2);
+    mydata2.insert(-3);
+    mydata2.insert(-4);
+    mydata2.insert(10000);
+    mydata2.insert(10);
+    mydata2.insert(122323);
+
+    libdata1.swap(libdata2);
+    mydata1.swap(mydata2);
+
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
+
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
+
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+    std::cerr << "test_set/ waiwai finish" << std::endl;
+  }
+
+  // ft::set<int> mydata1;
+  // mydata1.insert(1);
+  // mydata1.insert(2);
+  // mydata1.insert(3);
+  // mydata1.insert(-110);
+  // mydata1.insert(-11);
+  // mydata1.insert(-1);
+  // mydata1.insert(-203);
+  // mydata1.insert(102);
+  // mydata1.insert(10);
+  // ft::set<int> mydata2;
+  // mydata2.insert(2);
+  // mydata2.insert(-1);
+  // mydata2.insert(-2);
+  // mydata2.insert(-3);
+  // mydata2.insert(-4);
+  // mydata2.insert(10000);
+  // mydata2.insert(10);
+  // mydata2.insert(122323);
 
   //  count
   {
@@ -5219,31 +5400,31 @@ void test_set() {
     ASSERT_EQ(libst.find(42) == libst.end(), myst.find(42) == myst.end());
   }
 
-  // {
-  //   std::set<int> libst;
-  //   libst.insert(1);
-  //   libst.insert(2);
-  //   libst.insert(42);
-  //   libst.insert(3);
-  //   libst.insert(-100);
-  //   libst.insert(-10);
-  //   libst.insert(4);
-  //   libst.insert(5);
-  //   ft::set<int> myst;
-  //   myst.insert(1);
-  //   myst.insert(2);
-  //   myst.insert(42);
-  //   myst.insert(3);
-  //   myst.insert(-100);
-  //   myst.insert(-10);
-  //   myst.insert(4);
-  //   myst.insert(5);
+  {
+    std::set<int> libst;
+    libst.insert(1);
+    libst.insert(2);
+    libst.insert(42);
+    libst.insert(3);
+    libst.insert(-100);
+    libst.insert(-10);
+    libst.insert(4);
+    libst.insert(5);
+    ft::set<int> myst;
+    myst.insert(1);
+    myst.insert(2);
+    myst.insert(42);
+    myst.insert(3);
+    myst.insert(-100);
+    myst.insert(-10);
+    myst.insert(4);
+    myst.insert(5);
 
-  //   std::set<int>::iterator libitr = libst.find(42);
-  //   ft::set<int>::iterator myitr = myst.find(42);
+    std::set<int>::iterator libitr = libst.find(42);
+    ft::set<int>::iterator myitr = myst.find(42);
 
-  //   ASSERT_EQ(*libitr, *myitr);
-  // }
+    ASSERT_EQ(*libitr, *myitr);
+  }
 
   // find const
   {
@@ -5738,6 +5919,235 @@ void test_set() {
     ASSERT_EQ(libst1 >= libst2, myst1 >= myst2);
     ASSERT_EQ(libst1 <= libst2, myst1 <= myst2);
   }
+
+  // non member swap
+  {
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+
+    std::swap(libdata1, libdata2);
+    ft::swap(mydata1, mydata2);
+
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
+
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
+
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+  }
+
+  {
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+
+    std::swap(libdata1, libdata2);
+    ft::swap(mydata1, mydata2);
+
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
+
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
+
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+  }
+
+  {
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+    libdata2.insert(-1);
+    libdata2.insert(-2);
+    libdata2.insert(-3);
+    libdata2.insert(-4);
+
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+    mydata2.insert(-1);
+    mydata2.insert(-2);
+    mydata2.insert(-3);
+    mydata2.insert(-4);
+
+    std::swap(libdata1, libdata2);
+    ft::swap(mydata1, mydata2);
+
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
+
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
+
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+  }
+
+  // {
+  //   std::set<int> libdata1;
+  //   libdata1.insert(1);
+  //   libdata1.insert(2);
+  //   libdata1.insert(3);
+  //   libdata1.insert(-110);
+  //   libdata1.insert(-11);
+  //   libdata1.insert(-1);
+  //   libdata1.insert(-203);
+  //   libdata1.insert(102);
+  //   libdata1.insert(10);
+  //   std::set<int> libdata2;
+  //   libdata2.insert(2);
+  //   libdata2.insert(-1);
+  //   libdata2.insert(-2);
+  //   libdata2.insert(-3);
+  //   libdata2.insert(-4);
+  //   libdata2.insert(10000);
+  //   libdata2.insert(10);
+  //   libdata2.insert(122323);
+
+  //   ft::set<int> mydata1;
+  //   mydata1.insert(1);
+  //   mydata1.insert(2);
+  //   mydata1.insert(3);
+  //   mydata1.insert(-110);
+  //   mydata1.insert(-11);
+  //   mydata1.insert(-1);
+  //   mydata1.insert(-203);
+  //   mydata1.insert(102);
+  //   mydata1.insert(10);
+  //   ft::set<int> mydata2;
+  //   mydata2.insert(2);
+  //   mydata2.insert(-1);
+  //   mydata2.insert(-2);
+  //   mydata2.insert(-3);
+  //   mydata2.insert(-4);
+  //   mydata2.insert(10000);
+  //   mydata2.insert(10);
+  //   mydata2.insert(122323);
+
+  //   std::swap(libdata1, libdata2);
+  //   ft::swap(mydata1, mydata2);
+
+  //   ASSERT_EQ(libdata1.size(), mydata1.size());
+  //   ASSERT_EQ(libdata2.size(), mydata2.size());
+
+  //   std::set<int>::iterator libitr1 = libdata1.begin();
+  //   std::set<int>::iterator libitr2 = libdata2.begin();
+  //   ft::set<int>::iterator myitr1 = mydata1.begin();
+  //   ft::set<int>::iterator myitr2 = mydata2.begin();
+
+  //   for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+  //     ASSERT_EQ(*libitr1, *myitr1);
+  //   }
+  //   for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+  //     ASSERT_EQ(*libitr2, *myitr2);
+  //   }
+  // }
+
+  // {
+  //   std::cerr << "test_set/ start" << std::endl;
+  //   std::set<int> libdata1;
+  //   libdata1.insert(1);
+  //   libdata1.insert(2);
+  //   libdata1.insert(3);
+  //   libdata1.insert(-110);
+  //   libdata1.insert(-11);
+  //   libdata1.insert(-1);
+  //   libdata1.insert(-203);
+  //   libdata1.insert(102);
+  //   libdata1.insert(10);
+  //   std::set<int> libdata2;
+  //   libdata2.insert(2);
+  //   libdata2.insert(-1);
+  //   libdata2.insert(-2);
+  //   libdata2.insert(-3);
+  //   libdata2.insert(-4);
+  //   libdata2.insert(10000);
+  //   libdata2.insert(10);
+  //   libdata2.insert(122323);
+
+  //   ft::set<int> mydata1;
+  //   mydata1.insert(1);
+  //   mydata1.insert(2);
+  //   mydata1.insert(3);
+  //   mydata1.insert(-110);
+  //   mydata1.insert(-11);
+  //   mydata1.insert(-1);
+  //   mydata1.insert(-203);
+  //   mydata1.insert(102);
+  //   mydata1.insert(10);
+  //   ft::set<int> mydata2;
+  //   mydata2.insert(2);
+  //   mydata2.insert(-1);
+  //   mydata2.insert(-2);
+  //   mydata2.insert(-3);
+  //   mydata2.insert(-4);
+  //   mydata2.insert(10000);
+  //   mydata2.insert(10);
+  //   mydata2.insert(122323);
+
+  //   std::swap(libdata1, libdata2);
+  //   ft::swap(mydata1, mydata2);
+
+  //   ASSERT_EQ(libdata1.size(), mydata1.size());
+  //   ASSERT_EQ(libdata2.size(), mydata2.size());
+
+  //   std::set<int>::iterator libitr1 = libdata1.begin();
+  //   std::set<int>::iterator libitr2 = libdata2.begin();
+  //   ft::set<int>::iterator myitr1 = mydata1.begin();
+  //   ft::set<int>::iterator myitr2 = mydata2.begin();
+
+  //   for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+  //     ASSERT_EQ(*libitr1, *myitr1);
+  //   }
+  //   for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+  //     ASSERT_EQ(*libitr2, *myitr2);
+  //   }
+  //   std::cerr << "test_set/ end" << std::endl;
+  // }
 }
 
 void test_tree() {

@@ -49,7 +49,7 @@ public:
   set(InputIt first, InputIt last, const Compare& comp = Compare(),
       const Allocator& alloc = Allocator())
       : __tree_(comp, alloc) {
-    std::cerr << "set/constructor with iterator" << std::endl;
+    // std::cerr << "set/constructor with iterator" << std::endl;
     insert(first, last);
   }
 
@@ -99,7 +99,7 @@ public:
   template <class InputIt>
   void insert(InputIt first, InputIt last) {
     for (; first != last; ++first) {
-      std::cerr << "set/insert loop" << std::endl;
+      // std::cerr << "set/insert loop" << std::endl;
       insert(*first);
     }
   }
@@ -109,12 +109,14 @@ public:
   }
   size_type erase(const Key& key) { return __tree_.__erase(key); }
   void swap(set& other) {
+    std::cerr << "set/swap called" << std::endl;
     set tmp;
     tmp.insert(other.begin(), other.end());
     other.clear();
     other.insert(begin(), end());
     clear();
     insert(tmp.begin(), tmp.end());
+    std::cerr << "set/swap finish" << std::endl;
   }
 
   /*
