@@ -94,6 +94,12 @@ static NodePtr __get_max_node(NodePtr node) {
   return node->parent;
 }
 
+// - 一回だけ親を辿る時
+//   - 両方子がいない
+//   - 左だけ子がいる
+// - 2回親を辿る時
+//   - 親の右側に子がいる時
+
 template <typename NodePtr>
 static NodePtr __next_node(NodePtr node, NodePtr end_node) {
   // TODO end nodeなら親を返すだけで良い
@@ -107,10 +113,13 @@ static NodePtr __next_node(NodePtr node, NodePtr end_node) {
     return __get_min_node(node->right);
   }
 
-  // 左の子がいるノードまで親を辿る
+  // // 左の子がいるノードまで親を辿る
   NodePtr p = node->parent;
-  while (node == p->right && node->left->__is_nil_node()) {
+
+  // 今いるノードが親の右側にあると辿る
+  while (node == p->right) {
     node = node->parent;
+    p = node->parent;
   }
 
   return node->parent;
@@ -129,11 +138,14 @@ static NodePtr __prev_node(NodePtr node, NodePtr end_node) {
   }
   // 右の子がいるノードまで親を辿る
   NodePtr p = node->parent;
-  while (node == p->left && node->right->__is_nil_node()) {
+
+  // 今いるノードが親の右側にあると辿る
+  while (node == p->left) {
     node = node->parent;
+    p = node->parent;
   }
+
   // 以下のノードは訪れているので親を返す
-  // return node->parent;
   return node->parent;
 }
 
