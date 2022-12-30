@@ -418,6 +418,10 @@ public:
     if (ptr == NULL) {
       return __end();
     }
+    std::cerr << "__lower_bound_const/ ptr not null" << std::endl;
+    if (ptr == __end_node()) {
+      std::cerr << "__lower_bound_const/ ptr == __end_node" << std::endl;
+    }
     return __const_iterator(ptr, __end_node());
   }
 
@@ -1150,6 +1154,7 @@ private:
   node_pointer __lower_bound_pointer(const Key& k) const {
     // TODO うまくinsertと共通化したい
     if (__empty()) {
+      std::cerr << "__lower_bound_pointer/empty" << std::endl;
       return NULL;
     }
     // ノードを辿って適切な場所にノードを作成
@@ -1157,28 +1162,34 @@ private:
     node_pointer nd = root_;
     while (true) {
       if (__comp_(k, KeyOfValue()(nd->value))) {
+        std::cerr << "__lower_bound_pointer/nd = nd->left" << std::endl;
         nd = nd->left;
       } else if (__comp_(KeyOfValue()(nd->value), k)) {
+        std::cerr << "__lower_bound_pointer/nd = nd->right" << std::endl;
         nd = nd->right;
       } else {
+        std::cerr << "__lower_bound_pointer/break" << std::endl;
         break;
       }
 
       // TODO end nodeまで到達するとこれ以上のノードは存在しないので、見つからなかったとする
       if (nd == end_node_) {
+        std::cerr << "__lower_bound_pointer/end_node_" << std::endl;
         return NULL;
       }
       if (nd->__is_nil_node()) {
         // ここで一個前のノードの値をチェック
         // k > nd->valueならそのノードを返す
         if (__comp_(KeyOfValue()(nd->parent->value), k)) {
+          std::cerr << "__lower_bound_pointer/nd->parent->parent" << std::endl;
           return nd->parent->parent;
         }
-
+        std::cerr << "__lower_bound_pointer/nd->parent" << std::endl;
         return nd->parent;
       }
       prev_parent = nd;
     }
+    std::cerr << "__lower_bound_pointer/nd" << std::endl;
     return nd;
   }
 

@@ -109,14 +109,12 @@ public:
   }
   size_type erase(const Key& key) { return __tree_.__erase(key); }
   void swap(set& other) {
-    std::cerr << "set/swap called" << std::endl;
     set tmp;
     tmp.insert(other.begin(), other.end());
     other.clear();
     other.insert(begin(), end());
     clear();
     insert(tmp.begin(), tmp.end());
-    std::cerr << "set/swap finish" << std::endl;
   }
 
   /*

@@ -361,6 +361,47 @@ void test_map() {
     ASSERT_EQ(myitr, mymp.end());
   }
 
+  {
+    ft::map<int, int> myorigin;
+    myorigin.insert(ft::make_pair(1, 1));
+    myorigin.insert(ft::make_pair(2, 1));
+    myorigin.insert(ft::make_pair(3, 1));
+    myorigin.insert(ft::make_pair(4, 1));
+    std::map<int, int> liborigin;
+    liborigin.insert(std::make_pair(1, 1));
+    liborigin.insert(std::make_pair(2, 1));
+    liborigin.insert(std::make_pair(3, 1));
+    liborigin.insert(std::make_pair(4, 1));
+    ft::map<int, int> mymp;
+    mymp = myorigin;
+    std::map<int, int> libmp;
+    libmp = liborigin;
+
+    ASSERT_EQ(mymp.size(), libmp.size());
+
+    ft::map<int, int>::iterator myitr = mymp.begin();
+    std::map<int, int>::iterator libitr = libmp.begin();
+
+    ASSERT_EQ(myitr->first, libitr->first);
+    ASSERT_EQ(myitr->second, libitr->second);
+    ++myitr;
+    ++libitr;
+    ASSERT_EQ(myitr->first, libitr->first);
+    ASSERT_EQ(myitr->second, libitr->second);
+    ++myitr;
+    ++libitr;
+    ASSERT_EQ(myitr->first, libitr->first);
+    ASSERT_EQ(myitr->second, libitr->second);
+    ++myitr;
+    ++libitr;
+    ASSERT_EQ(myitr->first, libitr->first);
+    ASSERT_EQ(myitr->second, libitr->second);
+    ++myitr;
+    ++libitr;
+    ASSERT_EQ(libitr, libmp.end());
+    ASSERT_EQ(myitr, mymp.end());
+  }
+
   // get_allocator
   {
     ft::greater<int> mycomp;
@@ -870,10 +911,28 @@ void test_map() {
     ASSERT_EQ(libmp.empty(), mymp.empty());
   }
 
+  {
+    std::map<int, int> libmp;
+    libmp.insert(std::make_pair(1, 1));
+    ft::map<int, int> mymp;
+    mymp.insert(ft::make_pair(1, 1));
+    ASSERT_EQ(libmp.empty(), mymp.empty());
+  }
+
   // empty const
   {
     const std::map<int, int> libmp;
     const ft::map<int, int> mymp;
+    ASSERT_EQ(libmp.empty(), mymp.empty());
+  }
+
+  {
+    std::map<int, int> libdata;
+    libdata.insert(std::make_pair(1, 1));
+    ft::map<int, int> mydata;
+    mydata.insert(ft::make_pair(1, 1));
+    const std::map<int, int> libmp(libdata.begin(), libdata.end());
+    const ft::map<int, int> mymp(mydata.begin(), mydata.end());
     ASSERT_EQ(libmp.empty(), mymp.empty());
   }
 
@@ -981,6 +1040,16 @@ void test_map() {
     ASSERT_EQ(libmp.size(), mymp.size());
   }
 
+  {
+    std::map<int, int> libdata;
+    libdata.insert(std::make_pair(1, 1));
+    ft::map<int, int> mydata;
+    mydata.insert(ft::make_pair(1, 1));
+    const std::map<int, int> libmp(libdata.begin(), libdata.end());
+    const ft::map<int, int> mymp(mydata.begin(), mydata.end());
+    ASSERT_EQ(libmp.size(), mymp.size());
+  }
+
   // max_size
   {
     std::map<int, int> libmp;
@@ -990,8 +1059,8 @@ void test_map() {
 
   // max_size const
   {
-    std::map<int, int> libmp;
-    ft::map<int, int> mymp;
+    const std::map<int, int> libmp;
+    const ft::map<int, int> mymp;
     ASSERT_EQ(libmp.max_size(), mymp.max_size());
   }
 
@@ -1270,8 +1339,6 @@ void test_map() {
     std::map<int, int>::iterator libret = libmp.erase(libitr1, libitr2);
     ft::map<int, int>::iterator myret = mymp.erase(myitr1, myitr2);
 
-    // ASSERT_EQ(libret->first, myret->first);
-    // ASSERT_EQ(libret->second, myret->second);
     ASSERT_EQ(libmp.size(), mymp.size());
   }
 
@@ -2306,6 +2373,12 @@ void test_map() {
 
   // count
   {
+    ft::map<int, int> mymp;
+    mymp.insert(ft::make_pair(1, 1));
+    ASSERT_EQ(mymp.count(1), 1);
+  }
+
+  {
     std::map<int, int> libmp;
     libmp.insert(std::make_pair(1, 1));
     ft::map<int, int> mymp;
@@ -2341,6 +2414,17 @@ void test_map() {
     ft::map<int, int> mymp;
     mymp.insert(ft::make_pair(1, 1));
     ft::map<int, int>::iterator myitr = mymp.find(1);
+    ASSERT_EQ(libitr->first, myitr->first);
+    ASSERT_EQ(libitr->second, myitr->second);
+  }
+
+  {
+    std::map<int, int> libmp;
+    libmp.insert(std::make_pair(42, 1));
+    std::map<int, int>::iterator libitr = libmp.find(42);
+    ft::map<int, int> mymp;
+    mymp.insert(ft::make_pair(42, 1));
+    ft::map<int, int>::iterator myitr = mymp.find(42);
     ASSERT_EQ(libitr->first, myitr->first);
     ASSERT_EQ(libitr->second, myitr->second);
   }
@@ -2408,37 +2492,29 @@ void test_map() {
   }
 
   {
-    std::map<int, int> libdata;
-    libdata.insert(std::make_pair(1, 1));
-    libdata.insert(std::make_pair(2, 2));
-    libdata.insert(std::make_pair(3, 3));
-
-    ft::map<int, int> mydata;
-    mydata.insert(ft::make_pair(1, 1));
-    mydata.insert(ft::make_pair(2, 2));
-    mydata.insert(ft::make_pair(3, 3));
-
     std::map<int, int> libmp;
-    libmp.insert(libdata.begin(), libdata.end());
+    libmp.insert(std::make_pair(1, 1));
     ft::map<int, int> mymp;
-    mymp.insert(mydata.begin(), mydata.end());
+    mymp.insert(ft::make_pair(1, 1));
+    ASSERT_EQ(libmp.find(2), libmp.end());
+    ASSERT_EQ(mymp.find(2), mymp.end());
+  }
 
-    ASSERT_EQ(libmp.size(), mymp.size());
-    std::map<int, int>::iterator libitr = libmp.begin();
-    ft::map<int, int>::iterator myitr = mymp.begin();
-
-    ASSERT_EQ(libitr->first, myitr->first);
-    ASSERT_EQ(libitr->second, myitr->second);
-    ++libitr;
-    ++myitr;
-    ASSERT_EQ(libitr->first, myitr->first);
-    ASSERT_EQ(libitr->second, myitr->second);
-    ++libitr;
-    ++myitr;
-    ASSERT_EQ(libitr->first, myitr->first);
-    ASSERT_EQ(libitr->second, myitr->second);
-    ++libitr;
-    ++myitr;
+  {
+    std::map<int, int> libmp;
+    libmp.insert(std::make_pair(1, 1));
+    libmp.insert(std::make_pair(2, 1));
+    libmp.insert(std::make_pair(3, 1));
+    libmp.insert(std::make_pair(4, 1));
+    libmp.insert(std::make_pair(5, 1));
+    ft::map<int, int> mymp;
+    mymp.insert(ft::make_pair(1, 1));
+    mymp.insert(ft::make_pair(2, 1));
+    mymp.insert(ft::make_pair(3, 1));
+    mymp.insert(ft::make_pair(4, 1));
+    mymp.insert(ft::make_pair(5, 1));
+    ASSERT_EQ(libmp.find(42), libmp.end());
+    ASSERT_EQ(mymp.find(42), mymp.end());
   }
 
   // swap
@@ -2540,39 +2616,39 @@ void test_map() {
     ASSERT_EQ(ftitr2, ftmp2.end());
   }
 
-  // count
-  {
-    std::map<int, int> stdmp;
-    stdmp.insert(std::make_pair(1, 1));
-    ft::map<int, int> ftmp;
-    ftmp.insert(ft::make_pair(1, 1));
-    ASSERT_EQ(stdmp.count(1), ftmp.count(1));
-    ASSERT_EQ(stdmp.count(0), ftmp.count(0));
-  }
+  // // count
+  // {
+  //   std::map<int, int> stdmp;
+  //   stdmp.insert(std::make_pair(1, 1));
+  //   ft::map<int, int> ftmp;
+  //   ftmp.insert(ft::make_pair(1, 1));
+  //   ASSERT_EQ(stdmp.count(1), ftmp.count(1));
+  //   ASSERT_EQ(stdmp.count(0), ftmp.count(0));
+  // }
 
-  {
-    std::map<int, int> stdmp;
-    stdmp.insert(std::make_pair(1, 1));
-    stdmp.insert(std::make_pair(-1, 1));
-    stdmp.insert(std::make_pair(1000, 1));
-    ft::map<int, int> ftmp;
-    ftmp.insert(ft::make_pair(1, 1));
-    ftmp.insert(ft::make_pair(-1, 1));
-    ftmp.insert(ft::make_pair(1000, 1));
-    ASSERT_EQ(stdmp.count(1), ftmp.count(1));
-    ASSERT_EQ(stdmp.count(0), ftmp.count(0));
-  }
+  // {
+  //   std::map<int, int> stdmp;
+  //   stdmp.insert(std::make_pair(1, 1));
+  //   stdmp.insert(std::make_pair(-1, 1));
+  //   stdmp.insert(std::make_pair(1000, 1));
+  //   ft::map<int, int> ftmp;
+  //   ftmp.insert(ft::make_pair(1, 1));
+  //   ftmp.insert(ft::make_pair(-1, 1));
+  //   ftmp.insert(ft::make_pair(1000, 1));
+  //   ASSERT_EQ(stdmp.count(1), ftmp.count(1));
+  //   ASSERT_EQ(stdmp.count(0), ftmp.count(0));
+  // }
 
-  {
-    std::map<int, int> stddata;
-    stddata.insert(std::make_pair(1, 1));
-    ft::map<int, int> ftdata;
-    ftdata.insert(ft::make_pair(1, 1));
-    const std::map<int, int> stdmp(stddata.begin(), stddata.end());
-    const ft::map<int, int> ftmp(ftdata.begin(), ftdata.end());
-    ASSERT_EQ(stdmp.count(1), ftmp.count(1));
-    ASSERT_EQ(stdmp.count(0), ftmp.count(0));
-  }
+  // {
+  //   std::map<int, int> stddata;
+  //   stddata.insert(std::make_pair(1, 1));
+  //   ft::map<int, int> ftdata;
+  //   ftdata.insert(ft::make_pair(1, 1));
+  //   const std::map<int, int> stdmp(stddata.begin(), stddata.end());
+  //   const ft::map<int, int> ftmp(ftdata.begin(), ftdata.end());
+  //   ASSERT_EQ(stdmp.count(1), ftmp.count(1));
+  //   ASSERT_EQ(stdmp.count(0), ftmp.count(0));
+  // }
 
   // equal_range
   {
@@ -4820,8 +4896,6 @@ void test_set() {
     ASSERT_EQ(*libitr, *myitr);
     ++libitr;
     ++myitr;
-    std::cerr << "expected : " << *libitr << std::endl;
-    std::cerr << "got      : " << *myitr << std::endl;
     ASSERT_EQ(*libitr, *myitr);
     ++libitr;
     ++myitr;
@@ -6019,130 +6093,173 @@ void test_set() {
     }
   }
 
-  // {
-  //   std::set<int> libdata1;
-  //   libdata1.insert(1);
-  //   libdata1.insert(2);
-  //   libdata1.insert(3);
-  //   libdata1.insert(-110);
-  //   libdata1.insert(-11);
-  //   libdata1.insert(-1);
-  //   libdata1.insert(-203);
-  //   libdata1.insert(102);
-  //   libdata1.insert(10);
-  //   std::set<int> libdata2;
-  //   libdata2.insert(2);
-  //   libdata2.insert(-1);
-  //   libdata2.insert(-2);
-  //   libdata2.insert(-3);
-  //   libdata2.insert(-4);
-  //   libdata2.insert(10000);
-  //   libdata2.insert(10);
-  //   libdata2.insert(122323);
+  {
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    libdata1.insert(-110);
+    libdata1.insert(-11);
+    libdata1.insert(-1);
+    libdata1.insert(-203);
+    libdata1.insert(102);
+    libdata1.insert(10);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+    libdata2.insert(-1);
+    libdata2.insert(-2);
+    libdata2.insert(-3);
+    libdata2.insert(-4);
+    libdata2.insert(10000);
+    libdata2.insert(10);
+    libdata2.insert(122323);
 
-  //   ft::set<int> mydata1;
-  //   mydata1.insert(1);
-  //   mydata1.insert(2);
-  //   mydata1.insert(3);
-  //   mydata1.insert(-110);
-  //   mydata1.insert(-11);
-  //   mydata1.insert(-1);
-  //   mydata1.insert(-203);
-  //   mydata1.insert(102);
-  //   mydata1.insert(10);
-  //   ft::set<int> mydata2;
-  //   mydata2.insert(2);
-  //   mydata2.insert(-1);
-  //   mydata2.insert(-2);
-  //   mydata2.insert(-3);
-  //   mydata2.insert(-4);
-  //   mydata2.insert(10000);
-  //   mydata2.insert(10);
-  //   mydata2.insert(122323);
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    mydata1.insert(-110);
+    mydata1.insert(-11);
+    mydata1.insert(-1);
+    mydata1.insert(-203);
+    mydata1.insert(102);
+    mydata1.insert(10);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+    mydata2.insert(-1);
+    mydata2.insert(-2);
+    mydata2.insert(-3);
+    mydata2.insert(-4);
+    mydata2.insert(10000);
+    mydata2.insert(10);
+    mydata2.insert(122323);
 
-  //   std::swap(libdata1, libdata2);
-  //   ft::swap(mydata1, mydata2);
+    std::swap(libdata1, libdata2);
+    ft::swap(mydata1, mydata2);
 
-  //   ASSERT_EQ(libdata1.size(), mydata1.size());
-  //   ASSERT_EQ(libdata2.size(), mydata2.size());
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
 
-  //   std::set<int>::iterator libitr1 = libdata1.begin();
-  //   std::set<int>::iterator libitr2 = libdata2.begin();
-  //   ft::set<int>::iterator myitr1 = mydata1.begin();
-  //   ft::set<int>::iterator myitr2 = mydata2.begin();
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
 
-  //   for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
-  //     ASSERT_EQ(*libitr1, *myitr1);
-  //   }
-  //   for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
-  //     ASSERT_EQ(*libitr2, *myitr2);
-  //   }
-  // }
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+  }
 
-  // {
-  //   std::cerr << "test_set/ start" << std::endl;
-  //   std::set<int> libdata1;
-  //   libdata1.insert(1);
-  //   libdata1.insert(2);
-  //   libdata1.insert(3);
-  //   libdata1.insert(-110);
-  //   libdata1.insert(-11);
-  //   libdata1.insert(-1);
-  //   libdata1.insert(-203);
-  //   libdata1.insert(102);
-  //   libdata1.insert(10);
-  //   std::set<int> libdata2;
-  //   libdata2.insert(2);
-  //   libdata2.insert(-1);
-  //   libdata2.insert(-2);
-  //   libdata2.insert(-3);
-  //   libdata2.insert(-4);
-  //   libdata2.insert(10000);
-  //   libdata2.insert(10);
-  //   libdata2.insert(122323);
+  {
+    std::set<int> libdata1;
+    libdata1.insert(1);
+    libdata1.insert(2);
+    libdata1.insert(3);
+    libdata1.insert(-110);
+    libdata1.insert(-11);
+    libdata1.insert(-1);
+    libdata1.insert(-203);
+    libdata1.insert(102);
+    libdata1.insert(10);
+    std::set<int> libdata2;
+    libdata2.insert(2);
+    libdata2.insert(-1);
+    libdata2.insert(-2);
+    libdata2.insert(-3);
+    libdata2.insert(-4);
+    libdata2.insert(10000);
+    libdata2.insert(10);
+    libdata2.insert(122323);
 
-  //   ft::set<int> mydata1;
-  //   mydata1.insert(1);
-  //   mydata1.insert(2);
-  //   mydata1.insert(3);
-  //   mydata1.insert(-110);
-  //   mydata1.insert(-11);
-  //   mydata1.insert(-1);
-  //   mydata1.insert(-203);
-  //   mydata1.insert(102);
-  //   mydata1.insert(10);
-  //   ft::set<int> mydata2;
-  //   mydata2.insert(2);
-  //   mydata2.insert(-1);
-  //   mydata2.insert(-2);
-  //   mydata2.insert(-3);
-  //   mydata2.insert(-4);
-  //   mydata2.insert(10000);
-  //   mydata2.insert(10);
-  //   mydata2.insert(122323);
+    ft::set<int> mydata1;
+    mydata1.insert(1);
+    mydata1.insert(2);
+    mydata1.insert(3);
+    mydata1.insert(-110);
+    mydata1.insert(-11);
+    mydata1.insert(-1);
+    mydata1.insert(-203);
+    mydata1.insert(102);
+    mydata1.insert(10);
+    ft::set<int> mydata2;
+    mydata2.insert(2);
+    mydata2.insert(-1);
+    mydata2.insert(-2);
+    mydata2.insert(-3);
+    mydata2.insert(-4);
+    mydata2.insert(10000);
+    mydata2.insert(10);
+    mydata2.insert(122323);
 
-  //   std::swap(libdata1, libdata2);
-  //   ft::swap(mydata1, mydata2);
+    std::swap(libdata1, libdata2);
+    ft::swap(mydata1, mydata2);
 
-  //   ASSERT_EQ(libdata1.size(), mydata1.size());
-  //   ASSERT_EQ(libdata2.size(), mydata2.size());
+    ASSERT_EQ(libdata1.size(), mydata1.size());
+    ASSERT_EQ(libdata2.size(), mydata2.size());
 
-  //   std::set<int>::iterator libitr1 = libdata1.begin();
-  //   std::set<int>::iterator libitr2 = libdata2.begin();
-  //   ft::set<int>::iterator myitr1 = mydata1.begin();
-  //   ft::set<int>::iterator myitr2 = mydata2.begin();
+    std::set<int>::iterator libitr1 = libdata1.begin();
+    std::set<int>::iterator libitr2 = libdata2.begin();
+    ft::set<int>::iterator myitr1 = mydata1.begin();
+    ft::set<int>::iterator myitr2 = mydata2.begin();
 
-  //   for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
-  //     ASSERT_EQ(*libitr1, *myitr1);
-  //   }
-  //   for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
-  //     ASSERT_EQ(*libitr2, *myitr2);
-  //   }
-  //   std::cerr << "test_set/ end" << std::endl;
-  // }
+    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
+      ASSERT_EQ(*libitr1, *myitr1);
+    }
+    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
+      ASSERT_EQ(*libitr2, *myitr2);
+    }
+  }
 }
 
 void test_tree() {
+  // __tree_iterator
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr1 = t.__begin();
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr2 = t.__begin();
+
+    ASSERT_EQ(itr1 == itr2, true);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr1 = t.__begin();
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr2 = t.__begin();
+    ++itr2;
+
+    ASSERT_EQ(itr1 == itr2, false);
+    ASSERT_EQ(itr1 != itr2, true);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr1 = t.__begin();
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr2 = t.__end();
+
+    ASSERT_EQ(itr1 == itr2, false);
+    ASSERT_EQ(itr1 != itr2, true);
+  }
+
+  {
+    ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
+    t.__insert(ft::make_pair(1, 1));
+    ft::__tree<int, ft::pair<int, int>,
+               ft::Select1st<ft::pair<int, int> > >::iterator itr1 =
+        t.__begin();
+    ft::__tree<int, ft::pair<int, int>,
+               ft::Select1st<ft::pair<int, int> > >::iterator itr2 =
+        t.__begin();
+
+    ASSERT_EQ(itr1 == itr2, true);
+    ASSERT_EQ(itr1 != itr2, false);
+  }
+
   // __begin
   {
     ft::__tree<int, int, ft::Identity<int> > t;
@@ -7731,6 +7848,27 @@ void test_tree() {
   {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(10);
+
+    ASSERT_EQ(t.__count(42), 0);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+
+    ASSERT_EQ(t.__count(42), 0);
+  }
+
+  {
+    ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
+    t.__insert(ft::make_pair(1, 1));
+
+    ASSERT_EQ(t.__count(1), 1);
+  }
+
+  {
+    ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
+    t.__insert(ft::make_pair(1, 1));
 
     ASSERT_EQ(t.__count(42), 0);
   }
