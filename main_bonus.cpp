@@ -4461,6 +4461,1021 @@ void test_set() {
     }
   }
 
+  // insert 2
+  {
+    std::set<int> stdst;
+    stdst.insert(1);
+    ft::set<int> ftst;
+    ftst.insert(1);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 2);
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 2);
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(1);
+    stdst.insert(2);
+    ft::set<int> ftst;
+    ftst.insert(1);
+    ftst.insert(2);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 10);
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 10);
+
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(1);
+    stdst.insert(2);
+    stdst.insert(10);
+    ft::set<int> ftst;
+    ftst.insert(1);
+    ftst.insert(2);
+    ftst.insert(10);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 3);
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 3);
+
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(1);
+    stdst.insert(2);
+    stdst.insert(10);
+    ft::set<int> ftst;
+    ftst.insert(1);
+    ftst.insert(2);
+    ftst.insert(10);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 5);
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 5);
+
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(1);
+    stdst.insert(2);
+    stdst.insert(10);
+    ft::set<int> ftst;
+    ftst.insert(1);
+    ftst.insert(2);
+    ftst.insert(10);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 10);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 10);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 1);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 1);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 2);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 2);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 3);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 3);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 4);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 4);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 5);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 5);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 6);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 6);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 7);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 7);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 8);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 8);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 9);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 9);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 10);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 10);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 11);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 11);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 12);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 12);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 13);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 13);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 14);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 14);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 15);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 15);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 16);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 16);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 17);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 17);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
+  {
+    std::set<int> stdst;
+    stdst.insert(10);
+    stdst.insert(5);
+    stdst.insert(15);
+    stdst.insert(2);
+    stdst.insert(17);
+    ft::set<int> ftst;
+    ftst.insert(10);
+    ftst.insert(5);
+    ftst.insert(15);
+    ftst.insert(2);
+    ftst.insert(17);
+
+    std::set<int>::iterator stditr = stdst.begin();
+    std::set<int>::iterator stdret = stdst.insert(stditr, 18);
+    // std::cerr << "stdret  : " << *stdret << std::endl;
+
+    ft::set<int>::iterator ftitr = ftst.begin();
+    ft::set<int>::iterator ftret = ftst.insert(ftitr, 18);
+
+    // std::cerr << "stdsize : " << stdst.size() << std::endl;
+
+    ASSERT_EQ(*stdret, *ftret);
+
+    stditr = stdst.begin();
+    ftitr = ftst.begin();
+    ASSERT_EQ(stdst.size(), ftst.size());
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+
   // insert 3
   {
     std::set<int> libdata;
@@ -5334,26 +6349,6 @@ void test_set() {
       ASSERT_EQ(*libitr2, *myitr2);
     }
   }
-
-  // ft::set<int> mydata1;
-  // mydata1.insert(1);
-  // mydata1.insert(2);
-  // mydata1.insert(3);
-  // mydata1.insert(-110);
-  // mydata1.insert(-11);
-  // mydata1.insert(-1);
-  // mydata1.insert(-203);
-  // mydata1.insert(102);
-  // mydata1.insert(10);
-  // ft::set<int> mydata2;
-  // mydata2.insert(2);
-  // mydata2.insert(-1);
-  // mydata2.insert(-2);
-  // mydata2.insert(-3);
-  // mydata2.insert(-4);
-  // mydata2.insert(10000);
-  // mydata2.insert(10);
-  // mydata2.insert(122323);
 
   //  count
   {

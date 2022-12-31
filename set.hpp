@@ -95,11 +95,12 @@ public:
   ft::pair<iterator, bool> insert(const value_type& value) {
     return __tree_.__insert(value);
   }
-  // iterator insert(iterator pos, const value_type& value);
+  iterator insert(iterator pos, const value_type& value) {
+    return __tree_.__insert(pos, value);
+  }
   template <class InputIt>
   void insert(InputIt first, InputIt last) {
     for (; first != last; ++first) {
-      // std::cerr << "set/insert loop" << std::endl;
       insert(*first);
     }
   }

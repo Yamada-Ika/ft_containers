@@ -310,6 +310,9 @@ public:
   // TODO メモリ解放したらクラッシュする
   ~__tree() {}
 
+  /*
+   * Iterators
+  */
   iterator __begin() { return iterator(__begin_node(), __end_node()); }
   __const_iterator __begin() const {
     return __const_iterator(__begin_node(), __end_node());
@@ -335,6 +338,19 @@ public:
 
   node_pointer __end_node() const { return end_node_; }
 
+  /*
+   * Capacity
+  */
+  size_type __size() const { return __tree_size_; }
+  bool __empty() const { return __size() == 0; }
+  size_type __max_size() const {
+    return ft::min<size_type>(node_alloc_.max_size(),
+                              std::numeric_limits<difference_type>::max());
+  }
+
+  /*
+   * Modifiers
+  */
   ft::pair<iterator, bool> __insert(const_reference value) {
     ft::pair<iterator, bool> p = __insert_helper(value);
     if (p.second) {
@@ -343,8 +359,11 @@ public:
     return p;
   }
 
-  //  Inserts value in the position as close as possible to the position just prior to pos.
-  iterator __insert(iterator pos, const_reference value) { return __end(); }
+  iterator __insert(iterator pos, const_reference value) {
+    // TODO テキトー
+    // posの直前に要素を挿入
+    return __insert(value).first;
+  }
 
   void __insert(iterator first, iterator last) {
     for (iterator itr = first; itr != last; ++itr) {
@@ -352,12 +371,35 @@ public:
     }
   }
 
-  // ノードの要素を返す
-  size_type __size() const { return __tree_size_; }
+  size_type __erase(const Key& key) {
+    if (__erase_helper(key) == 1) {
+      --__tree_size_;
+      return 1;
+    }
+    return 0;
+  }
 
-  bool __empty() const { return __size() == 0; }
+  iterator __erase(iterator pos) {
+    iterator res = pos;
+    ++res;
+    __erase(KeyOfValue()(*pos));
+    return res;
+  }
 
-  // iterator返すfind
+  iterator __erase(iterator first, iterator last) {
+    for (; first != last;) {
+      first = __erase(first);
+    }
+    return last;
+  }
+
+  /*
+   * Lookup
+  */
+  size_type __count(const Key& key) const {
+    return __find(key) == __end() ? 0 : 1;
+  }
+
   iterator __find(const key_type& key) {
     iterator target = __lower_bound(key);
     // 見つからなかったか
@@ -389,16 +431,12 @@ public:
   ft::pair<iterator, iterator> __equal_range(const Key& key) {
     return ft::make_pair(__lower_bound(key), __uppper_bound(key));
   }
-  // ft::pair<__const_iterator, __const_iterator> __equal_range(const Key& key) const {
-  //   return ft::make_pair(__lower_bound(key), __upper_bound(key));
-  // }
   ft::pair<__const_iterator, __const_iterator>
   __equal_range_const(const Key& key) const {
     return ft::make_pair(__lower_bound_const(key), __upper_bound_const(key));
   }
 
   // lower_bound　
-  // keyと一緒か大きい最初？一番近いイテレータを返す
   iterator __lower_bound(const Key& key) {
     node_pointer ptr = __lower_bound_pointer(key);
     if (ptr == NULL) {
@@ -406,27 +444,15 @@ public:
     }
     return iterator(ptr, __end_node());
   }
-  // __const_iterator __lower_bound(const Key& key) const {
-  //   node_pointer ptr = __lower_bound_pointer(key);
-  //   if (ptr == NULL) {
-  //     return __end();
-  //   }
-  //   return __const_iterator(ptr, __end_node());
-  // }
   __const_iterator __lower_bound_const(const Key& key) const {
     node_pointer ptr = __lower_bound_pointer(key);
     if (ptr == NULL) {
       return __end();
     }
-    std::cerr << "__lower_bound_const/ ptr not null" << std::endl;
-    if (ptr == __end_node()) {
-      std::cerr << "__lower_bound_const/ ptr == __end_node" << std::endl;
-    }
     return __const_iterator(ptr, __end_node());
   }
 
   // upper bound
-  // lower boundの不等号変わったやつ
   iterator __uppper_bound(const Key& k) {
     iterator itr = __lower_bound(k);
 
@@ -443,22 +469,6 @@ public:
     // itrのkeyはkより大きいのでそのまま返す
     return itr;
   }
-  // __const_iterator __upper_bound(const Key& k) const {
-  //   __const_iterator itr = __lower_bound(k);
-
-  //   // itrがendの場合、見つかってないのでendを返す
-  //   if (itr == __end()) {
-  //     return __end();
-  //   }
-
-  //   // itrのkeyとkが同じの場合、インクリメントしたイテレータを返す
-  //   if (k == KeyOfValue()(*itr)) {
-  //     return ++itr;
-  //   }
-
-  //   // itrのkeyはkより大きいのでそのまま返す
-  //   return itr;
-  // }
   __const_iterator __upper_bound_const(const Key& k) const {
     __const_iterator itr = __lower_bound_const(k);
 
@@ -476,29 +486,10 @@ public:
     return itr;
   }
 
-  // count
-  size_type __count(const Key& key) const {
-    return __find(key) == __end() ? 0 : 1;
-  }
-
-  // max_size
-  size_type __max_size() const {
-    allocator_type alloc;
-    // return alloc.max_size();
-
-    // std::cerr << "alloc.max_size() " << alloc.max_size() << std::endl;
-    // std::cerr << "node_alloc_.max_size() " << node_alloc_.max_size()
-    //           << std::endl;
-    // std::cerr << "(std::numeric_limits<difference_type>::max() / "
-    //              "sizeof(value_type))                      "
-    //           << (std::numeric_limits<difference_type>::max() /
-    //               sizeof(value_type))
-    //           << std::endl;
-    // std::cerr << "std::numeric_limits<difference_type>::max() "
-    //           << std::numeric_limits<difference_type>::max() << std::endl;
-    return ft::min<size_type>(node_alloc_.max_size(),
-                              std::numeric_limits<difference_type>::max());
-  }
+  /*
+   * Lookup
+  */
+  key_compare __key_comp() const { return __comp_; }
 
   // rootを返す
   // For testable
@@ -506,31 +497,6 @@ public:
 
   // allocatorを返す
   allocator_type __get_allocator() const { return allocator_type(node_alloc_); }
-  // key_compareを返す
-  key_compare __key_comp() const { return __comp_; }
-
-  // __erase
-  size_type __erase(const Key& key) {
-    if (__erase_helper(key) == 1) {
-      --__tree_size_;
-      return 1;
-    }
-    return 0;
-  }
-
-  iterator __erase(iterator pos) {
-    iterator res = pos;
-    ++res;
-    __erase(KeyOfValue()(*pos));
-    return res;
-  }
-
-  iterator __erase(iterator first, iterator last) {
-    for (; first != last;) {
-      first = __erase(first);
-    }
-    return last;
-  }
 
   // TODO とりあえず木の中で使ってるfind。ノードポインターを返す
   node_pointer __find_node_pointer(const key_type& key) const {
@@ -1154,7 +1120,6 @@ private:
   node_pointer __lower_bound_pointer(const Key& k) const {
     // TODO うまくinsertと共通化したい
     if (__empty()) {
-      std::cerr << "__lower_bound_pointer/empty" << std::endl;
       return NULL;
     }
     // ノードを辿って適切な場所にノードを作成
@@ -1162,34 +1127,27 @@ private:
     node_pointer nd = root_;
     while (true) {
       if (__comp_(k, KeyOfValue()(nd->value))) {
-        std::cerr << "__lower_bound_pointer/nd = nd->left" << std::endl;
         nd = nd->left;
       } else if (__comp_(KeyOfValue()(nd->value), k)) {
-        std::cerr << "__lower_bound_pointer/nd = nd->right" << std::endl;
         nd = nd->right;
       } else {
-        std::cerr << "__lower_bound_pointer/break" << std::endl;
         break;
       }
 
       // TODO end nodeまで到達するとこれ以上のノードは存在しないので、見つからなかったとする
       if (nd == end_node_) {
-        std::cerr << "__lower_bound_pointer/end_node_" << std::endl;
         return NULL;
       }
       if (nd->__is_nil_node()) {
         // ここで一個前のノードの値をチェック
         // k > nd->valueならそのノードを返す
         if (__comp_(KeyOfValue()(nd->parent->value), k)) {
-          std::cerr << "__lower_bound_pointer/nd->parent->parent" << std::endl;
           return nd->parent->parent;
         }
-        std::cerr << "__lower_bound_pointer/nd->parent" << std::endl;
         return nd->parent;
       }
       prev_parent = nd;
     }
-    std::cerr << "__lower_bound_pointer/nd" << std::endl;
     return nd;
   }
 
@@ -1379,6 +1337,8 @@ private:
         }
       } else {
         has_inserted = false;
+        // 同じ要素がすでに存在していたら、その要素を指すイテレータを返したいので、ノードをセット
+        inserted_node = nd;
         break;
       }
     }
