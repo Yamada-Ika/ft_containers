@@ -12143,11 +12143,29 @@ void test_vector() {
 }
 
 void test_deque() {
-  // constructor
-  // 1
+  {
+    std::deque<int> stddec;
+    for (int i = 0; i < 10240; ++i) {
+      stddec.push_back(i);
+    }
+    ft::deque<int> ftdec;
+    for (int i = 0; i < 10240; ++i) {
+      ftdec.push_back(i);
+    }
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    for (int i = 0; i < 10240; ++i) {
+      ASSERT_EQ(stddec[i], ftdec[i]);
+    }
+  }
+
+  /*
+  * constructor 1
+  */
   { ft::deque<int> mydec; }
 
-  // 2
+  /*
+  * constructor 2
+  */
   {
     std::allocator<int> alloc;
     ft::deque<int> mydec(alloc);
@@ -12155,7 +12173,9 @@ void test_deque() {
     ASSERT_EQ(libdec.size(), mydec.size());
   }
 
-  // 3
+  /*
+  * constructor 3
+  */
   {
     ft::deque<int> mydec(10);
     std::deque<int> libdec(10);
@@ -12205,7 +12225,9 @@ void test_deque() {
     ASSERT_EQ(libdec.at(9), mydec.at(9));
   }
 
-  // 4
+  /*
+  * constructor 5
+  */
   {
     ft::deque<int> mydec1;
     mydec1.push_back(1);
@@ -12226,49 +12248,9 @@ void test_deque() {
     ASSERT_EQ(libdec.at(3), mydec.at(3));
   }
 
-  {
-    std::allocator<int> alloc;
-    ft::deque<int> mydec1;
-    mydec1.push_back(1);
-    mydec1.push_back(42);
-    mydec1.push_back(5);
-    mydec1.push_back(-100);
-    std::deque<int> libdec1;
-    libdec1.push_back(1);
-    libdec1.push_back(42);
-    libdec1.push_back(5);
-    libdec1.push_back(-100);
-    ft::deque<int> mydec(mydec1.begin(), mydec1.end(), alloc);
-    std::deque<int> libdec(libdec1.begin(), libdec1.end(), alloc);
-    ASSERT_EQ(libdec.size(), mydec.size());
-    ASSERT_EQ(libdec.at(0), mydec.at(0));
-    ASSERT_EQ(libdec.at(1), mydec.at(1));
-    ASSERT_EQ(libdec.at(2), mydec.at(2));
-    ASSERT_EQ(libdec.at(3), mydec.at(3));
-  }
-
-  // 5
-  {
-    std::allocator<int> alloc;
-    ft::deque<int> mydec1;
-    mydec1.push_back(1);
-    mydec1.push_back(42);
-    mydec1.push_back(5);
-    mydec1.push_back(-100);
-    std::deque<int> libdec1;
-    libdec1.push_back(1);
-    libdec1.push_back(42);
-    libdec1.push_back(5);
-    libdec1.push_back(-100);
-    ft::deque<int> mydec = mydec1;
-    std::deque<int> libdec = libdec1;
-    ASSERT_EQ(libdec.size(), mydec.size());
-    ASSERT_EQ(libdec.at(0), mydec.at(0));
-    ASSERT_EQ(libdec.at(1), mydec.at(1));
-    ASSERT_EQ(libdec.at(2), mydec.at(2));
-    ASSERT_EQ(libdec.at(3), mydec.at(3));
-  }
-
+  /*
+  * constructor 6
+  */
   {
     std::allocator<int> alloc;
     ft::deque<int> mydec1;
@@ -12290,7 +12272,9 @@ void test_deque() {
     ASSERT_EQ(libdec.at(3), mydec.at(3));
   }
 
-  // operator=
+  /*
+  * operator=
+  */
   {
     ft::deque<int> mydec2;
     mydec2.push_back(1);
@@ -12301,8 +12285,10 @@ void test_deque() {
     libdec2.push_back(42);
     libdec2.push_back(5);
 
-    ft::deque<int> mydec = mydec2;
-    std::deque<int> libdec = libdec2;
+    ft::deque<int> mydec;
+    mydec = mydec2;
+    std::deque<int> libdec;
+    libdec = libdec2;
 
     ASSERT_EQ(libdec.size(), mydec.size());
     ASSERT_EQ(libdec.at(0), mydec.at(0));
@@ -14066,6 +14052,23 @@ void test_stack() {
     ASSERT_EQ(stdst1 < stdst2, ftst1 < ftst2);
     ASSERT_EQ(stdst1 >= stdst2, ftst1 >= ftst2);
     ASSERT_EQ(stdst1 > stdst2, ftst1 > ftst2);
+  }
+
+  {
+    std::stack<int> stdst;
+    for (int i = 0; i < 1024; ++i) {
+      stdst.push(i);
+    }
+    ft::stack<int> ftst;
+    for (int i = 0; i < 1024; ++i) {
+      ftst.push(i);
+    }
+    ASSERT_EQ(stdst.size(), ftst.size());
+    for (int i = 0; i < 1024; ++i) {
+      ASSERT_EQ(stdst.top(), ftst.top());
+      stdst.pop();
+      ftst.pop();
+    }
   }
 }
 

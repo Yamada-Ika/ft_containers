@@ -9,23 +9,13 @@
 
 namespace ft {
 
-// deque用のイテレータ
-// 内部的に配列でリングバッファを使っているので、イテレータをインクリメントなどした時に、さししめしす場所はリニアに変化しない
-// 何を持っていれば良さそうか
-// -　内部的な配列を指すポインタ
-// template <typename T, typename Ref, typename Ptr>
 template <typename T>
 class deque_iterator {
 public:
-  // types
   typedef std::random_access_iterator_tag iterator_category;
-  // typedef deque_iterator<T, T&, T*> iterator;
-  // typedef deque_iterator<T, const T&, const T*> const_iterator;
   typedef deque_iterator<T> iterator;
   typedef const deque_iterator<T> const_iterator;
   typedef T value_type;
-  // typedef Ptr pointer;
-  // typedef Ref reference;
   typedef T* pointer;
   typedef T& reference;
   typedef std::size_t size_type;
@@ -169,6 +159,9 @@ private:
 template <class T, class Allocator = std::allocator<T> >
 class deque {
 public:
+  /*
+  * Member types
+  */
   typedef T value_type;
   typedef Allocator allocator_type;
   typedef std::size_t size_type;
@@ -177,16 +170,14 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  // typedef pointer iterator;
-  // typedef const_pointer const_iterator;
-  // typedef deque_iterator<T, T&, pointer> iterator;
-  // typedef deque_iterator<T, const T&, const_pointer> const_iterator;
   typedef deque_iterator<T> iterator;
   typedef const deque_iterator<T> const_iterator;
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  // constructor
+  /*
+  * Member functions
+  */
   deque()
       : alloc_(Allocator()), first_(allocate(buffer_size)), front_(NULL),
         back_(NULL), current_bufsize(buffer_size) {}
@@ -210,16 +201,6 @@ public:
     initialize_dispatch(first, last, integral());
   }
 
-  template <class InputIt>
-  void initialize_dispatch(InputIt first, InputIt last, false_type) {
-    assign_with_iterator(first, last);
-  }
-
-  template <class Integral>
-  void initialize_dispatch(Integral count, Integral value, true_type) {
-    assign_fill(count, value);
-  }
-
   deque(const deque& other)
       : alloc_(Allocator()), first_(allocate(buffer_size)), front_(NULL),
         back_(NULL), current_bufsize(buffer_size) {
@@ -227,41 +208,22 @@ public:
     *this = other;
   }
 
-  pointer allocate(size_type sz) { return alloc_.allocate(sz); }
-
-  void init_deque() {
-    alloc_ = Allocator();
-    first_ = alloc_.allocate(buffer_size);
-    front_ = NULL;
-    back_ = NULL;
-    current_bufsize = buffer_size;
-  }
-
-  // destructor
   ~deque() {
     alloc_.deallocate(first_, buffer_size);
     alloc_.destroy(first_);
   }
 
-  // operator=
   deque& operator=(const deque& other) {
     if (this == &other)
       return *this;
 
-    if (size() == other.size()) {
-      ft::copy(other.begin(), other.end(), begin());
-      return *this;
+    if (size() != other.size()) {
+      resize(other.size());
     }
-
-    resize(other.size());
-    for (size_type i = 0; i < size(); ++i) {
-      at(i) = other.at(i);
-    }
-
+    ft::copy(other.begin(), other.end(), begin());
     return *this;
   }
 
-  // assign
   void assign(size_type count, const T& value) { assign_fill(count, value); }
   template <class InputIt>
   void assign(InputIt first, InputIt last) {
@@ -269,47 +231,12 @@ public:
     typedef typename ft::is_integral<InputIt>::type integral;
     assign_dispatch(first, last, integral());
   }
-  template <class Integral>
-  void assign_dispatch(Integral count, Integral value, true_type) {
-    assign_fill(count, value);
-  }
-  template <class InputIt>
-  void assign_dispatch(InputIt first, InputIt last, false_type) {
-    assign_with_iterator(first, last);
-  }
-  template <class InputIt>
-  void assign_with_iterator(InputIt first, InputIt last) {
-    // TODO リファクタ
-    if (size() == 0) {
-      for (InputIt itr = first; itr != last; ++itr) {
-        push_back(*itr);
-      }
-      return;
-    }
-    difference_type sz = last - first;
-    back_ = front_ + sz;
-    for (size_type i = 0; i < sz; ++i) {
-      at(i) = first[i];
-    }
-  }
-  void assign_fill(size_type count, const T& value) {
-    // TODO リファクタ
-    if (size() == 0) {
-      for (size_type i = 0; i < count; ++i) {
-        push_back(value);
-      }
-      return;
-    }
-    back_ = front_ + count;
-    for (size_type i = 0; i < count; ++i) {
-      at(i) = value;
-    }
-  }
 
-  // get_allocator
   allocator_type get_allocator() const { return alloc_; }
 
-  // at
+  /*
+  * Element access
+  */
   reference at(size_type pos) {
     if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
@@ -323,7 +250,6 @@ public:
     return operator[](pos);
   }
 
-  // operator[]
   reference operator[](size_type pos) { return *pointer_at(pos); }
   const_reference operator[](size_type pos) const {
     if (front_ < back_) {
@@ -341,30 +267,23 @@ public:
     return front_[pos];
   }
 
-  // front
   reference front() { return *front_; }
   const_reference front() const { return *front_; }
 
-  // back
   reference back() { return *(back_ - 1); }
   const_reference back() const { return *(back_ - 1); }
 
-  // begin
-  iterator begin() {
-    // TODO 適当に実装してみる。メンバとして持たせないといけない気がする
-    return iterator(first_, front_, size(), current_bufsize);
-  }
+  /*
+  * Iterators
+  */
+  iterator begin() { return iterator(first_, front_, size(), current_bufsize); }
   const_iterator begin() const {
     return const_iterator(first_, front_, size(), current_bufsize);
   }
-
-  // end
   iterator end() { return iterator(first_, back_, size(), current_bufsize); }
   const_iterator end() const {
     return const_iterator(first_, back_, size(), current_bufsize);
   }
-
-  // rbegin
   reverse_iterator rbegin() {
     return reverse_iterator(iterator(first_, back_, size(), current_bufsize));
   }
@@ -372,8 +291,6 @@ public:
     return const_reverse_iterator(
         const_iterator(first_, back_, size(), current_bufsize));
   }
-
-  // rend
   reverse_iterator rend() {
     return reverse_iterator(iterator(first_, front_, size(), current_bufsize));
   }
@@ -382,10 +299,10 @@ public:
         const_iterator(first_, front_, size(), current_bufsize));
   }
 
-  // empty
+  /*
+  * Capacity
+  */
   bool empty() const { return front_ == NULL && back_ == NULL; }
-
-  // size
   size_type size() const {
     if (empty()) {
       return 0;
@@ -404,17 +321,16 @@ public:
     //  b    front  first[size]
     return back_ - first_ + first_ + current_bufsize - front_;
   }
-
-  // max_size
   size_type max_size() const { return alloc_.max_size(); }
 
-  // clear
+  /*
+  * Modifiers
+  */
   void clear() {
     front_ = NULL;
     back_ = front_;
   }
 
-  // insert
   iterator insert(const_iterator pos, const T& value) {
     // xaaaaaaxxxx
     //  |  |  |
@@ -444,7 +360,6 @@ public:
     return insert_dispatch(pos, first, last, integral());
   }
 
-  // erase
   iterator erase(iterator pos) { return erase(pos, pos + 1); }
   iterator erase(iterator first, iterator last) {
     difference_type n = first - begin();
@@ -456,23 +371,17 @@ public:
     return iterator(first_, pointer_at(n), size(), current_bufsize);
   }
 
-  // push_back
   void push_back(const T& value) {
-    // TODO 初めてpush_backされたらfront_とback_はNULL
-    if (size() == 0) {
+    if (empty()) {
       first_[0] = value;
       front_ = &first_[0];
       back_ = front_ + 1;
       return;
     }
-    // TODO　サイズチェック
     first_[last_index()] = value;
-    // TODO mod
     ++back_;
   }
 
-  // pop_back
-  // TODO mod
   void pop_back() {
     if (size() == 1) {
       front_ = NULL;
@@ -482,10 +391,7 @@ public:
     decrement_back_pointer();
   }
 
-  // push_front
-  // TODO frontを1個前に移動してその後ろにvalueを入れる？
   void push_front(const T& value) {
-    // TODO 初めてpush_frontされたらfront_とback_はNULL
     if (front_ == NULL && back_ == NULL) {
       size_type index_to_be_first = 0;
       first_[index_to_be_first] = value;
@@ -493,12 +399,11 @@ public:
       back_ = front_ + 1;
       return;
     }
-    size_type index_to_be_first = calc_index_to_be_first(); // TODO mod
+    size_type index_to_be_first = calc_index_to_be_first();
     first_[index_to_be_first] = value;
     front_ = &(first_[index_to_be_first]);
   }
 
-  // pop_front
   void pop_front() {
     if (size() == 1) {
       front_ = NULL;
@@ -515,7 +420,6 @@ public:
     ++front_;
   }
 
-  // resize
   void resize(size_type count, T value = T()) {
     if (count == size()) {
       return;
@@ -530,7 +434,6 @@ public:
     back_ = front_ + count;
   }
 
-  // swap
   void swap(deque& other) {
     size_type this_old_size = size();
     size_type other_old_size = other.size();
@@ -646,9 +549,68 @@ private:
     }
     return begin() + pos_at;
   }
+
+  template <class InputIt>
+  void initialize_dispatch(InputIt first, InputIt last, false_type) {
+    assign_with_iterator(first, last);
+  }
+
+  template <class Integral>
+  void initialize_dispatch(Integral count, Integral value, true_type) {
+    assign_fill(count, value);
+  }
+
+  pointer allocate(size_type sz) { return alloc_.allocate(sz); }
+
+  void init_deque() {
+    alloc_ = Allocator();
+    first_ = alloc_.allocate(buffer_size);
+    front_ = NULL;
+    back_ = NULL;
+    current_bufsize = buffer_size;
+  }
+
+  template <class Integral>
+  void assign_dispatch(Integral count, Integral value, true_type) {
+    assign_fill(count, value);
+  }
+  template <class InputIt>
+  void assign_dispatch(InputIt first, InputIt last, false_type) {
+    assign_with_iterator(first, last);
+  }
+  template <class InputIt>
+  void assign_with_iterator(InputIt first, InputIt last) {
+    // TODO リファクタ
+    if (size() == 0) {
+      for (InputIt itr = first; itr != last; ++itr) {
+        push_back(*itr);
+      }
+      return;
+    }
+    difference_type sz = last - first;
+    back_ = front_ + sz;
+    for (size_type i = 0; i < sz; ++i) {
+      at(i) = first[i];
+    }
+  }
+
+  void assign_fill(size_type count, const T& value) {
+    if (empty()) {
+      for (size_type i = 0; i < count; ++i) {
+        push_back(value);
+      }
+      return;
+    }
+    back_ = front_ + count;
+    for (size_type i = 0; i < count; ++i) {
+      at(i) = value;
+    }
+  }
 };
 
-// compare operators
+/*
+* Non-member functions
+*/
 template <class T, class Alloc>
 bool operator==(const ft::deque<T, Alloc>& lhs,
                 const ft::deque<T, Alloc>& rhs) {
@@ -687,7 +649,6 @@ bool operator<=(const ft::deque<T, Alloc>& lhs,
   return !(lhs > rhs);
 }
 
-// specialized ft::swap for ft::deque
 template <class T, class Alloc>
 void swap(ft::deque<T, Alloc>& lhs, ft::deque<T, Alloc>& rhs) {
   lhs.swap(rhs);
