@@ -9,6 +9,7 @@
 #include "stack.hpp"
 #include "map.hpp"
 #include "pair.hpp"
+#include "reverse_iterator.hpp"
 
 #include <cassert>
 #include <memory>
@@ -14201,6 +14202,37 @@ void test_pair() {
   }
 }
 
+void test_other() {
+  /*
+  * reverse_iterator
+  */
+  {
+    std::vector<int> stdvec;
+    stdvec.push_back(1);
+    stdvec.push_back(2);
+    stdvec.push_back(3);
+    ft::vector<int> ftvec;
+    ftvec.push_back(1);
+    ftvec.push_back(2);
+    ftvec.push_back(3);
+
+    std::reverse_iterator<std::vector<int>::iterator> stditr =
+        std::reverse_iterator<std::vector<int>::iterator>(stdvec.end());
+    ft::reverse_iterator<ft::vector<int>::iterator> ftitr =
+        ft::reverse_iterator<ft::vector<int>::iterator>(ftvec.end());
+
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
+}
+
 int main(int ac, char** av) {
   if (ac == 1) {
     av[1] = const_cast<char*>("all");
@@ -14220,4 +14252,6 @@ int main(int ac, char** av) {
     test_stack();
   if (avs == "pair" || avs == "all")
     test_pair();
+  if (avs == "other" || avs == "all")
+    test_other();
 }

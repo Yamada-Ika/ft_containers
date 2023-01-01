@@ -3,6 +3,7 @@
 
 #include "utils.hpp"
 #include "is_integral.hpp"
+#include "reverse_iterator.hpp"
 #include <memory>
 #include <iostream>
 
@@ -23,8 +24,8 @@ public:
   typedef typename Allocator::const_pointer const_pointer;
   typedef pointer iterator;
   typedef const_pointer const_iterator;
-  typedef std::reverse_iterator<iterator> reverse_iterator;
-  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef ft::reverse_iterator<iterator> reverse_iterator;
+  typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
   /*
   * Member functions

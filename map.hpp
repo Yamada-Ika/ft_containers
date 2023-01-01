@@ -6,6 +6,7 @@
 #include "tree.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
+#include "reverse_iterator.hpp"
 
 namespace ft {
 template <class Key, class T, class Compare = ft::less<Key>,
@@ -30,8 +31,8 @@ public:
                           Allocator>::iterator iterator;
   typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
                           Allocator>::__const_iterator const_iterator;
-  typedef typename std::reverse_iterator<iterator> reverse_iterator;
-  typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+  typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
   /*
   *  Member classes

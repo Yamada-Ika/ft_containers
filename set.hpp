@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 #include "tree.hpp"
+#include "reverse_iterator.hpp"
 #include "utils.hpp"
 
 namespace ft {
@@ -34,8 +35,8 @@ public:
           iterator;
   typedef typename __tree<Key, Key, ft::Identity<Key>, Compare,
                           Allocator>::__const_iterator const_iterator;
-  typedef typename std::reverse_iterator<iterator> reverse_iterator;
-  typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+  typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
   /*
   *  Member types

@@ -8,6 +8,7 @@
 #include "stack.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
+#include "reverse_iterator.hpp"
 #include <functional>
 #include <limits>
 
@@ -291,8 +292,8 @@ public:
   typedef typename node::node_pointer node_pointer;
   typedef __tree_iterator<value_type, Allocator> iterator;
   typedef __const_tree_iterator<value_type, Allocator> __const_iterator;
-  typedef typename std::reverse_iterator<iterator> reverse_iterator;
-  typedef typename std::reverse_iterator<__const_iterator>
+  typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+  typedef typename ft::reverse_iterator<__const_iterator>
       __const_reverse_iterator;
 
   __tree()

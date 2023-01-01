@@ -4,6 +4,7 @@
 #include <memory>
 #include "is_integral.hpp"
 #include "utils.hpp"
+#include "reverse_iterator.hpp"
 #include <cassert>
 
 namespace ft {
@@ -182,9 +183,8 @@ public:
   // typedef deque_iterator<T, const T&, const_pointer> const_iterator;
   typedef deque_iterator<T> iterator;
   typedef const deque_iterator<T> const_iterator;
-  // TODO ftのやつに差し替える
-  typedef typename std::reverse_iterator<iterator> reverse_iterator;
-  typedef typename std::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+  typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
   // constructor
   deque()
