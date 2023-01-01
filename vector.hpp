@@ -10,24 +10,25 @@ namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
 class vector {
 public:
+  /*
+  * Member type
+  */
   typedef T value_type;
   typedef Allocator allocator_type;
   typedef std::size_t size_type;
   typedef std::ptrdiff_t difference_type;
   typedef value_type& reference;
   typedef const value_type& const_reference;
-  typedef value_type* pointer;
-  // typedef allocator_type::pointer     pointer; // See
-  // https://en.cppreference.com/w/cpp/container/vector
-  typedef const pointer const_pointer;
-  // typedef allocator_type::const_pointer    const_pointer;
-
+  typedef typename Allocator::pointer pointer;
+  typedef typename Allocator::const_pointer const_pointer;
   typedef pointer iterator;
   typedef const_pointer const_iterator;
   typedef std::reverse_iterator<iterator> reverse_iterator;
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  // ---- Constructor ----
+  /*
+  * Member functions
+  */
   vector()
       : first(allocate(0)), last(first), reserved_last(first + size()),
         alloc(allocator_type()) {}
@@ -45,36 +46,12 @@ public:
     resize(count, value);
   }
 
-  // TODO enable_ifを使って書き直したい
-  // explicit必要？
   template <typename InputIterator>
   vector(InputIterator first, InputIterator last,
          const allocator_type& alloc = allocator_type()) {
     // vector(size_type count, const_reference value)との曖昧さ回避をする
     typedef typename ft::is_integral<InputIterator>::type integral;
     initialize_dispatch(first, last, integral());
-  }
-
-  template <typename Integral>
-  void initialize_dispatch(Integral count, Integral value, true_type) {
-    first = allocate(0);
-    last = first;
-    reserved_last = first + size();
-    resize(count, value);
-  }
-
-  template <typename InputIterator>
-  void initialize_dispatch(InputIterator other_first, InputIterator other_last,
-                           false_type) {
-    first = allocate(0);
-    last = first;
-    reserved_last = first + size();
-
-    std::ptrdiff_t diff = ft::distance(other_first, other_last);
-    reserve(diff);
-    for (InputIterator itr = other_first; itr != other_last; ++itr) {
-      push_back(*itr);
-    }
   }
 
   // TODO deep copy
@@ -85,13 +62,11 @@ public:
     *this = other;
   }
 
-  // ---- Destructor ----
   ~vector() {
     clear();      // Call destructor
     deallocate(); // Deallocate memory
   }
 
-  // ---- Assigne Operator ----
   vector& operator=(const vector& other) {
     if (this == &other) {
       return *this;
@@ -104,8 +79,8 @@ public:
 
     if (capacity() >= other.size()) {
       ft::copy(other.begin(), other.begin() + other.size(), begin());
-      for (iterator src_iter = other.begin() + other.size(),
-                    src_end = other.end();
+      for (const_iterator src_iter = other.begin() + other.size(),
+                          src_end = other.end();
            src_iter != src_end; ++src_iter, ++last) {
         construct(last, *src_iter);
         return *this;
@@ -114,18 +89,15 @@ public:
 
     destroy_all();
     reserve(other.size());
-    for (iterator src_iter = other.begin(), src_end = other.end(),
-                  dest_iter = begin();
+    iterator dest_iter = begin();
+    for (const_iterator src_iter = other.begin(), src_end = other.end();
          src_iter != src_end; ++src_iter, ++dest_iter, ++last) {
       construct(dest_iter, *src_iter);
     }
     return *this;
   }
 
-  // assign : Replaces the contents of the container.
   void assign(size_type count, const T& value) { fill_assign(count, value); }
-
-  // TODO: can make private
   template <class InputIt>
   void assign(InputIt first, InputIt last) {
     // 曖昧さ回避
@@ -133,31 +105,11 @@ public:
     assign_dispatch(first, last, integral());
   }
 
-  // TODO : make private
-  template <typename Integral>
-  void assign_dispatch(Integral n, Integral val, true_type) {
-    fill_assign(n, val);
-  }
-  // TODO : make private
-  template <typename InputIt>
-  void assign_dispatch(InputIt first, InputIt last, false_type) {
-    size_type sz = distance(first, last);
-    resize(0);
-    size_type i = 0;
-    for (iterator itr = first; itr != last; ++itr) {
-      push_back(*itr);
-      ++i;
-    }
-  }
-
-  void fill_assign(size_type count, const T& value) { resize(count, value); }
-
-  // get_allocator : Returns the allocator associated with the container.
-  // TODO macだとこうしてるallocator_type(alloc)
   allocator_type get_allocator() { return alloc; }
 
-  // Element access
-  // at : access specified element with bounds checking
+  /*
+  * Element access
+  */
   reference at(size_type pos) {
     if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
@@ -171,23 +123,21 @@ public:
     return first[pos];
   }
 
-  // operator[] : access specified element
   reference operator[](size_type pos) { return first[pos]; }
   const_reference operator[](size_type pos) const { return first[pos]; }
 
-  // front : access the first element
   reference front() { return *first; }
   const_reference front() const { return *first; }
 
-  // back : access the last element
   reference back() { return *(last - 1); }
   const_reference back() const { return *(last - 1); }
 
-  // data : direct access to the underlying array
   pointer data() { return first; }
   const_pointer data() const { return first; }
 
-  // Iterators
+  /*
+  * Iterators
+  */
   iterator begin() { return first; }
   iterator end() { return last; }
   const_iterator begin() const { return first; }
@@ -197,17 +147,13 @@ public:
   const_reverse_iterator rbegin() const { return reverse_iterator(last); }
   const_reverse_iterator rend() const { return reverse_iterator(first); }
 
-  // Capacity
-  // empty : checks whether the container is empty
+  /*
+  * Capacity
+  */
   bool empty() const { return begin() == end(); }
-
-  // size : returns the number of elements
   size_type size() const { return distance(begin(), end()); }
-
-  // max_size : returns the maximum possible number of elements
   size_type max_size() const { return alloc.max_size(); }
 
-  // reserve : reserves storage
   void reserve(size_type sz) {
     if (sz <= capacity()) {
       return;
@@ -239,27 +185,19 @@ public:
     }
   }
 
-  // capacity : returns the number of elements that can be held in currently allocated storage
   size_type capacity() const { return reserved_last - first; }
 
-  // Modifiers
-  // clear : clears the contents
+  /*
+  * Modifiers
+  */
   void clear() { destroy_until(rend()); }
 
-  // TODO
-  // insert : inserts elements
-  // iterator insert( const_iterator pos, const T& value );
   iterator insert(const_iterator pos, const T& value) {
     return insert(pos, 1, value);
   }
-
-  // iterator insert( const_iterator pos, size_type count, const T& value );
   iterator insert(const_iterator pos, size_type count, const T& value) {
     return insert_fill(pos, count, value);
   }
-
-  // template <class InputIt>
-  // iterator insert(const_iterator pos, InputIt first, InputIt last);
   template <class InputIt>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
     // 曖昧さ回避
@@ -267,12 +205,137 @@ public:
     return insert_dispatch(pos, first, last, integral());
   }
 
+  iterator erase(iterator pos) { return erase_range(pos, pos + 1); }
+  iterator erase(iterator first, iterator last) {
+    return erase_range(first, last);
+  }
+
+  void push_back(const_reference v) {
+    size_type cur_sz = size();
+
+    if (cur_sz + 1 > capacity()) {
+      if (cur_sz == 0) {
+        cur_sz = 1;
+      } else {
+        cur_sz *= 2; // TODO care of overflow
+      }
+      reserve(cur_sz);
+    }
+    construct(last, v);
+    ++last;
+  }
+
+  void pop_back() {
+    // コンテナが空の時にpop_backすると未定義動作
+    if (empty()) {
+      // TODO out_of_rangeのまま？　
+      throw std::out_of_range("Error: cannot pop back because vector is empty");
+    }
+    alloc.destroy(last);
+    --last;
+  }
+
+  void resize(size_type sz, const_reference v = T()) {
+    size_type cur_sz = size();
+
+    if (sz == cur_sz)
+      return;
+    if (sz < cur_sz) {
+      size_type diff = cur_sz - sz;
+      destroy_until(rbegin() + diff);
+      last = first + sz;
+      return;
+    }
+    reserve(sz);
+    for (; last != reserved_last; ++last) {
+      construct(last, v);
+    }
+  }
+
+  void swap(vector& other) {
+    size_type this_size = this->size();
+    size_type other_size = other.size();
+
+    for (size_type i = 0; i < this_size; ++i) {
+      other.push_back(this->at(i));
+    }
+    this->clear();
+
+    for (size_type i = 0; i < other_size; ++i) {
+      this->push_back(other.at(i));
+    }
+    other.erase(other.begin(), other.begin() + other_size);
+  }
+
+private:
+  // Member
+  pointer first;         // Head to storage
+  pointer last;          // Tail - 1 to storage
+  pointer reserved_last; // Tail to storage
+  allocator_type alloc;  // Store of raw memory
+
+  // Helper Method
+  pointer allocate(size_type n) { return alloc.allocate(n); }
+  void deallocate() { alloc.deallocate(first, capacity()); }
+  void construct(pointer ptr) { alloc.construct(ptr); }
+  void construct(pointer ptr, const_reference value) {
+    alloc.construct(ptr, value);
+  }
+  void destroy(pointer ptr) { alloc.destroy(ptr); }
+  void destroy_all() { destroy(reserved_last); }
+  void destroy_until(reverse_iterator rend) {
+    for (reverse_iterator riter = rbegin(); riter != rend; ++riter, --last) {
+      destroy(&*riter);
+    }
+  }
+
+  template <typename Integral>
+  void initialize_dispatch(Integral count, Integral value, true_type) {
+    first = allocate(0);
+    last = first;
+    reserved_last = first + size();
+    resize(count, value);
+  }
+
+  template <typename InputIterator>
+  void initialize_dispatch(InputIterator other_first, InputIterator other_last,
+                           false_type) {
+    first = allocate(0);
+    last = first;
+    reserved_last = first + size();
+
+    std::ptrdiff_t diff = ft::distance(other_first, other_last);
+    reserve(diff);
+    for (InputIterator itr = other_first; itr != other_last; ++itr) {
+      push_back(*itr);
+    }
+  }
+
+  // TODO : make private
+  template <typename Integral>
+  void assign_dispatch(Integral n, Integral val, true_type) {
+    fill_assign(n, val);
+  }
+  // TODO : make private
+  template <typename InputIt>
+  void assign_dispatch(InputIt first, InputIt last, false_type) {
+    size_type sz = distance(first, last);
+    resize(0);
+    size_type i = 0;
+    for (iterator itr = first; itr != last; ++itr) {
+      push_back(*itr);
+      ++i;
+    }
+  }
+
+  void fill_assign(size_type count, const T& value) { resize(count, value); }
+
   template <class InputIt>
   iterator insert_dispatch(const_iterator pos, InputIt first, InputIt last,
                            false_type) {
     size_type insert_from = pos - begin();
     iterator pos_itr = const_cast<iterator>(pos);
-    for (iterator itr = first; itr != last; ++itr) {
+    for (InputIt itr = first; itr != last; ++itr) {
       pos_itr = insert(pos_itr, *itr);
       ++pos_itr;
     }
@@ -314,14 +377,6 @@ public:
     return begin() + insert_from;
   }
 
-  // TODO
-  // erase : erases elements
-  iterator erase(iterator pos) { return erase_range(pos, pos + 1); }
-
-  iterator erase(iterator first, iterator last) {
-    return erase_range(first, last);
-  }
-
   iterator erase_range(iterator from, iterator to) {
     size_type count = to - from;
     size_type erased_from = from - begin();
@@ -335,92 +390,11 @@ public:
     // posの一個後ろのイテレータを返す
     return begin() + erased_from;
   }
-
-  // push_back : adds an element to the end
-  void push_back(const_reference v) {
-    size_type cur_sz = size();
-
-    if (cur_sz + 1 > capacity()) {
-      if (cur_sz == 0) {
-        cur_sz = 1;
-      } else {
-        cur_sz *= 2; // TODO care of overflow
-      }
-      reserve(cur_sz);
-    }
-    construct(last, v);
-    ++last;
-  }
-
-  // pop_back : removes the last element
-  void pop_back() {
-    // コンテナが空の時にpop_backすると未定義動作
-    if (empty()) {
-      // TODO out_of_rangeのまま？　
-      throw std::out_of_range("Error: cannot pop back because vector is empty");
-    }
-    alloc.destroy(last);
-    --last;
-  }
-
-  // resize : changes the number of elements stored
-  void resize(size_type sz, const_reference v = T()) {
-    size_type cur_sz = size();
-
-    if (sz == cur_sz)
-      return;
-    if (sz < cur_sz) {
-      size_type diff = cur_sz - sz;
-      destroy_until(rbegin() + diff);
-      last = first + sz;
-      return;
-    }
-    reserve(sz);
-    for (; last != reserved_last; ++last) {
-      construct(last, v);
-    }
-  }
-
-  // swap : swaps the contents
-  void swap(vector& other) {
-    size_type this_size = this->size();
-    size_type other_size = other.size();
-
-    for (size_type i = 0; i < this_size; ++i) {
-      other.push_back(this->at(i));
-    }
-    this->clear();
-
-    for (size_type i = 0; i < other_size; ++i) {
-      this->push_back(other.at(i));
-    }
-    other.erase(other.begin(), other.begin() + other_size);
-  }
-
-private:
-  // Member
-  pointer first;         // Head to storage
-  pointer last;          // Tail - 1 to storage
-  pointer reserved_last; // Tail to storage
-  allocator_type alloc;  // Store of raw memory
-
-  // Helper Method
-  pointer allocate(size_type n) { return alloc.allocate(n); }
-  void deallocate() { alloc.deallocate(first, capacity()); }
-  void construct(pointer ptr) { alloc.construct(ptr); }
-  void construct(pointer ptr, const_reference value) {
-    alloc.construct(ptr, value);
-  }
-  void destroy(pointer ptr) { alloc.destroy(ptr); }
-  void destroy_all() { destroy(reserved_last); }
-  void destroy_until(reverse_iterator rend) {
-    for (reverse_iterator riter = rbegin(); riter != rend; ++riter, --last) {
-      destroy(&*riter);
-    }
-  }
 };
 
-// operator ==
+/*
+* Non-member functions
+*/
 template <class T, class Alloc>
 bool operator==(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {
@@ -442,7 +416,6 @@ bool operator!=(const ft::vector<T, Alloc>& lhs,
   return !(lhs == rhs);
 }
 
-// operator <
 template <class T, class Alloc>
 bool operator<(const ft::vector<T, Alloc>& lhs,
                const ft::vector<T, Alloc>& rhs) {
@@ -450,28 +423,24 @@ bool operator<(const ft::vector<T, Alloc>& lhs,
                                      rhs.end());
 }
 
-// operator >=
 template <class T, class Alloc>
 bool operator>=(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {
   return !(lhs < rhs);
 }
 
-// operator >
 template <class T, class Alloc>
 bool operator>(const ft::vector<T, Alloc>& lhs,
                const ft::vector<T, Alloc>& rhs) {
   return rhs < lhs;
 }
 
-// operator <=
 template <class T, class Alloc>
 bool operator<=(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {
   return !(lhs > rhs);
 }
 
-// specialized ft::swap for ft::vector
 template <class T, class Alloc>
 void swap(ft::vector<T, Alloc>& lhs, ft::vector<T, Alloc>& rhs) {
   lhs.swap(rhs);

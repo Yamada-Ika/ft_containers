@@ -669,12 +669,8 @@ bool operator!=(const ft::deque<T, Alloc>& lhs,
 }
 template <class T, class Alloc>
 bool operator<(const ft::deque<T, Alloc>& lhs, const ft::deque<T, Alloc>& rhs) {
-  for (typename ft::deque<T>::size_type i = 0; i < lhs.size(); ++i) {
-    if (rhs.at(i) < lhs.at(i)) {
-      return false;
-    }
-  }
-  return lhs.size() < rhs.size();
+  return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+                                     rhs.end());
 }
 template <class T, class Alloc>
 bool operator>=(const ft::deque<T, Alloc>& lhs,
