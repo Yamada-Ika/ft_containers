@@ -9,3 +9,5 @@ PointerAlignment: Left
 # Disable formatting options which may break tests.
 SortIncludes: false
 ReflowComments: false
+
+ColumnLimit:     80
