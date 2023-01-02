@@ -398,13 +398,18 @@ public:
 
   iterator erase(iterator pos) { return erase(pos, pos + 1); }
   iterator erase(iterator first, iterator last) {
+
+    // x x x x x x x x x 5 42 1
+    //                   f l
+
     difference_type n = first - begin();
     difference_type diff = last - first;
     for (iterator itr = last; itr != end(); ++itr) {
       *(itr - diff) = *itr;
     }
     decrease_back_pointer(diff);
-    return iterator(first_, pointer_at(n), size(), current_bufsize);
+    return iterator(first_, pointer_at(n), size(), current_bufsize, front_,
+                    back_);
   }
 
   void push_back(const T& value) {
@@ -535,6 +540,29 @@ private:
   void decrement_back_pointer() { decrease_back_pointer(1); }
   // 最後の要素がある場所を指すポインターをn個手前にずらす
   void decrease_back_pointer(difference_type n) {
+    // xxxxxxxxxxxxx
+    //   f       b
+    if (front_ < back_) {
+      back_ -= n;
+      return;
+    }
+
+    // xxxxxxxxxxxxx
+    //   b       f
+
+    size_type back_idx = back_ - first_;
+    if (back_idx >= n) {
+      back_ -= n;
+      return;
+    }
+
+    if (back_ < front_) {
+      n -= back_idx;
+      size_type rounded_back_idx = current_bufsize - n;
+      back_ = first_ + rounded_back_idx;
+      return;
+    }
+
     // xxxxxxxxxxxxxxxx
     // |      |        |
     // b    front  first[size]

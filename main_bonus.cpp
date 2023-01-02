@@ -13579,6 +13579,1339 @@ void test_deque() {
     ASSERT_EQ(stddec.at(3), ftdec.at(3));
     ASSERT_EQ(stddec.at(4), ftdec.at(4));
   }
+
+  /*
+  * erase 1
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr = stddec.begin();
+    ft::deque<int>::iterator ftitr = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr);
+
+    ASSERT_EQ(*stdret, *ftret);
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr = stddec.begin();
+    ft::deque<int>::iterator ftitr = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr);
+
+    ASSERT_EQ(*stdret, *ftret);
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr = stddec.begin();
+    ft::deque<int>::iterator ftitr = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr);
+
+    ASSERT_EQ(*stdret, *ftret);
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    std::deque<int>::iterator stditr = stddec.begin();
+    ft::deque<int>::iterator ftitr = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr);
+
+    ASSERT_EQ(*stdret, *ftret);
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  /*
+  * erase 2
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    std::deque<int>::iterator stditr1 = stddec.begin();
+    std::deque<int>::iterator stditr2 = stddec.begin();
+    ft::deque<int>::iterator ftitr1 = ftdec.begin();
+    ft::deque<int>::iterator ftitr2 = ftdec.begin();
+
+    ++stditr1;
+    ++ftitr1;
+    ++stditr2;
+    ++ftitr2;
+    ++stditr2;
+    ++ftitr2;
+
+    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
+    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  /*
+  * push_back
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  /*
+  * pop_back
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    stddec.pop_back();
+    stddec.pop_back();
+    stddec.pop_back();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+    ftdec.pop_back();
+    ftdec.pop_back();
+    ftdec.pop_back();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  /*
+  * push_front
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  /*
+  * pop_front
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    stddec.pop_front();
+    stddec.pop_front();
+    stddec.pop_front();
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+    ftdec.pop_front();
+    ftdec.pop_front();
+    ftdec.pop_front();
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.empty(), ftdec.empty());
+  }
+
+  /*
+  * resize
+  */
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    stddec.resize(5);
+    ftdec.resize(5);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    stddec.resize(5);
+    ftdec.resize(5);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    stddec.resize(5);
+    ftdec.resize(5);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    stddec.resize(5);
+    ftdec.resize(5);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_back(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_back(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    stddec.resize(5, 4242);
+    ftdec.resize(5, 4242);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_back(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_back(42);
+    ftdec.push_back(5);
+
+    stddec.resize(5, 4242);
+    ftdec.resize(5, 4242);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_back(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_back(5);
+
+    stddec.resize(5, 4242);
+    ftdec.resize(5, 4242);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.push_front(1);
+    stddec.push_front(42);
+    stddec.push_front(5);
+    ft::deque<int> ftdec;
+    ftdec.push_front(1);
+    ftdec.push_front(42);
+    ftdec.push_front(5);
+
+    stddec.resize(5, 4242);
+    ftdec.resize(5, 4242);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    ASSERT_EQ(stddec.at(0), ftdec.at(0));
+    ASSERT_EQ(stddec.at(1), ftdec.at(1));
+    ASSERT_EQ(stddec.at(2), ftdec.at(2));
+    ASSERT_EQ(stddec.at(3), ftdec.at(3));
+    ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  /*
+  * swap
+  */
+  {
+    std::deque<int> stddec1(3, 42);
+    ft::deque<int> ftdec1(3, 42);
+    std::deque<int> stddec2(5, 42);
+    ft::deque<int> ftdec2(5, 42);
+
+    stddec1.swap(stddec2);
+    ftdec1.swap(ftdec2);
+
+    ASSERT_EQ(stddec1.size(), ftdec1.size());
+    ASSERT_EQ(stddec1.at(0), ftdec1.at(0));
+    ASSERT_EQ(stddec1.at(1), ftdec1.at(1));
+    ASSERT_EQ(stddec1.at(2), ftdec1.at(2));
+    ASSERT_EQ(stddec1.at(3), ftdec1.at(3));
+    ASSERT_EQ(stddec1.at(4), ftdec1.at(4));
+
+    ASSERT_EQ(stddec2.size(), ftdec2.size());
+    ASSERT_EQ(stddec2.at(0), ftdec2.at(0));
+    ASSERT_EQ(stddec2.at(1), ftdec2.at(1));
+    ASSERT_EQ(stddec2.at(2), ftdec2.at(2));
+  }
+
+  /*
+  * comp
+  */
+  {
+    std::deque<int> stddec1;
+    stddec1.push_front(1);
+    stddec1.push_front(42);
+    stddec1.push_front(5);
+    ft::deque<int> ftdec1;
+    ftdec1.push_front(1);
+    ftdec1.push_front(42);
+    ftdec1.push_front(5);
+
+    std::deque<int> stddec2;
+    stddec2.push_front(1);
+    stddec2.push_front(42);
+    stddec2.push_front(5);
+    ft::deque<int> ftdec2;
+    ftdec2.push_front(1);
+    ftdec2.push_front(42);
+    ftdec2.push_front(5);
+
+    ASSERT_EQ(stddec1 == stddec2, ftdec1 == ftdec2);
+    ASSERT_EQ(stddec1 != stddec2, ftdec1 != ftdec2);
+    ASSERT_EQ(stddec1 < stddec2, ftdec1 < ftdec2);
+    ASSERT_EQ(stddec1 <= stddec2, ftdec1 <= ftdec2);
+    ASSERT_EQ(stddec1 > stddec2, ftdec1 > ftdec2);
+    ASSERT_EQ(stddec1 >= stddec2, ftdec1 >= ftdec2);
+  }
+
+  {
+    std::deque<int> stddec1;
+    stddec1.push_front(1);
+    stddec1.push_front(42);
+    stddec1.push_front(5);
+    stddec1.push_front(5);
+    ft::deque<int> ftdec1;
+    ftdec1.push_front(1);
+    ftdec1.push_front(42);
+    ftdec1.push_front(5);
+
+    std::deque<int> stddec2;
+    stddec2.push_front(1);
+    stddec2.push_front(42);
+    stddec2.push_front(5);
+    stddec2.push_front(5);
+    ft::deque<int> ftdec2;
+    ftdec2.push_front(1);
+    ftdec2.push_front(42);
+    ftdec2.push_front(5);
+
+    ASSERT_EQ(stddec1 == stddec2, ftdec1 == ftdec2);
+    ASSERT_EQ(stddec1 != stddec2, ftdec1 != ftdec2);
+    ASSERT_EQ(stddec1 < stddec2, ftdec1 < ftdec2);
+    ASSERT_EQ(stddec1 <= stddec2, ftdec1 <= ftdec2);
+    ASSERT_EQ(stddec1 > stddec2, ftdec1 > ftdec2);
+    ASSERT_EQ(stddec1 >= stddec2, ftdec1 >= ftdec2);
+  }
+
+  {
+    std::deque<int> stddec1;
+    stddec1.push_front(1);
+    stddec1.push_front(42);
+    stddec1.push_front(5);
+    stddec1.push_front(5);
+    ft::deque<int> ftdec1;
+    ftdec1.push_front(1);
+    ftdec1.push_front(42);
+    ftdec1.push_front(5);
+    ftdec1.push_front(5);
+    ftdec1.push_front(5);
+
+    std::deque<int> stddec2;
+    stddec2.push_front(1);
+    stddec2.push_front(42);
+    stddec2.push_front(5);
+    stddec2.push_front(5);
+    ft::deque<int> ftdec2;
+    ftdec2.push_front(1);
+    ftdec2.push_front(42);
+    ftdec2.push_front(5);
+    ftdec2.push_front(5);
+    ftdec2.push_front(5);
+
+    ASSERT_EQ(stddec1 == stddec2, ftdec1 == ftdec2);
+    ASSERT_EQ(stddec1 != stddec2, ftdec1 != ftdec2);
+    ASSERT_EQ(stddec1 < stddec2, ftdec1 < ftdec2);
+    ASSERT_EQ(stddec1 <= stddec2, ftdec1 <= ftdec2);
+    ASSERT_EQ(stddec1 > stddec2, ftdec1 > ftdec2);
+    ASSERT_EQ(stddec1 >= stddec2, ftdec1 >= ftdec2);
+  }
+
+  /*
+  * non member swap
+  */
+  {
+    std::deque<int> stddec1(3, 42);
+    ft::deque<int> ftdec1(3, 42);
+    std::deque<int> stddec2(5, 42);
+    ft::deque<int> ftdec2(5, 42);
+
+    std::swap(stddec1, stddec2);
+    ft::swap(ftdec1, ftdec2);
+
+    ASSERT_EQ(stddec1.size(), ftdec1.size());
+    ASSERT_EQ(stddec1.at(0), ftdec1.at(0));
+    ASSERT_EQ(stddec1.at(1), ftdec1.at(1));
+    ASSERT_EQ(stddec1.at(2), ftdec1.at(2));
+    ASSERT_EQ(stddec1.at(3), ftdec1.at(3));
+    ASSERT_EQ(stddec1.at(4), ftdec1.at(4));
+
+    ASSERT_EQ(stddec2.size(), ftdec2.size());
+    ASSERT_EQ(stddec2.at(0), ftdec2.at(0));
+    ASSERT_EQ(stddec2.at(1), ftdec2.at(1));
+    ASSERT_EQ(stddec2.at(2), ftdec2.at(2));
+  }
 }
 
 void test_stack() {
