@@ -22,8 +22,10 @@ public:
   typedef std::ptrdiff_t difference_type;
   typedef deque_iterator Self;
 
-  deque_iterator(pointer first, pointer pos, size_type size, size_type cap)
-      : first_(first), pos_(pos), size_(size), cap_(cap) {}
+  deque_iterator(pointer first, pointer pos, size_type size, size_type cap,
+                 pointer front, pointer back)
+      : first_(first), pos_(pos), size_(size), cap_(cap), front_(front),
+        back_(back) {}
   deque_iterator(const Self& other) { *this = other; }
   ~deque_iterator() {}
   deque_iterator& operator=(const deque_iterator& other) {
@@ -34,6 +36,8 @@ public:
     pos_ = other.pos_;
     size_ = other.size_;
     cap_ = other.cap_;
+    front_ = other.front_;
+    back_ = other.back_;
     return *this;
   }
 
@@ -106,7 +110,6 @@ public:
   }
 
   // compare operators
-  // TODO これだと曖昧らしいけどわからん
   friend bool operator==(const Self& lhs, const Self& rhs) {
     return lhs.pos_ == rhs.pos_;
   }
@@ -124,12 +127,28 @@ public:
   friend bool operator<=(const Self& lhs, const Self& rhs) {
     return !(lhs > rhs);
   }
-  // TODO よくわからない
   friend difference_type operator-(const Self& lhs, const Self& rhs) {
-    if (lhs.pos_ < rhs.pos_) {
-      return rhs.pos_ - lhs.pos_;
+    if (lhs.front_ < lhs.back_) {
+      // xxxxxxxxxxxxxxx
+      //    f      b
+      return lhs.pos_ - rhs.pos_;
+    } else {
+      // xxxxxxxxxxxxxxx
+      //  l b      f  r
+      if (lhs.pos_ <= lhs.back_ && rhs.front_ <= rhs.pos_) {
+        return lhs.cap_ - (rhs.pos_ - lhs.pos_);
+      } else if (rhs.pos_ <= lhs.back_ && rhs.front_ <= lhs.pos_) {
+        // xxxxxxxxxxxxxxx
+        //  r b      f  l
+        return -(lhs.cap_ - (lhs.pos_ - rhs.pos_));
+        // return lhs.cap_ - (lhs.pos_ - rhs.pos_);
+      } else {
+        // xxxxxxxxxxxxxxx
+        //    b      f r l
+        return lhs.pos_ - rhs.pos_;
+      }
     }
-    return lhs.pos_ - rhs.pos_;
+    return 0;
   }
   friend Self operator+(const Self& lhs, difference_type n) {
     Self tmp = lhs;
@@ -154,6 +173,8 @@ private:
   size_type size_;
   // dequeが内部的に持っている配列の容量
   size_type cap_;
+  pointer front_;
+  pointer back_;
 };
 
 template <class T, class Allocator = std::allocator<T> >
@@ -179,31 +200,31 @@ public:
   * Member functions
   */
   deque()
-      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(NULL),
-        back_(NULL), current_bufsize(buffer_size) {}
+      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(first_),
+        back_(front_), current_bufsize(buffer_size) {}
 
   explicit deque(const Allocator& alloc)
-      : alloc_(alloc), first_(allocate(buffer_size)), front_(NULL), back_(NULL),
-        current_bufsize(buffer_size) {}
+      : alloc_(alloc), first_(allocate(buffer_size)), front_(first_),
+        back_(front_), current_bufsize(buffer_size) {}
 
   explicit deque(size_type count, const T& value = T(),
                  const Allocator& alloc = Allocator())
-      : alloc_(alloc), first_(allocate(buffer_size)), front_(NULL), back_(NULL),
-        current_bufsize(buffer_size) {
+      : alloc_(alloc), first_(allocate(buffer_size)), front_(first_),
+        back_(front_), current_bufsize(buffer_size) {
     assign_fill(count, value);
   }
 
   template <class InputIt>
   deque(InputIt first, InputIt last, const Allocator& alloc = Allocator())
-      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(NULL),
-        back_(NULL), current_bufsize(buffer_size) { // 曖昧さ回避
+      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(first_),
+        back_(front_), current_bufsize(buffer_size) { // 曖昧さ回避
     typedef typename ft::is_integral<InputIt>::type integral;
     initialize_dispatch(first, last, integral());
   }
 
   deque(const deque& other)
-      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(NULL),
-        back_(NULL), current_bufsize(buffer_size) {
+      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(first_),
+        back_(front_), current_bufsize(buffer_size) {
     assign_fill(other.size(), T());
     *this = other;
   }
@@ -270,45 +291,61 @@ public:
   reference front() { return *front_; }
   const_reference front() const { return *front_; }
 
-  reference back() { return *(back_ - 1); }
-  const_reference back() const { return *(back_ - 1); }
+  reference back() {
+    // TODO emptyの場合どうする
+    if (back_ == first_) {
+      return first_[current_bufsize - 1];
+    }
+    return *(back_ - 1);
+  }
+  const_reference back() const {
+    if (back_ == first_) {
+      return first_[current_bufsize - 1];
+    }
+    return *(back_ - 1);
+  }
 
   /*
   * Iterators
   */
-  iterator begin() { return iterator(first_, front_, size(), current_bufsize); }
-  const_iterator begin() const {
-    return const_iterator(first_, front_, size(), current_bufsize);
+  iterator begin() {
+    return iterator(first_, front_, size(), current_bufsize, front_, back_);
   }
-  iterator end() { return iterator(first_, back_, size(), current_bufsize); }
+  const_iterator begin() const {
+    return const_iterator(first_, front_, size(), current_bufsize, front_,
+                          back_);
+  }
+  iterator end() {
+    return iterator(first_, back_, size(), current_bufsize, front_, back_);
+  }
   const_iterator end() const {
-    return const_iterator(first_, back_, size(), current_bufsize);
+    return const_iterator(first_, back_, size(), current_bufsize, front_,
+                          back_);
   }
   reverse_iterator rbegin() {
-    return reverse_iterator(iterator(first_, back_, size(), current_bufsize));
+    return reverse_iterator(
+        iterator(first_, back_, size(), current_bufsize, front_, back_));
   }
   const_reverse_iterator rbegin() const {
     return const_reverse_iterator(
-        const_iterator(first_, back_, size(), current_bufsize));
+        const_iterator(first_, back_, size(), current_bufsize, front_, back_));
   }
   reverse_iterator rend() {
-    return reverse_iterator(iterator(first_, front_, size(), current_bufsize));
+    return reverse_iterator(
+        iterator(first_, front_, size(), current_bufsize, front_, back_));
   }
   const_reverse_iterator rend() const {
     return const_reverse_iterator(
-        const_iterator(first_, front_, size(), current_bufsize));
+        const_iterator(first_, front_, size(), current_bufsize, front_, back_));
   }
 
   /*
   * Capacity
   */
-  bool empty() const { return front_ == NULL && back_ == NULL; }
+  bool empty() const { return front_ == back_; }
   size_type size() const {
     if (empty()) {
       return 0;
-    }
-    if (front_ == back_) {
-      return current_bufsize;
     }
     // xxxxxxxxxxx
     //  |      |
@@ -326,29 +363,28 @@ public:
   /*
   * Modifiers
   */
-  void clear() {
-    front_ = NULL;
-    back_ = front_;
-  }
+  void clear() { back_ = front_; }
 
   iterator insert(const_iterator pos, const T& value) {
-    // xaaaaaaxxxx
-    //  |  |  |
-    //  f  p  b
-    //
-    // xaavaaaaxxxx
-    size_type pos_at = pos - begin();
+    // 空の場合
+    if (empty()) {
+      push_back(value);
+      return begin();
+    }
+
+    difference_type pos_idx = pos - begin();
     size_type old_size = size();
 
-    push_back(at(old_size - 1));
-    for (size_type i = old_size - 1; i >= pos_at; --i) {
+    push_back(at(old_size - 1)); // サイズ確保を委譲
+    // 後ろ前に向かって一つ後ろの要素に値をコピーしていく
+    for (difference_type i = old_size - 1; i >= pos_idx; --i) {
       at(i + 1) = at(i);
       if (i == 0) {
         break;
       }
     }
-    at(pos_at) = value;
-    return begin() + pos_at;
+    at(pos_idx) = value;
+    return begin() + pos_idx;
   }
   iterator insert(const_iterator pos, size_type count, const T& value) {
     return insert_fill(pos, count, value);
@@ -372,44 +408,31 @@ public:
   }
 
   void push_back(const T& value) {
-    if (empty()) {
-      first_[0] = value;
-      front_ = &first_[0];
-      back_ = front_ + 1;
-      return;
-    }
     first_[last_index()] = value;
     ++back_;
   }
 
   void pop_back() {
-    if (size() == 1) {
-      front_ = NULL;
-      back_ = NULL;
-      return;
-    }
+    // if (size() == 1) {
+    //   front_ = NULL;
+    //   back_ = NULL;
+    //   return;
+    // }
     decrement_back_pointer();
   }
 
   void push_front(const T& value) {
-    if (front_ == NULL && back_ == NULL) {
-      size_type index_to_be_first = 0;
-      first_[index_to_be_first] = value;
-      front_ = &(first_[index_to_be_first]);
-      back_ = front_ + 1;
-      return;
-    }
     size_type index_to_be_first = calc_index_to_be_first();
     first_[index_to_be_first] = value;
     front_ = &(first_[index_to_be_first]);
   }
 
   void pop_front() {
-    if (size() == 1) {
-      front_ = NULL;
-      back_ = NULL;
-      return;
-    }
+    // if (size() == 1) {
+    //   front_ = NULL;
+    //   back_ = NULL;
+    //   return;
+    // }
     // xxxxxxxxxxxxxxxx
     // |              |
     // b            front
@@ -516,6 +539,7 @@ private:
     // |      |        |
     // b    front  first[size]
     // back_がダングリングになるのを防ぐ
+    // TODO この時リングバッファを拡張する
     if (back_ == first_) {
       back_ = first_ + current_bufsize + n;
       return;
@@ -565,8 +589,8 @@ private:
   void init_deque() {
     alloc_ = Allocator();
     first_ = alloc_.allocate(buffer_size);
-    front_ = NULL;
-    back_ = NULL;
+    front_ = first_;
+    back_ = front_;
     current_bufsize = buffer_size;
   }
 
@@ -581,7 +605,7 @@ private:
   template <class InputIt>
   void assign_with_iterator(InputIt first, InputIt last) {
     // TODO リファクタ
-    if (size() == 0) {
+    if (empty()) {
       for (InputIt itr = first; itr != last; ++itr) {
         push_back(*itr);
       }
@@ -653,7 +677,6 @@ template <class T, class Alloc>
 void swap(ft::deque<T, Alloc>& lhs, ft::deque<T, Alloc>& rhs) {
   lhs.swap(rhs);
 }
-
 }; // namespace ft
 
 #endif
