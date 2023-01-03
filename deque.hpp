@@ -14,7 +14,6 @@ class deque_iterator {
 public:
   typedef std::random_access_iterator_tag iterator_category;
   typedef deque_iterator<T> iterator;
-  typedef const deque_iterator<T> const_iterator;
   typedef T value_type;
   typedef T* pointer;
   typedef T& reference;
@@ -160,7 +159,176 @@ public:
     return tmp -= n;
   }
 
-private:
+  // デフォルトのバッファーサイズ
+  const static size_type buffer_size = 512;
+
+  // member
+  // dequeが内部的に持っている配列の先頭を指すポインタ
+  pointer first_;
+  // deque_iteratorが指す配列の要素を指すポインタ
+  pointer pos_;
+  // dequeが内部的に持っている配列の中に詰められている要素の数
+  size_type size_;
+  // dequeが内部的に持っている配列の容量
+  size_type cap_;
+  pointer front_;
+  pointer back_;
+};
+
+template <typename T>
+class const_deque_iterator {
+public:
+  typedef std::random_access_iterator_tag iterator_category;
+  typedef const_deque_iterator<T> iterator;
+  typedef T value_type;
+  typedef T* pointer;
+  typedef const T& reference;
+  typedef std::size_t size_type;
+  typedef std::ptrdiff_t difference_type;
+  typedef const_deque_iterator Self;
+  typedef deque_iterator<T> __non_const_iterator;
+
+  const_deque_iterator(pointer first, pointer pos, size_type size,
+                       size_type cap, pointer front, pointer back)
+      : first_(first), pos_(pos), size_(size), cap_(cap), front_(front),
+        back_(back) {}
+  const_deque_iterator(const Self& other) { *this = other; }
+  ~const_deque_iterator() {}
+  const_deque_iterator& operator=(const const_deque_iterator& other) {
+    if (this == &other)
+      return *this;
+
+    first_ = other.first_;
+    pos_ = other.pos_;
+    size_ = other.size_;
+    cap_ = other.cap_;
+    front_ = other.front_;
+    back_ = other.back_;
+    return *this;
+  }
+  const_deque_iterator(__non_const_iterator itr)
+      : first_(itr.first_), pos_(itr.pos_), size_(itr.size_), cap_(itr.cap_),
+        front_(itr.front_), back_(itr.back_) {}
+
+  reference operator*() const { return *pos_; }
+  pointer operator->() const { return pos_; }
+  Self& operator++() {
+    ++pos_;
+    if (pos_ >= first_ + cap_) {
+      // xxxxxxxx
+      //         |
+      //       pos_
+      pos_ = first_;
+    }
+    return *this;
+  }
+  Self operator++(int) {
+    Self tmp = *this;
+    ++*this;
+    return tmp;
+  }
+  Self& operator--() {
+    --pos_;
+    if (pos_ < first_) {
+      pos_ = first_ + cap_ - 1;
+    }
+    return *this;
+  }
+  Self operator--(int) {
+    Self tmp = *this;
+    --*this;
+    return tmp;
+  }
+  Self& operator+=(difference_type n) {
+    if (pos_ + n >= first_ + cap_) {
+      // n > cap_
+      // xxxxxxxxxxxxx
+      //         |
+      //        pos_
+      size_type pos_to_r_buf_boundry = first_ + cap_ - pos_;
+      pos_ = first_ + ((n - pos_to_r_buf_boundry) % cap_);
+    } else {
+      pos_ += n;
+    }
+    return *this;
+  }
+  Self& operator-=(difference_type n) {
+    if (pos_ - n < first_) {
+      // n > cap_
+      // xxxxxxxxxxxxx
+      //         |
+      //        pos_
+      size_type pos_to_l_buf_boundry = pos_ - first_;
+      pos_ = first_ + cap_ - ((n - pos_to_l_buf_boundry) % cap_);
+    } else {
+      pos_ -= n;
+    }
+    return *this;
+  }
+  reference operator[](difference_type n) const {
+    if (pos_ + n >= first_ + cap_) {
+      // n > cap_
+      // xxxxxxxxxxxxx
+      //         |
+      //        pos_
+      size_type pos_to_r_buf_boundry = first_ + cap_ - pos_;
+      n = (n - pos_to_r_buf_boundry) % cap_;
+      return first_[n];
+    }
+    return pos_[n];
+  }
+
+  // compare operators
+  friend bool operator==(const Self& lhs, const Self& rhs) {
+    return lhs.pos_ == rhs.pos_;
+  }
+  friend bool operator!=(const Self& lhs, const Self& rhs) {
+    return !(lhs == rhs);
+  }
+  friend bool operator<(const Self& lhs, const Self& rhs) {
+    return (lhs.first_ == rhs.first_) ? lhs.pos_ < rhs.pos_
+                                      : lhs.first_ < rhs.first_;
+  }
+  friend bool operator>=(const Self& lhs, const Self& rhs) {
+    return !(lhs < rhs);
+  }
+  friend bool operator>(const Self& lhs, const Self& rhs) { return rhs < lhs; }
+  friend bool operator<=(const Self& lhs, const Self& rhs) {
+    return !(lhs > rhs);
+  }
+  friend difference_type operator-(const Self& lhs, const Self& rhs) {
+    if (lhs.front_ < lhs.back_) {
+      // xxxxxxxxxxxxxxx
+      //    f      b
+      return lhs.pos_ - rhs.pos_;
+    } else {
+      // xxxxxxxxxxxxxxx
+      //  l b      f  r
+      if (lhs.pos_ <= lhs.back_ && rhs.front_ <= rhs.pos_) {
+        return lhs.cap_ - (rhs.pos_ - lhs.pos_);
+      } else if (rhs.pos_ <= lhs.back_ && rhs.front_ <= lhs.pos_) {
+        // xxxxxxxxxxxxxxx
+        //  r b      f  l
+        return -(lhs.cap_ - (lhs.pos_ - rhs.pos_));
+        // return lhs.cap_ - (lhs.pos_ - rhs.pos_);
+      } else {
+        // xxxxxxxxxxxxxxx
+        //    b      f r l
+        return lhs.pos_ - rhs.pos_;
+      }
+    }
+    return 0;
+  }
+  friend Self operator+(const Self& lhs, difference_type n) {
+    Self tmp = lhs;
+    return tmp += n;
+  }
+  friend Self operator+(difference_type n, const Self& rhs) { return rhs + n; }
+  friend Self operator-(const Self& lhs, difference_type n) {
+    Self tmp = lhs;
+    return tmp -= n;
+  }
+
   // デフォルトのバッファーサイズ
   const static size_type buffer_size = 512;
 
@@ -192,7 +360,7 @@ public:
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
   typedef deque_iterator<T> iterator;
-  typedef const deque_iterator<T> const_iterator;
+  typedef const_deque_iterator<T> const_iterator;
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -602,20 +770,20 @@ private:
   iterator insert_dispatch(const_iterator pos, InputIt first, InputIt last,
                            false_type) {
     size_type pos_at = pos - begin();
-    iterator itr = static_cast<iterator>(pos);
+    // iterator itr = static_cast<iterator>(pos);
     for (InputIt ritr = first; ritr != last; ++ritr) {
-      insert(itr, *ritr);
-      ++itr;
+      insert(pos, *ritr);
+      ++pos;
     }
     return begin() + pos_at;
   }
   // insert helper
   iterator insert_fill(const_iterator pos, size_type count, const T& value) {
     size_type pos_at = pos - begin();
-    iterator itr = static_cast<iterator>(pos);
+    // iterator itr = static_cast<iterator>(pos);
     for (size_type left = count; left > 0; --left) {
-      insert(itr, value);
-      ++itr;
+      insert(pos, value);
+      ++pos;
     }
     return begin() + pos_at;
   }

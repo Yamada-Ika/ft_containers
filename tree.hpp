@@ -208,7 +208,6 @@ struct __tree_iterator {
     return !(lhs == rhs);
   }
 
-private:
   __node_pointer __node_pointer_;
   __node_pointer __end_node_;
 };
@@ -223,6 +222,7 @@ struct __const_tree_iterator {
   typedef std::ptrdiff_t difference_type;
   typedef __const_tree_iterator<T, Allocator> Self;
   typedef typename __node<T, Allocator>::node_pointer __node_pointer;
+  typedef __tree_iterator<T, Allocator> __non_const_iterator;
 
   // constructor
   __const_tree_iterator() : __node_pointer_(NULL), __end_node_(NULL) {}
@@ -239,6 +239,8 @@ struct __const_tree_iterator {
     __end_node_ = other.__end_node_;
     return *this;
   }
+  __const_tree_iterator(__non_const_iterator itr)
+      : __node_pointer_(itr.__node_pointer_), __end_node_(itr.__end_node_) {}
 
   reference operator*() const { return __node_pointer_->value; }
   pointer operator->() const { return &__node_pointer_->value; }
@@ -268,7 +270,6 @@ struct __const_tree_iterator {
     return !(lhs == rhs);
   }
 
-private:
   __node_pointer __node_pointer_;
   __node_pointer __end_node_;
 };

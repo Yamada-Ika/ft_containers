@@ -2,8 +2,6 @@
 #define IS_INTEGRAL_HPP
 
 namespace ft {
-// integral_constant that is used in is_integral
-// See https://en.cppreference.com/w/cpp/types/integral_constant
 template <class T, T v>
 struct integral_constant {
   static const T value = v;
@@ -16,8 +14,6 @@ struct integral_constant {
 typedef integral_constant<bool, true> true_type;
 typedef integral_constant<bool, false> false_type;
 
-// is_integral
-// See https://www.boost.org/doc/libs/1_60_0/libs/type_traits/doc/html/boost_typetraits/reference/is_integral.html
 template <class T>
 struct is_integral : public false_type {};
 template <class T>
@@ -49,7 +45,6 @@ template <>
 struct is_integral<bool> : public true_type {};
 
 #ifndef FT_CONTAINERS_NO_INTRINSIC_WCHAR_T
-// If the following lines to compile, define FT_CONTAINERS_NO_INTRINSIC_WCHAR_T.
 template <>
 struct is_integral<wchar_t> : public true_type {};
 #endif
