@@ -11827,10 +11827,6 @@ void test_vector() {
     stddata.insert(1);
     stddata.insert(2);
     stddata.insert(3);
-    ft::set<int> ftdata;
-    ftdata.insert(1);
-    ftdata.insert(2);
-    ftdata.insert(3);
 
     std::vector<int> stdvec(3, 42);
     ft::vector<int> ftvec(3, 42);
@@ -11841,7 +11837,7 @@ void test_vector() {
     std::vector<int>::iterator stdret =
         stdvec.insert(stdpos, stddata.begin(), stddata.end());
     ft::vector<int>::iterator ftret =
-        ftvec.insert(ftpos, ftdata.begin(), ftdata.end());
+        ftvec.insert(ftpos, stddata.begin(), stddata.end());
 
     std::vector<int>::iterator stditr = stdvec.begin();
     ft::vector<int>::iterator ftitr = ftvec.begin();

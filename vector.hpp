@@ -72,29 +72,8 @@ public:
     if (this == &other) {
       return *this;
     }
-
-    if (size() == other.size()) {
-      ft::copy(other.begin(), other.end(), begin());
-      return *this;
-    }
-
-    if (capacity() >= other.size()) {
-      ft::copy(other.begin(), other.begin() + other.size(), begin());
-      for (const_iterator src_iter = other.begin() + other.size(),
-                          src_end = other.end();
-           src_iter != src_end; ++src_iter, ++last) {
-        construct(last, *src_iter);
-        return *this;
-      }
-    }
-
-    destroy_all();
-    reserve(other.size());
-    iterator dest_iter = begin();
-    for (const_iterator src_iter = other.begin(), src_end = other.end();
-         src_iter != src_end; ++src_iter, ++dest_iter, ++last) {
-      construct(dest_iter, *src_iter);
-    }
+    resize(other.size());
+    ft::copy(other.begin(), other.end(), begin());
     return *this;
   }
 
@@ -227,11 +206,6 @@ public:
   }
 
   void pop_back() {
-    // コンテナが空の時にpop_backすると未定義動作
-    if (empty()) {
-      // TODO out_of_rangeのまま？　
-      throw std::out_of_range("Error: cannot pop back because vector is empty");
-    }
     alloc.destroy(last);
     --last;
   }
@@ -254,18 +228,9 @@ public:
   }
 
   void swap(vector& other) {
-    size_type this_size = this->size();
-    size_type other_size = other.size();
-
-    for (size_type i = 0; i < this_size; ++i) {
-      other.push_back(this->at(i));
-    }
-    this->clear();
-
-    for (size_type i = 0; i < other_size; ++i) {
-      this->push_back(other.at(i));
-    }
-    other.erase(other.begin(), other.begin() + other_size);
+    vector tmp = other;
+    other = *this;
+    *this = tmp;
   }
 
 private:
