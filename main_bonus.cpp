@@ -3595,6 +3595,79 @@ void test_map() {
     ASSERT_EQ(stditr2, stdmp2.end());
     ASSERT_EQ(ftitr2, ftmp2.end());
   }
+
+  {
+    std::less_equal<int> stdcomp;
+    std::allocator<int> stdalloc;
+    std::map<int, int, std::less_equal<int> > stdst(stdcomp, stdalloc);
+
+    stdst.insert(std::make_pair(1, 1));
+    stdst.insert(std::make_pair(1, 1));
+    stdst.insert(std::make_pair(3, 1));
+
+    std::less_equal<int> ftcomp;
+    std::allocator<int> ftalloc;
+    ft::map<int, int, std::less_equal<int> > ftst(ftcomp, ftalloc);
+
+    ftst.insert(ft::make_pair(1, 1));
+    ftst.insert(ft::make_pair(1, 1));
+    ftst.insert(ft::make_pair(3, 1));
+
+    std::map<int, int, std::less_equal<int> >::iterator stditr = stdst.begin();
+    ft::map<int, int, std::less_equal<int> >::iterator ftitr = ftst.begin();
+
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr, stdst.end());
+    ASSERT_EQ(ftitr, ftst.end());
+  }
+
+  {
+    std::greater_equal<int> stdcomp;
+    std::allocator<int> stdalloc;
+    std::map<int, int, std::greater_equal<int> > stdst(stdcomp, stdalloc);
+
+    stdst.insert(std::make_pair(1, 1));
+    stdst.insert(std::make_pair(1, 1));
+    stdst.insert(std::make_pair(3, 1));
+
+    std::greater_equal<int> ftcomp;
+    std::allocator<int> ftalloc;
+    ft::map<int, int, std::greater_equal<int> > ftst(ftcomp, ftalloc);
+
+    ftst.insert(ft::make_pair(1, 1));
+    ftst.insert(ft::make_pair(1, 1));
+    ftst.insert(ft::make_pair(3, 1));
+
+    std::map<int, int, std::greater_equal<int> >::iterator stditr =
+        stdst.begin();
+    ft::map<int, int, std::greater_equal<int> >::iterator ftitr = ftst.begin();
+
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr, stdst.end());
+    ASSERT_EQ(ftitr, ftst.end());
+  }
 }
 
 void test_set() {
@@ -7796,6 +7869,72 @@ void test_set() {
     for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
       ASSERT_EQ(*libitr2, *myitr2);
     }
+  }
+
+  {
+    std::less_equal<int> stdcomp;
+    std::allocator<int> stdalloc;
+    std::set<int, std::less_equal<int> > stdst(stdcomp, stdalloc);
+
+    stdst.insert(1);
+    stdst.insert(1);
+    stdst.insert(3);
+
+    std::less_equal<int> ftcomp;
+    std::allocator<int> ftalloc;
+    ft::set<int, std::less_equal<int> > ftst(ftcomp, ftalloc);
+
+    ftst.insert(1);
+    ftst.insert(1);
+    ftst.insert(3);
+
+    std::set<int, std::less_equal<int> >::iterator stditr = stdst.begin();
+    ft::set<int, std::less_equal<int> >::iterator ftitr = ftst.begin();
+
+    ASSERT_EQ(*stditr, *ftitr);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr, stdst.end());
+    ASSERT_EQ(ftitr, ftst.end());
+  }
+
+  {
+    std::greater_equal<int> stdcomp;
+    std::allocator<int> stdalloc;
+    std::set<int, std::greater_equal<int> > stdst(stdcomp, stdalloc);
+
+    stdst.insert(1);
+    stdst.insert(1);
+    stdst.insert(3);
+
+    std::greater_equal<int> ftcomp;
+    std::allocator<int> ftalloc;
+    ft::set<int, std::greater_equal<int> > ftst(ftcomp, ftalloc);
+
+    ftst.insert(1);
+    ftst.insert(1);
+    ftst.insert(3);
+
+    std::set<int, std::greater_equal<int> >::iterator stditr = stdst.begin();
+    ft::set<int, std::greater_equal<int> >::iterator ftitr = ftst.begin();
+
+    ASSERT_EQ(*stditr, *ftitr);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++ftitr;
+    ++stditr;
+    ASSERT_EQ(stditr, stdst.end());
+    ASSERT_EQ(ftitr, ftst.end());
   }
 }
 
