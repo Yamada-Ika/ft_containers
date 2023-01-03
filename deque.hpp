@@ -413,34 +413,25 @@ public:
   }
 
   void push_back(const T& value) {
+    if (size() == current_bufsize) {
+      reallocate_internal_array(current_bufsize * 2);
+    }
     first_[last_index()] = value;
     ++back_;
   }
 
-  void pop_back() {
-    // if (size() == 1) {
-    //   front_ = NULL;
-    //   back_ = NULL;
-    //   return;
-    // }
-    decrement_back_pointer();
-  }
+  void pop_back() { decrement_back_pointer(); }
 
   void push_front(const T& value) {
     size_type index_to_be_first = calc_index_to_be_first();
     first_[index_to_be_first] = value;
     front_ = &(first_[index_to_be_first]);
+    if (back_ + 1 == front_) {
+      reallocate_internal_array(current_bufsize * 2);
+    }
   }
 
   void pop_front() {
-    // if (size() == 1) {
-    //   front_ = NULL;
-    //   back_ = NULL;
-    //   return;
-    // }
-    // xxxxxxxxxxxxxxxx
-    // |              |
-    // b            front
     if (front_ == first_ + current_bufsize - 1) {
       front_ = first_;
       return;
@@ -448,9 +439,27 @@ public:
     ++front_;
   }
 
+  void reallocate_internal_array(size_type new_size) {
+    pointer tmp = first_;
+    size_type old_size = size();
+    size_type offset = front_ - tmp;
+    first_ = allocate(new_size);
+    for (size_type i = 0; i < old_size; ++i) {
+      first_[i] = tmp[(i + offset) % current_bufsize];
+    }
+    destroy(tmp);
+    current_bufsize = new_size;
+    front_ = first_;
+    back_ = first_ + old_size;
+  }
+
   void resize(size_type count, T value = T()) {
     if (count == size()) {
       return;
+    }
+    // 内部配列を拡張
+    if (count > current_bufsize - size()) {
+      reallocate_internal_array(count + size());
     }
     if (count > size()) {
       size_type additional_size = count - size();
@@ -480,6 +489,9 @@ public:
   }
 
 private:
+  /*
+  * Private Member Objects
+  */
   // 配列の先頭ポインタを持つ
   pointer first_;
   // 要素の先頭ポインタを持つ
@@ -493,6 +505,12 @@ private:
 
   // デフォルトのバッファーサイズ
   const static size_type buffer_size = 512;
+
+  /*
+  * Private Member Methods
+  */
+  pointer allocate(size_type n) { return alloc_.allocate(n); }
+  void destroy(pointer ptr) { alloc_.destroy(ptr); }
 
   // helper
   // 一番後ろのインデックスを返す
@@ -611,8 +629,6 @@ private:
   void initialize_dispatch(Integral count, Integral value, true_type) {
     assign_fill(count, value);
   }
-
-  pointer allocate(size_type sz) { return alloc_.allocate(sz); }
 
   void init_deque() {
     alloc_ = Allocator();

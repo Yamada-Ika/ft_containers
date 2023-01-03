@@ -12283,20 +12283,20 @@ void test_deque() {
     ASSERT_EQ(stditr1 - stditr2, ftitr1 - ftitr2);
   }
 
-  // {
-  //   std::deque<int> stddec;
-  //   for (int i = 0; i < 10240; ++i) {
-  //     stddec.push_back(i);
-  //   }
-  //   ft::deque<int> ftdec;
-  //   for (int i = 0; i < 10240; ++i) {
-  //     ftdec.push_back(i);
-  //   }
-  //   ASSERT_EQ(stddec.size(), ftdec.size());
-  //   for (int i = 0; i < 10240; ++i) {
-  //     ASSERT_EQ(stddec[i], ftdec[i]);
-  //   }
-  // }
+  {
+    std::deque<int> stddec;
+    for (int i = 0; i < 10240; ++i) {
+      stddec.push_back(i);
+    }
+    ft::deque<int> ftdec;
+    for (int i = 0; i < 10240; ++i) {
+      ftdec.push_back(i);
+    }
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    for (int i = 0; i < 10240; ++i) {
+      ASSERT_EQ(stddec[i], ftdec[i]);
+    }
+  }
 
   /*
   * constructor 1
@@ -14135,6 +14135,57 @@ void test_deque() {
     ASSERT_EQ(stddec.at(2), ftdec.at(2));
   }
 
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 1024; ++i) {
+      stddec.push_back(i);
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 1024; ++i) {
+      ftdec.push_back(i);
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 1024; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 5128; ++i) {
+      stddec.push_back(i);
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 5128; ++i) {
+      ftdec.push_back(i);
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 5128; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      stddec.push_back(i);
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      ftdec.push_back(i);
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
   /*
   * pop_back
   */
@@ -14375,6 +14426,102 @@ void test_deque() {
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
     ASSERT_EQ(stddec.at(1), ftdec.at(1));
     ASSERT_EQ(stddec.at(2), ftdec.at(2));
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 512; ++i) {
+      stddec.push_front(i);
+    }
+    stddec.push_front(4242);
+
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 512; ++i) {
+      ftdec.push_front(i);
+    }
+    ftdec.push_front(4242);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 512; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 1024; ++i) {
+      stddec.push_front(i);
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 1024; ++i) {
+      ftdec.push_front(i);
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 1024; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 5128; ++i) {
+      stddec.push_front(i);
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 5128; ++i) {
+      ftdec.push_front(i);
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 5128; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      stddec.push_front(i);
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      ftdec.push_front(i);
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      if (i % 2 == 0) {
+        stddec.push_front(i);
+      } else {
+        stddec.push_back(i);
+      }
+    }
+    ft::deque<int> ftdec;
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      if (i % 2 == 0) {
+        ftdec.push_front(i);
+      } else {
+        ftdec.push_back(i);
+      }
+    }
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+
+    for (std::size_t i = 0; i < 1000000; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
   }
 
   /*
@@ -14769,6 +14916,38 @@ void test_deque() {
     ASSERT_EQ(stddec.at(2), ftdec.at(2));
     ASSERT_EQ(stddec.at(3), ftdec.at(3));
     ASSERT_EQ(stddec.at(4), ftdec.at(4));
+  }
+
+  {
+    std::deque<int> stddec;
+    ft::deque<int> ftdec;
+
+    stddec.resize(1024, 4242);
+    ftdec.resize(1024, 4242);
+
+    // std::cerr << "exp size " << stddec.size() << std::endl;
+    // std::cerr << "got size " << ftdec.size() << std::endl;
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    for (std::size_t i = 0; i < 1024; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec(200, 42);
+    ft::deque<int> ftdec(200, 42);
+
+    stddec.resize(1024, 4242);
+    ftdec.resize(1024, 4242);
+
+    // std::cerr << "exp size " << stddec.size() << std::endl;
+    // std::cerr << "got size " << ftdec.size() << std::endl;
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    for (std::size_t i = 0; i < 1024; ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
   }
 
   /*
@@ -15170,6 +15349,40 @@ void test_stack() {
     }
     ASSERT_EQ(stdst.size(), ftst.size());
     for (int i = 0; i < 1024; ++i) {
+      ASSERT_EQ(stdst.top(), ftst.top());
+      stdst.pop();
+      ftst.pop();
+    }
+  }
+
+  {
+    std::stack<int> stdst;
+    for (int i = 0; i < 5128; ++i) {
+      stdst.push(i);
+    }
+    ft::stack<int> ftst;
+    for (int i = 0; i < 5128; ++i) {
+      ftst.push(i);
+    }
+    ASSERT_EQ(stdst.size(), ftst.size());
+    for (int i = 0; i < 5128; ++i) {
+      ASSERT_EQ(stdst.top(), ftst.top());
+      stdst.pop();
+      ftst.pop();
+    }
+  }
+
+  {
+    std::stack<int> stdst;
+    for (int i = 0; i < 10000000; ++i) {
+      stdst.push(i);
+    }
+    ft::stack<int> ftst;
+    for (int i = 0; i < 10000000; ++i) {
+      ftst.push(i);
+    }
+    ASSERT_EQ(stdst.size(), ftst.size());
+    for (int i = 0; i < 10000000; ++i) {
       ASSERT_EQ(stdst.top(), ftst.top());
       stdst.pop();
       ftst.pop();
