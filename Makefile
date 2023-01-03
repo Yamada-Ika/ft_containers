@@ -13,4 +13,7 @@ leak-vector: FORCE
 leak-deque: FORCE
 	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out deque
 
+leak-stack: FORCE
+	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out stack
+
 FORCE: ;

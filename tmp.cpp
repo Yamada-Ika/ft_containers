@@ -185,8 +185,37 @@ int main() {
     deq.insert(deq.begin(), 100, 1);
   }
 
-    {
+  {
     ft::deque<int> deq;
     deq.insert(deq.begin(), 100000, 1);
+  }
+
+  {
+    ft::stack<int> st;
+    st.push(1);
+  }
+
+  {
+    ft::stack<int> st1;
+    st1.push(1);
+    ft::stack<int> st2(st1);
+  }
+
+  {
+    ft::stack<int> st1;
+    st1.push(1);
+    ft::stack<int> st2 = st1;
+  }
+
+  {
+    ft::stack<int> st1;
+    st1.push(1);
+    ft::stack<int> st2;
+    st2 = st1;
+  }
+
+  {
+    ft::stack<int> st;
+    st.pop();
   }
 }
