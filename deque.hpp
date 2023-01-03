@@ -548,10 +548,6 @@ public:
 
   iterator erase(iterator pos) { return erase(pos, pos + 1); }
   iterator erase(iterator first, iterator last) {
-
-    // x x x x x x x x x 5 42 1
-    //                   f l
-
     difference_type n = first - begin();
     difference_type diff = last - first;
     for (iterator itr = last; itr != end(); ++itr) {
@@ -770,13 +766,7 @@ private:
       for (size_type i = 0; i < count; ++i) {
         first_[(offset + pos_idx + i) % current_bufsize] = value;
       }
-      return begin() + pos_idx;
     }
-
-    // for (size_type left = count; left > 0; --left) {
-    //   insert(pos, value);
-    //   ++pos;
-    // }
     return begin() + pos_idx;
   }
 
