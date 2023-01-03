@@ -13586,6 +13586,30 @@ void test_deque() {
   */
   {
     std::deque<int> stddec;
+    stddec.insert(stddec.begin(), 100, 1);
+    ft::deque<int> ftdec;
+    ftdec.insert(ftdec.begin(), 100, 1);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    for (std::size_t i = 0; i < stddec.size(); ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
+    stddec.insert(stddec.begin(), 10000, 42);
+    ft::deque<int> ftdec;
+    ftdec.insert(ftdec.begin(), 10000, 42);
+
+    ASSERT_EQ(stddec.size(), ftdec.size());
+    for (std::size_t i = 0; i < stddec.size(); ++i) {
+      ASSERT_EQ(stddec.at(i), ftdec.at(i));
+    }
+  }
+
+  {
+    std::deque<int> stddec;
     stddec.push_back(1);
     stddec.push_back(42);
     stddec.push_back(5);
@@ -13594,6 +13618,8 @@ void test_deque() {
     ftdec.push_back(42);
     ftdec.push_back(5);
 
+    // 1 42 5 x x x x x x x x x x x
+
     std::deque<int>::iterator stditr = stddec.begin();
     ft::deque<int>::iterator ftitr = ftdec.begin();
 
@@ -13601,6 +13627,7 @@ void test_deque() {
     ft::deque<int>::iterator ftret = ftdec.insert(ftitr, 2, 4242);
 
     ASSERT_EQ(*stdret, *ftret);
+
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
     ASSERT_EQ(stddec.at(1), ftdec.at(1));
@@ -13618,6 +13645,8 @@ void test_deque() {
     ftdec.push_front(1);
     ftdec.push_back(42);
     ftdec.push_back(5);
+
+    // 42 5 x x x x x x 1
 
     std::deque<int>::iterator stditr = stddec.begin();
     ft::deque<int>::iterator ftitr = ftdec.begin();

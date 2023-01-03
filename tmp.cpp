@@ -85,4 +85,108 @@ int main() {
 
     vec1.swap(vec2);
   }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+  }
+
+  {
+    ft::deque<int> deq1;
+    deq1.push_front(1);
+    ft::deque<int> deq2(deq1);
+  }
+
+  {
+    ft::deque<int> deq1;
+    deq1.push_front(1);
+    ft::deque<int> deq2 = deq1;
+  }
+
+  {
+    ft::deque<int> deq1;
+    deq1.push_front(1);
+    ft::deque<int> deq2;
+    deq2 = deq1;
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq.at(0);
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq.at(0) = 100;
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq[0];
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq[0] = 100;
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq.front();
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq.back();
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+
+    deq.clear();
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.push_back(1);
+    deq.push_front(1);
+    deq.push_back(1);
+    deq.push_front(1);
+    deq.push_back(1);
+    deq.push_front(1);
+    deq.push_back(1);
+    deq.push_front(1);
+    deq.push_back(1);
+    deq.push_front(1);
+
+    deq.clear();
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.insert(deq.begin(), 1);
+  }
+
+  {
+    ft::deque<int> deq;
+    deq.insert(deq.begin(), 100, 1);
+  }
+
+    {
+    ft::deque<int> deq;
+    deq.insert(deq.begin(), 100000, 1);
+  }
 }

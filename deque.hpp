@@ -398,8 +398,8 @@ public:
   }
 
   ~deque() {
-    alloc_.deallocate(first_, buffer_size);
-    alloc_.destroy(first_);
+    deallocate(first_);
+    destroy(first_);
   }
 
   deque& operator=(const deque& other) {
@@ -534,25 +534,7 @@ public:
   void clear() { back_ = front_; }
 
   iterator insert(const_iterator pos, const T& value) {
-    // 空の場合
-    if (empty()) {
-      push_back(value);
-      return begin();
-    }
-
-    difference_type pos_idx = pos - begin();
-    size_type old_size = size();
-
-    push_back(at(old_size - 1)); // サイズ確保を委譲
-    // 後ろ前に向かって一つ後ろの要素に値をコピーしていく
-    for (difference_type i = old_size - 1; i >= pos_idx; --i) {
-      at(i + 1) = at(i);
-      if (i == 0) {
-        break;
-      }
-    }
-    at(pos_idx) = value;
-    return begin() + pos_idx;
+    return insert_fill(pos, 1, value);
   }
   iterator insert(const_iterator pos, size_type count, const T& value) {
     return insert_fill(pos, count, value);
@@ -607,20 +589,6 @@ public:
     ++front_;
   }
 
-  void reallocate_internal_array(size_type new_size) {
-    pointer tmp = first_;
-    size_type old_size = size();
-    size_type offset = front_ - tmp;
-    first_ = allocate(new_size);
-    for (size_type i = 0; i < old_size; ++i) {
-      first_[i] = tmp[(i + offset) % current_bufsize];
-    }
-    destroy(tmp);
-    current_bufsize = new_size;
-    front_ = first_;
-    back_ = first_ + old_size;
-  }
-
   void resize(size_type count, T value = T()) {
     if (count == size()) {
       return;
@@ -640,20 +608,9 @@ public:
   }
 
   void swap(deque& other) {
-    size_type this_old_size = size();
-    size_type other_old_size = other.size();
-    for (size_type i = 0; i < other_old_size; ++i) {
-      push_back(other.at(i));
-    }
-    for (size_type i = 0; i < this_old_size; ++i) {
-      other.push_back(at(i));
-    }
-    for (size_type i = 0; i < this_old_size; ++i) {
-      pop_front();
-    }
-    for (size_type i = 0; i < other_old_size; ++i) {
-      other.pop_front();
-    }
+    deque tmp = other;
+    other = *this;
+    *this = tmp;
   }
 
 private:
@@ -679,6 +636,7 @@ private:
   */
   pointer allocate(size_type n) { return alloc_.allocate(n); }
   void destroy(pointer ptr) { alloc_.destroy(ptr); }
+  void deallocate(pointer ptr) { alloc_.deallocate(ptr, current_bufsize); }
 
   // helper
   // 一番後ろのインデックスを返す
@@ -770,22 +728,56 @@ private:
   iterator insert_dispatch(const_iterator pos, InputIt first, InputIt last,
                            false_type) {
     size_type pos_at = pos - begin();
-    // iterator itr = static_cast<iterator>(pos);
     for (InputIt ritr = first; ritr != last; ++ritr) {
       insert(pos, *ritr);
       ++pos;
     }
     return begin() + pos_at;
   }
+
   // insert helper
   iterator insert_fill(const_iterator pos, size_type count, const T& value) {
-    size_type pos_at = pos - begin();
-    // iterator itr = static_cast<iterator>(pos);
-    for (size_type left = count; left > 0; --left) {
-      insert(pos, value);
-      ++pos;
+    size_type pos_idx = pos - begin();
+
+    if (empty()) {
+      assign_fill(count, value);
+      return begin() + pos_idx;
     }
-    return begin() + pos_at;
+
+    if (count > current_bufsize - size()) {
+      reallocate_internal_array(count + size());
+    }
+
+    // xxxxxxxxxxxxxxx
+    //   f    p    b
+
+    // 内部配列のメモリ再確保が必要ないケース
+    if (size() + count < current_bufsize) {
+      size_type offset = front_ - first_;
+      // pos_idxから後ろの要素をcountだけずらす
+      size_type num_to_be_shited = back_ - first_ + pos_idx;
+      size_type new_size = size() + count;
+      // backを更新
+      back_ = back_ + count;
+      for (size_type i = size() - 1; i >= pos_idx; --i) {
+        first_[(offset + count + i) % current_bufsize] =
+            first_[(offset + i) % current_bufsize];
+        if (i == 0) {
+          break;
+        }
+      }
+      // pos_idxからcountまでの範囲にvalueを代入する
+      for (size_type i = 0; i < count; ++i) {
+        first_[(offset + pos_idx + i) % current_bufsize] = value;
+      }
+      return begin() + pos_idx;
+    }
+
+    // for (size_type left = count; left > 0; --left) {
+    //   insert(pos, value);
+    //   ++pos;
+    // }
+    return begin() + pos_idx;
   }
 
   template <class InputIt>
@@ -841,6 +833,21 @@ private:
     for (size_type i = 0; i < count; ++i) {
       at(i) = value;
     }
+  }
+
+  void reallocate_internal_array(size_type new_size) {
+    pointer tmp = first_;
+    size_type old_size = size();
+    size_type offset = front_ - tmp;
+    first_ = allocate(new_size);
+    for (size_type i = 0; i < old_size; ++i) {
+      first_[i] = tmp[(i + offset) % current_bufsize];
+    }
+    deallocate(tmp);
+    destroy(tmp);
+    current_bufsize = new_size;
+    front_ = first_;
+    back_ = first_ + old_size;
   }
 };
 
