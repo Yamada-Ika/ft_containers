@@ -44,7 +44,7 @@ public:
   __node(const_reference v)
       : left(NULL), right(NULL), parent(NULL), value(v), __node_kind_(0),
         node_alloc(node_allocator()) {}
-  ~__node();
+  ~__node() {}
   __node(const __node& other) { *this = other; }
   __node& operator=(const __node& other) {
     if (this == &other) {
@@ -310,7 +310,10 @@ public:
         end_node_(__allocate_end_node()), __comp_(comp), __tree_size_(0) {}
   // : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
   // TODO メモリ解放したらクラッシュする
-  ~__tree() {}
+  ~__tree() {
+    destruct_tree();
+    destruct_node(end_node_);
+  }
 
   /*
    * Iterators
@@ -522,50 +525,62 @@ private:
   key_compare __comp_;
   size_type __tree_size_;
 
-  // node操作するメソッド ここから
-  // TODO こういうのはtemplateにしてクラス外にして良い気がする
-  bool __has_right_child(node_pointer nd) { return !__has_no_right_child(nd); }
-  bool __has_no_right_child(node_pointer nd) { return nd->right == NULL; }
-  bool __has_left_child(node_pointer nd) { return !__has_no_left_child(nd); }
-  bool __has_no_left_child(node_pointer nd) { return nd->left == NULL; }
-  bool __has_both_child(node_pointer nd) {
-    return __has_left_child(nd) && __has_right_child(nd);
+  void destruct_tree() { destruct_partial_tree(root_); }
+  void destruct_partial_tree(node_pointer n) {
+    ft::stack<node_pointer> st;
+    node_pointer nd = n;
+    st.push(nd);
+    while (true) {
+      nd = st.top();
+      st.pop();
+      if (nd == end_node_) {
+        continue;
+      }
+      if (nd == NULL) {
+        if (st.empty()) {
+          break;
+        }
+        continue;
+      }
+      st.push(nd->left);
+      st.push(nd->right);
+      destruct_node(nd);
+    }
+    // // TODO 空のtreeのend_node_はどこにも繋がれていないので解放
+    // if (root_ == NULL && end_node_ != NULL) {
+    //   std::cerr << "deallocate end node" << std::endl;
+    //   destruct_node(end_node_);
+    //   end_node_ = NULL;
+    // }
+    // destruct_node(end_node_);
   }
-  bool __has_only_right_child(node_pointer nd) {
-    return !__has_left_child(nd) && __has_right_child(nd);
+  void deallocate_node(node_pointer ptr) { node_alloc_.deallocate(ptr, 1); }
+  void destroy_node(node_pointer ptr) { node_alloc_.destroy(ptr); }
+  void destruct_node(node_pointer ptr) {
+    destroy_node(ptr);
+    deallocate_node(ptr);
   }
-  bool __has_only_left_child(node_pointer nd) {
-    return __has_left_child(nd) && !__has_right_child(nd);
-  }
-  bool __has_no_child(node_pointer nd) {
-    return __has_no_left_child(nd) && __has_no_right_child(nd);
-  }
-  bool __has_one_child(node_pointer nd) {
-    return __has_only_left_child(nd) || __has_only_right_child(nd);
-  }
-  bool __has_only_one_red_child_on_left(node_pointer nd) {
-    return __has_only_left_child(nd) && nd->left->__is_red_node();
-  }
-  bool __has_only_one_red_child_on_right(node_pointer nd) {
-    return __has_only_right_child(nd) && nd->right->__is_red_node();
-  }
-  bool __has_only_one_red_child(node_pointer nd) {
-    return __has_only_one_red_child_on_left(nd) ||
-           __has_only_one_red_child_on_right(nd);
-  }
-
-  // 自分が親から見て左側にあるか
-  bool __has_exist_on_left_from_parent_side(node_pointer nd) {
-    return nd->parent->left == nd;
-  }
-  bool __has_exist_on_right_from_parent_side(node_pointer nd) {
-    return !__has_exist_on_left_from_parent_side(nd);
+  void destruct_erased_node(node_pointer ptr) {
+    // end_node_はメモリ解放しなくて良い
+    if (ptr->right != NULL && ptr->right->__is_nil_node() &&
+        ptr->right != end_node_) {
+      std::cerr << "destruct_erased_node/ deallocate right nil node"
+                << std::endl;
+      destroy_node(ptr->right);
+      deallocate_node(ptr->right);
+    }
+    if (ptr->left != NULL && ptr->left->__is_nil_node()) {
+      std::cerr << "destruct_erased_node/ deallocate left nil node"
+                << std::endl;
+      destroy_node(ptr->left);
+      deallocate_node(ptr->left);
+    }
+    destroy_node(ptr);
+    deallocate_node(ptr);
   }
 
   // rootかどうか
   bool __is_root(node_pointer nd) { return nd->parent == nd; }
-
-  // node操作するメソッド　ここまで
 
   // TODO tree_baseみたいなの作ってnodeいじるメソッドはそっちに移動させたい
   node_pointer __allocate() {
@@ -665,6 +680,7 @@ private:
 
     // TODO 要素がrootだけの時
     if (n == n->parent && cl->__is_nil_node() && cr->__is_nil_node()) {
+      destruct_erased_node(root_);
       root_ = NULL;
       return 1;
     }
@@ -672,6 +688,8 @@ private:
     if ((cl->__is_nil_node() && cr->__is_nil_node()) ||
         (!cl->__is_nil_node() && cr->__is_nil_node()) ||
         (cl->__is_nil_node() && !cr->__is_nil_node())) {
+      std::cerr << "__erase_node_pointer/__erase_node_with_one_or_zero_child"
+                << std::endl;
       return __erase_node_with_one_or_zero_child(n);
     }
 
@@ -900,6 +918,9 @@ private:
     // - targetが赤
     //  - 条件4、5を破らないのでリバランスは不要
     if (target->__is_red_node()) {
+      std::cerr << "__erase_node_with_one_or_zero_child/"
+                   "__erase_own_and_replace_child"
+                << std::endl;
       return __erase_own_and_replace_child(target);
     }
 
@@ -929,6 +950,8 @@ private:
     }
     n->parent = p;
 
+    destruct_erased_node(target);
+
     return __rebalance_when_erase(n);
   }
 
@@ -941,16 +964,7 @@ private:
   //                            N2
   //                        +---+---+
   //                       NL2     NR2
-
-  // TODO 色（kind）も交換するか
   void __exchange_node(node_pointer n1, node_pointer n2) {
-    // これだとmapからtreeを使うときコンパイルエラーになる
-    // error: assignment of read-only member ‘ft::pair<const int, int>::first’
-
-    // value_type tmp_val = n1->value;
-    // n1->value = n2->value;
-    // n2->value = tmp_val;
-
     node_pointer p1 = n1->parent, nl1 = n1->left, nr1 = n1->right;
     node_pointer p2 = n2->parent, nl2 = n2->left, nr2 = n2->right;
 
@@ -1084,6 +1098,7 @@ private:
     node_pointer p = target->parent;
     node_pointer n = target;
     node_pointer c = NULL;
+    node_pointer nd_to_be_destructed = NULL;
 
     if (n->left->__is_nil_node() && n->right == __end_node()) {
       c = n->right;
@@ -1097,18 +1112,28 @@ private:
 
     // Nがroot
     if (n->parent == n) {
-      // TODO end nodeをつけないといけない
+      //     N                     C
+      // +---+---+     ->      +---+---+
+      // C
       if (n->right == __end_node()) {
+        destruct_node(c->right);
         c->right = __end_node();
         c->right->parent = c;
       }
       root_ = c;
       root_->parent = root_;
+      destruct_node(n);
+      destruct_node(n->left);
       return 1;
     }
 
     // NがPの左側にある場合
     if (n == p->left) {
+      //         P                     P
+      //     +---+---+             +---+---+
+      //     N           ->        C
+      // +---+---+             +---+---+
+      // C
       p->left = c;
     } else {
       // NがPの右側にある場合
@@ -1116,6 +1141,7 @@ private:
     }
     c->parent = p;
 
+    destruct_node(target);
     return 1;
   }
 

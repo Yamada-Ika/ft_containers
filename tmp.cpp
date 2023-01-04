@@ -3,6 +3,8 @@
 #include "vector.hpp"
 #include "stack.hpp"
 #include "deque.hpp"
+#include "tree.hpp"
+#include "utils.hpp"
 
 int main() {
   {
@@ -218,4 +220,67 @@ int main() {
     ft::stack<int> st;
     st.pop();
   }
+
+  { ft::__tree<int, int, ft::Identity<int> > t; }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__erase(2);
+  }
+
+  // {
+  //   ft::__tree<int, int, ft::Identity<int> > t;
+  //   t.__insert(1);
+  //   t.__insert(2);
+  //   t.__insert(-1);
+  //   t.__erase(1);
+  // }
+
+  {
+    std::cerr << "tmp/main start" << std::endl;
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__erase(-1);
+  }
+
+  // {
+  //   ft::__tree<int, int, ft::Identity<int> > t;
+  //   t.__insert(1);
+  //   t.__insert(2);
+  //   t.__insert(3);
+  //   t.__insert(4);
+  //   t.__insert(5);
+  // }
+
+  // {
+  //   ft::__tree<int, int, ft::Identity<int> > t;
+  //   t.__insert(1);
+  //   t.__insert(2);
+  //   t.__insert(3);
+  //   t.__insert(4);
+  //   t.__insert(5);
+  //   t.__erase(5);
+  // }
 }
