@@ -28,5 +28,9 @@ leak-set: FORCE
 	c++ -g main_bonus.cpp && valgrind --leak-check=full ./a.out set
 leak-map: FORCE
 	c++ -g main_bonus.cpp && valgrind --leak-check=full ./a.out map
+leak-all: FORCE
+	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out all
+leak-mac-all: FORCE
+	c++ main_bonus.cpp && leaks --atExit -- ./a.out all
 
 FORCE: ;
