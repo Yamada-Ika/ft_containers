@@ -364,15 +364,8 @@ private:
 template <class T, class Alloc>
 bool operator==(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {
-  if (lhs.size() != rhs.size()) {
-    return false;
-  }
-  for (typename ft::vector<T, Alloc>::size_type i = 0; i < lhs.size(); ++i) {
-    if (lhs[i] != rhs[i]) {
-      return false;
-    }
-  }
-  return true;
+  return lhs.size() == rhs.size() &&
+         ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 // operator !=

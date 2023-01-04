@@ -55,7 +55,7 @@ public:
     left = other.left;
     right = other.right;
     parent = other.parent;
-    value = other.value;
+    // value = other.value;
     node_alloc = other.node_alloc;
     __node_kind_ = other.__node_kind_;
     return *this;
@@ -150,11 +150,6 @@ static NodePtr __prev_node(NodePtr node, NodePtr end_node) {
   return node->parent;
 }
 
-// tree用のイテレータ
-// ・イテレータをnextするアルゴリズム
-// 　・なかったら
-// 　　・左の子があるかチェックし、なかったらすでにそこ以下のノードは訪れているのでparentを辿る
-// 　　・左の子があるノードにたどり着く。左の子以下のノードはすでに訪れているので親を返す
 template <typename T, typename Allocator>
 struct __tree_iterator {
   typedef T value_type;
@@ -546,13 +541,6 @@ private:
       st.push(nd->right);
       destruct_node(nd);
     }
-    // // TODO 空のtreeのend_node_はどこにも繋がれていないので解放
-    // if (root_ == NULL && end_node_ != NULL) {
-    //   std::cerr << "deallocate end node" << std::endl;
-    //   destruct_node(end_node_);
-    //   end_node_ = NULL;
-    // }
-    // destruct_node(end_node_);
   }
   void deallocate_node(node_pointer ptr) { node_alloc_.deallocate(ptr, 1); }
   void destroy_node(node_pointer ptr) { node_alloc_.destroy(ptr); }
@@ -601,6 +589,7 @@ private:
 
   node_pointer __allocate_nil_node() {
     node_pointer n = __allocate();
+    node_alloc_.construct(n, value_type());
     n->left = NULL;
     n->right = NULL;
     n->parent = NULL;
@@ -688,8 +677,6 @@ private:
     if ((cl->__is_nil_node() && cr->__is_nil_node()) ||
         (!cl->__is_nil_node() && cr->__is_nil_node()) ||
         (cl->__is_nil_node() && !cr->__is_nil_node())) {
-      std::cerr << "__erase_node_pointer/__erase_node_with_one_or_zero_child"
-                << std::endl;
       return __erase_node_with_one_or_zero_child(n);
     }
 
@@ -918,9 +905,6 @@ private:
     // - targetが赤
     //  - 条件4、5を破らないのでリバランスは不要
     if (target->__is_red_node()) {
-      std::cerr << "__erase_node_with_one_or_zero_child/"
-                   "__erase_own_and_replace_child"
-                << std::endl;
       return __erase_own_and_replace_child(target);
     }
 
@@ -932,6 +916,12 @@ private:
          (tl->__is_red_node() && tr->__is_nil_node()))) {
       return __erase_own_and_repaint_after_replace_child(target);
     }
+
+    //           P
+    //       +---+---+
+    //    target
+    //  +---+---+
+    //  N
 
     // replace
     node_pointer p = target->parent;
@@ -950,7 +940,14 @@ private:
     }
     n->parent = p;
 
-    destruct_erased_node(target);
+    if (target->left == n) {
+      if (target->right != end_node_) {
+        destruct_node(target->right);
+      }
+    } else {
+      destruct_node(target->left);
+    }
+    destruct_node(target);
 
     return __rebalance_when_erase(n);
   }
@@ -1098,7 +1095,6 @@ private:
     node_pointer p = target->parent;
     node_pointer n = target;
     node_pointer c = NULL;
-    node_pointer nd_to_be_destructed = NULL;
 
     if (n->left->__is_nil_node() && n->right == __end_node()) {
       c = n->right;
@@ -1112,36 +1108,56 @@ private:
 
     // Nがroot
     if (n->parent == n) {
-      //     N                     C
-      // +---+---+     ->      +---+---+
-      // C
+      //          N                     C
+      //      +---+---+     ->      +---+---+
+      //      C      nil           nil     nil
+      //  +---+---+
+      // nil     nil
       if (n->right == __end_node()) {
         destruct_node(c->right);
         c->right = __end_node();
         c->right->parent = c;
+      } else {
+        //      N                    C
+        //  +---+---+     ->     +---+---+
+        // nil      C           nil     nil
+        //      +---+---+
+        //     nil     nil
+        destruct_node(n->left);
       }
       root_ = c;
       root_->parent = root_;
       destruct_node(n);
-      destruct_node(n->left);
       return 1;
     }
 
     // NがPの左側にある場合
     if (n == p->left) {
-      //         P                     P
-      //     +---+---+             +---+---+
-      //     N           ->        C
-      // +---+---+             +---+---+
-      // C
+      //              P                      P
+      //          +---+---+              +---+---+
+      //          N      nil    ->       C      nil
+      //      +---+---+              +---+---+
+      //      C      nil            nil     nil
       p->left = c;
     } else {
       // NがPの右側にある場合
+      //       P                       P
+      //   +---+---+               +---+---+
+      //  nil      N      ->       C      nil
+      //       +---+---+       +---+---+
+      //       C      nil     nil     nil
       p->right = c;
     }
     c->parent = p;
 
-    destruct_node(target);
+    if (c == n->left) {
+      if (n->right != end_node_) {
+        destruct_node(n->right);
+      }
+    } else {
+      destruct_node(n->left);
+    }
+    destruct_node(n);
     return 1;
   }
 
@@ -1324,6 +1340,7 @@ private:
           inserted_node = __allocate_node(value);
           // leftにノードをつける
           __attach_node_to_left(nd->parent, inserted_node);
+          destruct_node(nd);
           // nil nodeをつける
           __attach_nil_nodes(inserted_node);
           has_inserted = true;
@@ -1355,6 +1372,7 @@ private:
           inserted_node = __allocate_node(value);
           // rightにノードをつける　
           __attach_node_to_right(nd->parent, inserted_node);
+          destruct_node(nd);
           // nil nodeをつける
           __attach_nil_nodes(inserted_node);
           has_inserted = true;

@@ -847,15 +847,8 @@ private:
 template <class T, class Alloc>
 bool operator==(const ft::deque<T, Alloc>& lhs,
                 const ft::deque<T, Alloc>& rhs) {
-  if (lhs.size() != rhs.size()) {
-    return false;
-  }
-  for (typename ft::deque<T>::size_type i = 0; i < lhs.size(); ++i) {
-    if (lhs.at(i) != rhs.at(i)) {
-      return false;
-    }
-  }
-  return true;
+  return lhs.size() == rhs.size() &&
+         ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 template <class T, class Alloc>
 bool operator!=(const ft::deque<T, Alloc>& lhs,

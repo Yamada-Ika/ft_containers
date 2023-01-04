@@ -57,7 +57,7 @@ public:
   }
   friend bool operator!=(const ft::stack<T, Container>& lhs,
                          const ft::stack<T, Container>& rhs) {
-    return !(lhs == rhs);
+    return lhs.c != rhs.c;
   }
   friend bool operator<(const ft::stack<T, Container>& lhs,
                         const ft::stack<T, Container>& rhs) {
@@ -65,15 +65,15 @@ public:
   }
   friend bool operator>=(const ft::stack<T, Container>& lhs,
                          const ft::stack<T, Container>& rhs) {
-    return !(lhs < rhs);
+    return lhs.c >= rhs.c;
   }
   friend bool operator>(const ft::stack<T, Container>& lhs,
                         const ft::stack<T, Container>& rhs) {
-    return rhs < lhs;
+    return lhs.c > rhs.c;
   }
   friend bool operator<=(const ft::stack<T, Container>& lhs,
                          const ft::stack<T, Container>& rhs) {
-    return !(lhs > rhs);
+    return lhs.c <= rhs.c;
   }
 
 protected:

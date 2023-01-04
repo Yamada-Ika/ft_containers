@@ -231,6 +231,236 @@ int main() {
   {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(1);
+    t.__insert(2);
+    t.__insert(3);
+    t.__insert(4);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(3);
+    t.__insert(4);
+    t.__insert(5);
+    t.__insert(6);
+    t.__insert(7);
+    t.__insert(8);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(-1);
+    t.__insert(2);
+    t.__insert(-2);
+    t.__insert(3);
+    t.__insert(-3);
+    t.__insert(4);
+    t.__insert(-4);
+    t.__insert(5);
+    t.__insert(-5);
+    t.__insert(6);
+    t.__insert(-6);
+    t.__insert(7);
+    t.__insert(-7);
+  }
+
+  {
+    //            1
+    //      +-----+-----+
+    //     -1           2
+    //  +---+---+   +---+---+
+    // nil     nil nil     nil
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(-100);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(10);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(1000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(1000);
+    t.__insert(-100);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(1000);
+    t.__insert(-100);
+    t.__insert(-1000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(1000);
+    t.__insert(-100);
+    t.__insert(-1000);
+    t.__insert(-10000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(10000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(100);
+    t.__insert(10000);
+    t.__insert(100000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(1);
+    t.__insert(10000);
+  }
+
+  {
+    //            100
+    //       +-----+-----+
+    //       1         10000
+    //   +---+---+
+    //           10
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(1);
+    t.__insert(10000);
+    t.__insert(10);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(3);
+    t.__insert(4);
+    t.__insert(5);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(3);
+    t.__insert(4);
+    t.__insert(5);
+    t.__erase(5);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(1);
+    t.__insert(10000);
+    t.__insert(10);
+    t.__insert(1000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(1);
+    t.__insert(10000);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(5);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__erase(100);
+    t.__erase(10);
+    t.__erase(1000);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(1);
+    t.__insert(10000);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(5);
+    t.__insert(500);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__insert(-100);
+    t.__insert(100);
+    t.__insert(-10);
+    t.__insert(10);
+    t.__insert(-50);
+    t.__insert(50);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
     t.__erase(1);
   }
 
@@ -248,16 +478,12 @@ int main() {
     t.__erase(2);
   }
 
-  // {
-  //   ft::__tree<int, int, ft::Identity<int> > t;
-  //   t.__insert(1);
-  //   t.__insert(2);
-  //   t.__insert(-1);
-  //   t.__erase(1);
-  // }
-
   {
-    std::cerr << "tmp/main start" << std::endl;
+    //            1
+    //      +-----+-----+
+    //     -1           2
+    //  +---+---+   +---+---+
+    // nil     nil nil     nil
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(1);
     t.__insert(2);
@@ -265,22 +491,201 @@ int main() {
     t.__erase(-1);
   }
 
-  // {
-  //   ft::__tree<int, int, ft::Identity<int> > t;
-  //   t.__insert(1);
-  //   t.__insert(2);
-  //   t.__insert(3);
-  //   t.__insert(4);
-  //   t.__insert(5);
-  // }
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__erase(2);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(1);
+    t.__insert(2);
+    t.__insert(-1);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__erase(100);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__erase(10);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__erase(1000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__erase(1000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__insert(50);
+    t.__erase(1000);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__insert(250);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__insert(250);
+    t.__insert(750);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__insert(250);
+    t.__insert(750);
+    t.__insert(600);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__insert(250);
+    t.__insert(750);
+    t.__insert(600);
+    t.__insert(50);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t;
+    t.__insert(100);
+    t.__insert(10);
+    t.__insert(1000);
+    t.__insert(1);
+    t.__insert(5);
+    t.__insert(500);
+    t.__insert(250);
+    t.__insert(750);
+    t.__insert(600);
+    t.__insert(50);
+    t.__insert(2);
+    t.__erase(1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr = t1.__begin();
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr1 = t1.__begin();
+    ft::__tree<int, int, ft::Identity<int> >::iterator itr2 = t1.__begin();
+
+    if (itr1 == itr2) {
+    }
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+
+    ft::__tree<int, int, ft::Identity<int> >::__const_iterator itr1 =
+        t1.__begin();
+    ft::__tree<int, int, ft::Identity<int> >::__const_iterator itr2 =
+        t1.__begin();
+
+    if (itr1 == itr2) {
+    }
+  }
 
   // {
-  //   ft::__tree<int, int, ft::Identity<int> > t;
-  //   t.__insert(1);
-  //   t.__insert(2);
-  //   t.__insert(3);
-  //   t.__insert(4);
-  //   t.__insert(5);
-  //   t.__erase(5);
+  //   ft::__tree<int, int, ft::Identity<int> > t1;
+  //   t1.__insert(1);
+
+  //   ft::__tree<int, int, ft::Identity<int> > t2;
+  //   t2.__insert(1);
+
+  //   if (t1 == t2) {
+  //   }
   // }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+
+    ft::__tree<int, int, ft::Identity<int> > t2;
+    t2.__insert(1);
+
+    if (t1 < t2) {
+    }
+  }
 }
