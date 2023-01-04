@@ -131,7 +131,7 @@ public:
   * Capacity
   */
   bool empty() const { return begin() == end(); }
-  size_type size() const { return distance(begin(), end()); }
+  size_type size() const { return ft::distance(begin(), end()); }
   size_type max_size() const { return alloc.max_size(); }
 
   void reserve(size_type sz) {
