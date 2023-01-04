@@ -56,7 +56,9 @@ public:
 
   set(const set& other) { *this = other; }
 
-  ~set() { __tree_.~__tree(); }
+  ~set() {
+    // _tree_.~__tree();
+  }
 
   set& operator=(const set& other) {
     if (this == &other)

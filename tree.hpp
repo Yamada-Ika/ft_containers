@@ -303,11 +303,24 @@ public:
   explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
       : node_alloc_(node_allocator()), root_(NULL),
         end_node_(__allocate_end_node()), __comp_(comp), __tree_size_(0) {}
-  // : root_(NULL), end_node_(__allocate_node(pair<Key, Val>(Key(), Val()))) {}
-  // TODO メモリ解放したらクラッシュする
+  __tree(const __tree& other)
+      : node_alloc_(node_allocator()), root_(NULL),
+        end_node_(__allocate_end_node()), __tree_size_(0) {
+    *this = other;
+  }
   ~__tree() {
     destruct_tree();
     destruct_node(end_node_);
+  }
+  __tree& operator=(const __tree& other) {
+    if (this == &other)
+      return *this;
+
+    destruct_tree();
+    // destruct_node(end_node_);
+    __insert(other.__begin(), other.__end());
+
+    return *this;
   }
 
   /*
@@ -365,8 +378,8 @@ public:
     return __insert(value).first;
   }
 
-  void __insert(iterator first, iterator last) {
-    for (iterator itr = first; itr != last; ++itr) {
+  void __insert(__const_iterator first, __const_iterator last) {
+    for (__const_iterator itr = first; itr != last; ++itr) {
       __insert(*itr);
     }
   }
@@ -520,7 +533,11 @@ private:
   key_compare __comp_;
   size_type __tree_size_;
 
-  void destruct_tree() { destruct_partial_tree(root_); }
+  void destruct_tree() {
+    destruct_partial_tree(root_);
+    root_ = NULL;
+    __tree_size_ = 0;
+  }
   void destruct_partial_tree(node_pointer n) {
     ft::stack<node_pointer> st;
     node_pointer nd = n;
@@ -552,14 +569,10 @@ private:
     // end_node_はメモリ解放しなくて良い
     if (ptr->right != NULL && ptr->right->__is_nil_node() &&
         ptr->right != end_node_) {
-      std::cerr << "destruct_erased_node/ deallocate right nil node"
-                << std::endl;
       destroy_node(ptr->right);
       deallocate_node(ptr->right);
     }
     if (ptr->left != NULL && ptr->left->__is_nil_node()) {
-      std::cerr << "destruct_erased_node/ deallocate left nil node"
-                << std::endl;
       destroy_node(ptr->left);
       deallocate_node(ptr->left);
     }

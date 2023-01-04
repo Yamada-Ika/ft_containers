@@ -667,16 +667,16 @@ int main() {
     }
   }
 
-  // {
-  //   ft::__tree<int, int, ft::Identity<int> > t1;
-  //   t1.__insert(1);
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
 
-  //   ft::__tree<int, int, ft::Identity<int> > t2;
-  //   t2.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> > t2;
+    t2.__insert(1);
 
-  //   if (t1 == t2) {
-  //   }
-  // }
+    if (t1 == t2) {
+    }
+  }
 
   {
     ft::__tree<int, int, ft::Identity<int> > t1;
@@ -687,5 +687,37 @@ int main() {
 
     if (t1 < t2) {
     }
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> > t2;
+    t2 = t1;
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> > t2(t1);
+  }
+
+  {
+    ft::__tree<int, int, ft::Identity<int> > t1;
+    t1.__insert(1);
+    ft::__tree<int, int, ft::Identity<int> > t2 = t1;
+  }
+
+  { ft::set<int> st; }
+
+  {
+    ft::set<int> st;
+    st.insert(1);
+  }
+
+  {
+    ft::set<int> st;
+    st.insert(1);
+    st.clear();
   }
 }

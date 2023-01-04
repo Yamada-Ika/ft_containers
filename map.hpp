@@ -68,7 +68,9 @@ public:
   }
   map(const map& other) { *this = other; }
 
-  ~map() { __tree_.~__tree(); }
+  ~map() {
+    // __tree_.~__tree();
+  }
 
   map& operator=(const map& other) {
     if (this == &other)
