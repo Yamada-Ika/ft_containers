@@ -1,5 +1,7 @@
 test: FORCE
 	c++ main_bonus.cpp && ./a.out
+test-42: FORCE
+	c++ main.cpp && ./a.out 4242
 
 vector: FORCE
 	c++ main_bonus.cpp && ./a.out vector
