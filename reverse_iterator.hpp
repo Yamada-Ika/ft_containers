@@ -2,17 +2,17 @@
 #define REVERSE_ITERATOR_HPP
 
 #include <memory>
-#include "iterator.hpp"
 #include "iterator_traits.hpp"
 
 namespace ft {
 template <class Iter>
 class reverse_iterator
-    : public ft::iterator<typename ft::iterator_traits<Iter>::iterator_category,
-                          typename ft::iterator_traits<Iter>::value_type,
-                          typename ft::iterator_traits<Iter>::difference_type,
-                          typename ft::iterator_traits<Iter>::pointer,
-                          typename ft::iterator_traits<Iter>::reference> {
+    : public std::iterator<
+          typename ft::iterator_traits<Iter>::iterator_category,
+          typename ft::iterator_traits<Iter>::value_type,
+          typename ft::iterator_traits<Iter>::difference_type,
+          typename ft::iterator_traits<Iter>::pointer,
+          typename ft::iterator_traits<Iter>::reference> {
 public:
   /*
   * Member types

@@ -136,17 +136,16 @@ public:
       return;
     }
 
+    // memory allocate before deallocate this instance's memmory
     pointer tmp = allocate(sz);
-
     iterator old_first = first;
     iterator old_last = last;
     size_type old_capacity = capacity();
-
     first = tmp;
     last = first;
     reserved_last = first + sz;
 
-    // Copy
+    // copy
     for (iterator old_iter = old_first; old_iter != old_last;
          ++old_iter, ++last) {
       construct(last, *old_iter);
