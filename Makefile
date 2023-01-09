@@ -28,13 +28,13 @@ re: fclean all
 .PHONY: all clean fclean re
 
 test: FORCE
-	$(CC) -o orig-test $(CXXFLAGS) $(COPTS) main_bonus.cpp && ./orig-test
+	$(CC) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors main_bonus.cpp && ./orig-test
 
 leak-mac: FORCE
-	$(CC) -o orig-test $(CXXFLAGS) $(COPTS) main_bonus.cpp && leaks --atExit -- ./orig-test
+	$(CC) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors main_bonus.cpp && leaks --atExit -- ./orig-test
 
 leak-linux: FORCE
-	$(CC) -o orig-test $(CXXFLAGS) $(COPTS) main_bonus.cpp && valgrind --leak-check=full ./orig-test
+	$(CC) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors main_bonus.cpp && valgrind --leak-check=full ./orig-test
 
 FORCE: ;
 
