@@ -2,24 +2,28 @@
 #define PAIR_HPP
 
 namespace ft {
-
-// std::pair
 template <class T1, class T2>
 struct pair {
+  /*
+  * Member types
+  */
   typedef T1 first_type;
   typedef T2 second_type;
 
+  /*
+  * Member objects
+  */
   T1 first;
   T2 second;
 
-  // constructor
-  pair() : first(), second() {}
+  /*
+  * Member functions
+  */
+  pair() : first(first_type()), second(second_type()) {}
   pair(const T1& x, const T2& y) : first(x), second(y) {}
   template <class U1, class U2>
   pair(const pair<U1, U2>& p) : first(p.first), second(p.second) {}
   pair(const pair& p) : first(p.first), second(p.second) {}
-
-  // operator=
   pair& operator=(const pair& other) {
     if (this == &other)
       return *this;
@@ -31,23 +35,19 @@ struct pair {
   }
 };
 
-// make_pair
 template <class T1, class T2>
 ft::pair<T1, T2> make_pair(T1 t, T2 u) {
   return ft::pair<T1, T2>(t, u);
 }
 
-// compare operators
 template <class T1, class T2>
 bool operator==(const ft::pair<T1, T2>& lhs, const ft::pair<T1, T2>& rhs) {
   return lhs.first == rhs.first && lhs.second == rhs.second;
 }
-
 template <class T1, class T2>
 bool operator!=(const ft::pair<T1, T2>& lhs, const ft::pair<T1, T2>& rhs) {
   return !(lhs == rhs);
 }
-
 template <class T1, class T2>
 bool operator<(const ft::pair<T1, T2>& lhs, const ft::pair<T1, T2>& rhs) {
   return (lhs.first < rhs.first ||

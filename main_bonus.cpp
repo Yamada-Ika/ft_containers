@@ -15792,7 +15792,9 @@ void test_stack() {
 }
 
 void test_pair() {
-  // constuctor
+  /*
+  * constuctor
+  */
   {
     ft::pair<int, int> myp;
     std::pair<int, int> libp;
@@ -15805,6 +15807,17 @@ void test_pair() {
     std::pair<int, int> libp(1, 2);
     ASSERT_EQ(myp.first, libp.first);
     ASSERT_EQ(myp.second, libp.second);
+  }
+
+  {
+    ft::pair<long, long> myp(std::numeric_limits<long>::max(),
+                             std::numeric_limits<long>::min());
+    std::pair<long, long> libp(std::numeric_limits<long>::max(),
+                               std::numeric_limits<long>::min());
+    ft::pair<int, int> myp2(myp);
+    std::pair<int, int> libp2(libp);
+    ASSERT_EQ(myp2.first, libp2.first);
+    ASSERT_EQ(myp2.second, libp2.second);
   }
 
   {
