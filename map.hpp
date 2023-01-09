@@ -41,7 +41,8 @@ public:
   /*
   *  Member classes
   */
-  class value_compare {
+  class value_compare
+      : public std::binary_function<value_type, value_type, bool> {
     friend class map<Key, T, Compare, Allocator>;
 
   public:
@@ -110,7 +111,6 @@ public:
 
   T& operator[](const Key& key) {
     iterator itr = find(key);
-    // 見つからなかったら挿入
     if (itr == end()) {
       return insert(ft::make_pair(key, T())).first->second;
     }
@@ -160,9 +160,7 @@ public:
 
   template <class InputIt>
   void insert(InputIt first, InputIt last) {
-    for (InputIt itr = first; itr != last; ++itr) {
-      insert(*itr);
-    }
+    tree_.insert(first, last);
   }
 
   iterator erase(iterator pos) { return tree_.erase(pos); }
@@ -218,28 +216,27 @@ public:
   /*
   *  Non-member functions
   */
-  friend bool operator==(const ft::map<Key, T, Compare, Allocator>& lhs,
-                         const ft::map<Key, T, Compare, Allocator>& rhs) {
+  friend bool operator==(const map& lhs, const map& rhs) {
     return lhs.tree_ == rhs.tree_;
   }
-  friend bool operator!=(const ft::map<Key, T, Compare, Allocator>& lhs,
-                         const ft::map<Key, T, Compare, Allocator>& rhs) {
+
+  friend bool operator!=(const map& lhs, const map& rhs) {
     return lhs.tree_ != rhs.tree_;
   }
-  friend bool operator<(const ft::map<Key, T, Compare, Allocator>& lhs,
-                        const ft::map<Key, T, Compare, Allocator>& rhs) {
+
+  friend bool operator<(const map& lhs, const map& rhs) {
     return lhs.tree_ < rhs.tree_;
   }
-  friend bool operator>=(const ft::map<Key, T, Compare, Allocator>& lhs,
-                         const ft::map<Key, T, Compare, Allocator>& rhs) {
+
+  friend bool operator>=(const map& lhs, const map& rhs) {
     return lhs.tree_ >= rhs.tree_;
   }
-  friend bool operator>(const ft::map<Key, T, Compare, Allocator>& lhs,
-                        const ft::map<Key, T, Compare, Allocator>& rhs) {
+
+  friend bool operator>(const map& lhs, const map& rhs) {
     return lhs.tree_ > rhs.tree_;
   }
-  friend bool operator<=(const ft::map<Key, T, Compare, Allocator>& lhs,
-                         const ft::map<Key, T, Compare, Allocator>& rhs) {
+
+  friend bool operator<=(const map& lhs, const map& rhs) {
     return lhs.tree_ <= rhs.tree_;
   }
 
@@ -247,9 +244,9 @@ private:
   typedef typename ft::detail::__tree<key_type, value_type,
                                       ft::detail::__Select1st<value_type>,
                                       Compare, Allocator>
-      __tree;
+      tree;
 
-  __tree tree_;
+  tree tree_;
 };
 
 // swap

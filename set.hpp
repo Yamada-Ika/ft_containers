@@ -109,9 +109,7 @@ public:
 
   template <class InputIt>
   void insert(InputIt first, InputIt last) {
-    for (; first != last; ++first) {
-      insert(*first);
-    }
+    tree_.insert(first, last);
   }
 
   iterator erase(iterator pos) { return tree_.erase(pos); }
@@ -167,28 +165,27 @@ public:
   /*
   *  Non-member functions
   */
-  friend bool operator==(const ft::set<Key, Compare, Allocator>& lhs,
-                         const ft::set<Key, Compare, Allocator>& rhs) {
+  friend bool operator==(const set& lhs, const set& rhs) {
     return lhs.tree_ == rhs.tree_;
   }
-  friend bool operator!=(const ft::set<Key, Compare, Allocator>& lhs,
-                         const ft::set<Key, Compare, Allocator>& rhs) {
+
+  friend bool operator!=(const set& lhs, const set& rhs) {
     return lhs.tree_ != rhs.tree_;
   }
-  friend bool operator<(const ft::set<Key, Compare, Allocator>& lhs,
-                        const ft::set<Key, Compare, Allocator>& rhs) {
+
+  friend bool operator<(const set& lhs, const set& rhs) {
     return lhs.tree_ < rhs.tree_;
   }
-  friend bool operator>(const ft::set<Key, Compare, Allocator>& lhs,
-                        const ft::set<Key, Compare, Allocator>& rhs) {
+
+  friend bool operator>(const set& lhs, const set& rhs) {
     return lhs.tree_ > rhs.tree_;
   }
-  friend bool operator>=(const ft::set<Key, Compare, Allocator>& lhs,
-                         const ft::set<Key, Compare, Allocator>& rhs) {
+
+  friend bool operator>=(const set& lhs, const set& rhs) {
     return lhs.tree_ >= rhs.tree_;
   }
-  friend bool operator<=(const ft::set<Key, Compare, Allocator>& lhs,
-                         const ft::set<Key, Compare, Allocator>& rhs) {
+
+  friend bool operator<=(const set& lhs, const set& rhs) {
     return lhs.tree_ <= rhs.tree_;
   }
 
@@ -196,9 +193,9 @@ private:
   typedef typename ft::detail::__tree<key_type, key_type,
                                       ft::detail::__Identity<value_type>,
                                       Compare, Allocator>
-      __tree;
+      tree;
 
-  __tree tree_;
+  tree tree_;
 };
 
 /*

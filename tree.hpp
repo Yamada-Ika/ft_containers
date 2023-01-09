@@ -379,9 +379,10 @@ public:
     return insert(value).first;
   }
 
-  void insert(const_iterator first, const_iterator last) {
-    for (const_iterator itr = first; itr != last; ++itr) {
-      insert(*itr);
+  template <class InputIt>
+  void insert(InputIt first, InputIt last) {
+    for (; first != last; ++first) {
+      insert(*first);
     }
   }
 
