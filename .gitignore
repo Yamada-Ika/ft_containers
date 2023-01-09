@@ -4,3 +4,4 @@ test/build/
 orig-test
 obj/**
 tmp.cpp
+a.out
