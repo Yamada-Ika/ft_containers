@@ -260,6 +260,9 @@ template <typename Key, typename Val, typename KeyOfValue,
           typename Allocator = std::allocator<Key> >
 class __tree {
 public:
+  /*
+  *  Member types
+  */
   typedef Key key_type;
   typedef Val value_type;
   typedef Compare key_compare;
@@ -276,54 +279,70 @@ public:
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
+  /*
+  *  Member functions
+  */
   __tree()
       : node_alloc_(node_allocator()), root_(NULL),
         end_node_(allocate_end_node()), tree_size_(0) {}
+
   __tree(iterator first, iterator last)
       : node_alloc_(node_allocator()), root_(NULL),
         end_node_(allocate_end_node()), tree_size_(0) {
     insert(first, last);
   }
+
   explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
       : node_alloc_(node_allocator(alloc)), root_(NULL),
         end_node_(allocate_end_node()), comp_(comp), tree_size_(0) {}
+
   __tree(const __tree& other)
       : node_alloc_(node_allocator()), root_(NULL),
         end_node_(allocate_end_node()), tree_size_(0) {
     *this = other;
   }
+
   ~__tree() {
     destruct_tree();
     destruct_node(end_node_);
   }
-  __tree& operator=(const __tree& other) {
-    if (this == &other)
-      return *this;
 
+  __tree& operator=(const __tree& other) {
+    if (this == &other) {
+      return *this;
+    }
     destruct_tree();
     insert(other.begin(), other.end());
-
     return *this;
   }
+
+  allocator_type get_allocator() const { return allocator_type(node_alloc_); }
 
   /*
    * Iterators
   */
   iterator begin() { return iterator(begin_node(), end_node()); }
+
   const_iterator begin() const {
     return const_iterator(begin_node(), end_node());
   }
+
   iterator end() { return iterator(end_node(), end_node()); }
+
   const_iterator end() const { return const_iterator(end_node(), end_node()); }
+
   reverse_iterator rbegin() {
     return reverse_iterator(iterator(end_node(), end_node()));
   }
+
   const_reverse_iterator rbegin() const {
     return const_reverse_iterator(const_iterator(end_node(), end_node()));
   }
+
   reverse_iterator rend() {
     return reverse_iterator(iterator(begin_node(), end_node()));
   }
+
   const_reverse_iterator rend() const {
     return const_reverse_iterator(const_iterator(begin_node(), end_node()));
   }
@@ -333,8 +352,10 @@ public:
   /*
    * Capacity
   */
-  size_type size() const { return tree_size_; }
   bool empty() const { return size() == 0; }
+
+  size_type size() const { return tree_size_; }
+
   size_type max_size() const {
     return std::min<size_type>(node_alloc_.max_size(),
                                std::numeric_limits<difference_type>::max());
@@ -343,6 +364,8 @@ public:
   /*
    * Modifiers
   */
+  void clear() { erase(begin(), end()); }
+
   ft::pair<iterator, bool> insert(const_reference value) {
     ft::pair<iterator, bool> p = insert_helper(value);
     if (p.second) {
@@ -353,8 +376,6 @@ public:
 
   iterator insert(iterator pos, const_reference value) {
     (void)pos;
-    // TODO テキトー
-    // posの直前に要素を挿入
     return insert(value).first;
   }
 
@@ -393,41 +414,34 @@ public:
 
   iterator find(const key_type& key) {
     iterator target = lower_bound(key);
-    // 見つからなかったか
     if (target == end()) {
       return end();
     }
-    // keyと一致しているか
     if (KeyOfValue()(*target) == key) {
       return target;
     }
-    // 一致してない == 見つからなかった
-    return end();
-  }
-  const_iterator find(const key_type& key) const {
-    const_iterator target = lower_bound(key);
-    // 見つからなかったか
-    if (target == end()) {
-      return end();
-    }
-    // keyと一致しているか
-    if (KeyOfValue()(*target) == key) {
-      return target;
-    }
-    // 一致してない == 見つからなかった
     return end();
   }
 
-  // equal_range
+  const_iterator find(const key_type& key) const {
+    const_iterator target = lower_bound(key);
+    if (target == end()) {
+      return end();
+    }
+    if (KeyOfValue()(*target) == key) {
+      return target;
+    }
+    return end();
+  }
+
   ft::pair<iterator, iterator> equal_range(const Key& key) {
     return ft::make_pair(lower_bound(key), uppper_bound(key));
   }
-  ft::pair<const_iterator, const_iterator>
-  equal_range_const(const Key& key) const {
+
+  ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
     return ft::make_pair(lower_bound(key), upper_bound(key));
   }
 
-  // lower_bound　
   iterator lower_bound(const Key& key) {
     node_pointer ptr = lower_bound_pointer(key);
     if (ptr == NULL) {
@@ -435,6 +449,7 @@ public:
     }
     return iterator(ptr, end_node());
   }
+
   const_iterator lower_bound(const Key& key) const {
     node_pointer ptr = lower_bound_pointer(key);
     if (ptr == NULL) {
@@ -443,64 +458,43 @@ public:
     return const_iterator(ptr, end_node());
   }
 
-  // upper bound
   iterator uppper_bound(const Key& k) {
     iterator itr = lower_bound(k);
-
-    // itrがendの場合、見つかってないのでendを返す
     if (itr == end()) {
       return end();
     }
-
-    // itrのkeyとkが同じの場合、インクリメントしたイテレータを返す
     if (k == KeyOfValue()(*itr)) {
       return ++itr;
     }
-
-    // itrのkeyはkより大きいのでそのまま返す
     return itr;
   }
+
   const_iterator upper_bound(const Key& k) const {
     const_iterator itr = lower_bound(k);
-
-    // itrがendの場合、見つかってないのでendを返す
     if (itr == end()) {
       return end();
     }
-
-    // itrのkeyとkが同じの場合、インクリメントしたイテレータを返す
     if (k == KeyOfValue()(*itr)) {
       return ++itr;
     }
-
-    // itrのkeyはkより大きいのでそのまま返す
     return itr;
   }
 
   /*
-   * Lookup
+  *  Observers
   */
   key_compare key_comp() const { return comp_; }
 
-  // rootを返す
-  // For testable
   node_pointer root() { return root_; }
 
-  // allocatorを返す
-  allocator_type get_allocator() const { return allocator_type(node_alloc_); }
-
-  // TODO とりあえず木の中で使ってるfind。ノードポインターを返す
   node_pointer find_node_pointer(const key_type& key) const {
     node_pointer target = lower_bound_pointer(key);
-    // 見つからなかった
     if (target == NULL) {
       return NULL;
     }
-    // 値が一致しているか
     if (KeyOfValue()(target->value) == key) {
       return target;
     }
-    // 一致していないのでNULL
     return NULL;
   }
 
@@ -623,7 +617,6 @@ private:
   }
 
   node_pointer begin_node() const {
-    // TODO　何も値がないときはend nodeを返す？
     if (empty()) {
       return end_node();
     }
