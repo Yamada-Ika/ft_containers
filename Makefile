@@ -1,38 +1,45 @@
+CC			:= c++
+# CXXFLAGS	:= -Wall -Wextra -Werror -MMD -MP
+# COPTS		:= -std=c++98 -pedantic-errors
+CXXFLAGS	:=
+COPTS		:=
+
+NAME	:= 42-test
+SRCS	:= main.cpp
+OBJS	:= $(SRCS:%.cpp=%.o)
+OBJS	:= $(addprefix obj/, $(OBJS))
+DEPS    := $(OBJS:.o=.d)
+
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(CC) -o $(NAME) $(CXXFLAGS) $(COPTS) $(OBJS)
+
+obj/%.o: %.cpp
+	mkdir -p $(dir $@)
+	$(CC) $(CXXFLAGS) $(COPTS) -o $@ -c $^
+
+clean:
+	rm -rf $(OBJS)
+
+fclean: clean
+	rm -rf $(NAME)
+
+re: fclean all
+
+.PHONY: all clean fclean re
+
 test: FORCE
-	c++ main_bonus.cpp && ./a.out
-test-42: FORCE
-	c++ main.cpp && ./a.out 4242
+	$(CC) -o orig-test $(CXXFLAGS) $(COPTS) main_bonus.cpp && ./orig-test
 
-vector: FORCE
-	c++ main_bonus.cpp && ./a.out vector
-deque: FORCE
-	c++ main_bonus.cpp && ./a.out deque
-stack: FORCE
-	c++ main_bonus.cpp && ./a.out stack
-tree: FORCE
-	c++ main_bonus.cpp && ./a.out tree
-set: FORCE
-	c++ main_bonus.cpp && ./a.out set
-map: FORCE
-	c++ main_bonus.cpp && ./a.out map
+leak-mac: FORCE
+	$(CC) -o orig-test $(CXXFLAGS) $(COPTS) main_bonus.cpp && leaks --atExit -- ./orig-test
 
-leak: FORCE
-	c++ -g tmp.cpp && valgrind --leak-check=full --track-origins=yes ./a.out 
-leak-vector: FORCE
-	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out vector
-leak-deque: FORCE
-	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out deque
-leak-stack: FORCE
-	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out stack
-leak-tree: FORCE
-	c++ -g main_bonus.cpp && valgrind --leak-check=full ./a.out tree
-leak-set: FORCE
-	c++ -g main_bonus.cpp && valgrind --leak-check=full ./a.out set
-leak-map: FORCE
-	c++ -g main_bonus.cpp && valgrind --leak-check=full ./a.out map
-leak-all: FORCE
-	c++ main_bonus.cpp && valgrind --leak-check=full ./a.out all
-leak-mac-all: FORCE
-	c++ main_bonus.cpp && leaks --atExit -- ./a.out all
+leak-linux: FORCE
+	$(CC) -o orig-test $(CXXFLAGS) $(COPTS) main_bonus.cpp && valgrind --leak-check=full ./orig-test
 
 FORCE: ;
+
+.PHONY: test leak-mac leak-linux FORCE
+
+-include $(DEPS)

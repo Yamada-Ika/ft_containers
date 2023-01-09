@@ -6229,14 +6229,14 @@ void test_set() {
     ASSERT_EQ(myitr, mydata.end());
   }
 
-#ifdef __GNUC__
+#ifdef __linux__
   dprintf(STDERR_FILENO,
-          "[WARN] test in %d line is ignored because STL by GNU is buggy in "
+          "[WARN] test in %d line is ignored because STL is buggy in "
           "this case\n",
           __LINE__);
 #endif
 
-#ifdef __llvm__
+#ifdef __APPLE__
   /*
   * erase 2
   */
