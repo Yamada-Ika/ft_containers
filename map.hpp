@@ -249,7 +249,6 @@ private:
   tree tree_;
 };
 
-// swap
 template <class Key, class Compare, class Alloc>
 void swap(ft::map<Key, Compare, Alloc>& lhs,
           ft::map<Key, Compare, Alloc>& rhs) {
