@@ -37,73 +37,7 @@ static void assert_eq(T1 expected, T2 got, const char* filename, int lineno) {
   assert(expected == got);
 }
 
-template <typename T1, typename T2>
-static void assert_neq(T1 expected, T2 got, const char* filename, int lineno) {
-  if (expected == got) {
-    dprintf(STDERR_FILENO, "%s:%d assertion failed\n", filename, lineno);
-  }
-  assert(expected != got);
-}
-
 #define ASSERT_EQ(exp, got) assert_eq(exp, got, __FILE__, __LINE__)
-#define ASSERT_NEQ(exp, got) assert_neq(exp, got, __FILE__, __LINE__)
-
-template <typename T>
-static void assertVector(std::vector<T>& libvec, ft::vector<T>& myvec) {
-  ASSERT_EQ(libvec.size(), myvec.size());
-  for (size_t i = 0; i < libvec.size(); ++i) {
-    ASSERT_EQ(libvec[i], myvec[i]);
-  }
-}
-
-template <typename T>
-static void prepareVectorTestData(std::vector<T>& libvector,
-                                  ft::vector<T>& myvector,
-                                  const std::vector<T>& data) {
-  for (typename std::vector<T>::const_iterator itr = data.begin();
-       itr != data.end(); ++itr) {
-    libvector.push_back(*itr);
-    myvector.push_back(*itr);
-  }
-}
-
-template <typename T>
-static void prepareDequeTestData(std::deque<T>& libdeq, ft::deque<T>& mydeq,
-                                 const std::deque<T>& data) {
-  for (size_t i = 0; i < data.size(); ++i) {
-    mydeq.push_back(data.at(i));
-    libdeq.push_back(data.at(i));
-  }
-}
-
-template <typename T>
-static void assertDeque(const std::deque<T>& libdeq,
-                        const ft::deque<T>& mydeq) {
-  ASSERT_EQ(libdeq.size(), mydeq.size());
-  for (size_t i = 0; i < libdeq.size(); ++i) {
-    ASSERT_EQ(libdeq.at(i), mydeq.at(i));
-  }
-}
-
-template <typename T>
-static void prepareTestData(std::stack<T>& libstack, ft::stack<T>& mystack,
-                            const std::vector<T>& test_data) {
-  for (typename std::vector<T>::const_iterator itr = test_data.begin();
-       itr != test_data.end(); ++itr) {
-    libstack.push(*itr);
-    mystack.push(*itr);
-  }
-}
-
-template <typename T>
-static void assertStack(std::stack<T> libstack, ft::stack<T> mystack) {
-  ASSERT_EQ(libstack.size(), mystack.size());
-  for (typename ft::stack<T>::size_type i = 0; i < mystack.size(); ++i) {
-    ASSERT_EQ(libstack.top(), mystack.top());
-    libstack.pop();
-    mystack.pop();
-  }
-}
 
 template <class T>
 class AlwaysThrowAllocator {
@@ -10948,6 +10882,13 @@ void test_tree() {
 }
 
 void test_vector() {
+  {
+    ft::vector<int> ftvec1(3, 42);
+    const ft::vector<int> ftvec2(3, 42);
+
+    (void)(ftvec1.begin() == ftvec2.begin());
+  }
+
   /*
   * constructor 1
   */
