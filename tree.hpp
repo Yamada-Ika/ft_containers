@@ -1,18 +1,21 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
-#include <cstddef>
-#include <iostream>
-#include <memory>
 #include "deque.hpp"
 #include "stack.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
 #include "reverse_iterator.hpp"
+#include "lexicographical_compare.hpp"
 #include <functional>
 #include <limits>
+#include <algorithm>
+#include <cstddef>
+#include <memory>
 
 namespace ft {
+
+namespace detail {
 
 // 木のノードを表すクラス
 template <typename T, typename Allocator>
@@ -271,7 +274,7 @@ struct __const_tree_iterator {
 
 // 二分探索木を表すクラス
 template <typename Key, typename Val, typename KeyOfValue,
-          class Compare = ft::less<Key>,
+          class Compare = std::less<Key>,
           typename Allocator = std::allocator<Key> >
 class __tree {
 public:
@@ -317,7 +320,6 @@ public:
       return *this;
 
     destruct_tree();
-    // destruct_node(end_node_);
     __insert(other.__begin(), other.__end());
 
     return *this;
@@ -357,8 +359,8 @@ public:
   size_type __size() const { return __tree_size_; }
   bool __empty() const { return __size() == 0; }
   size_type __max_size() const {
-    return ft::min<size_type>(node_alloc_.max_size(),
-                              std::numeric_limits<difference_type>::max());
+    return std::min<size_type>(node_alloc_.max_size(),
+                               std::numeric_limits<difference_type>::max());
   }
 
   /*
@@ -1490,25 +1492,24 @@ private:
 template <class Key, class Val, class KeyOfValue, class Compare,
           class Allocator>
 bool operator==(
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
-  return lhs.__size() == rhs.__size() &&
-         ft::equal(lhs.__begin(), lhs.__end(), rhs.__begin(), rhs.__end());
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+  return !(lhs < rhs) && !(lhs > rhs);
 }
 
 template <class Key, class Val, class KeyOfValue, class Compare,
           class Allocator>
 bool operator!=(
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return !(lhs == rhs);
 }
 
 template <class Key, class Val, class KeyOfValue, class Compare,
           class Allocator>
 bool operator<(
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return ft::lexicographical_compare(lhs.__begin(), lhs.__end(), rhs.__begin(),
                                      rhs.__end());
 }
@@ -1516,26 +1517,29 @@ bool operator<(
 template <class Key, class Val, class KeyOfValue, class Compare,
           class Allocator>
 bool operator>=(
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return !(lhs < rhs);
 }
 
 template <class Key, class Val, class KeyOfValue, class Compare,
           class Allocator>
 bool operator>(
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return rhs < lhs;
 }
 
 template <class Key, class Val, class KeyOfValue, class Compare,
           class Allocator>
 bool operator<=(
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
-    const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& lhs,
+    const ft::detail::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return !(lhs > rhs);
 }
+
+} // namespace detail
+
 } // namespace ft
 
 #endif

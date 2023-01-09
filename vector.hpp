@@ -4,8 +4,9 @@
 #include "utils.hpp"
 #include "is_integral.hpp"
 #include "reverse_iterator.hpp"
+#include "lexicographical_compare.hpp"
 #include <memory>
-#include <iostream>
+#include <algorithm>
 
 namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
@@ -31,41 +32,37 @@ public:
   * Member functions
   */
   vector()
-      : first(allocate(0)), last(first), reserved_last(first + size()),
-        alloc(allocator_type()) {}
+      : alloc(allocator_type()), first(allocate(0)), last(first),
+        reserved_last(first + size()) {}
 
-  explicit vector(const allocator_type& alloc) : alloc(alloc) {
-    first = allocate(0);
-    last = first;
-    reserved_last = first + size();
-  }
+  explicit vector(const allocator_type& alloc)
+      : alloc(alloc), first(allocate(0)), last(first),
+        reserved_last(first + size()) {}
 
   explicit vector(size_type count, const_reference value = T(),
                   const allocator_type& alloc = allocator_type())
-      : first(allocate(0)), last(first), reserved_last(first + size()),
-        alloc(alloc) {
+      : alloc(alloc), first(allocate(0)), last(first),
+        reserved_last(first + size()) {
     resize(count, value);
   }
 
   template <typename InputIterator>
   vector(InputIterator first, InputIterator last,
-         const allocator_type& alloc = allocator_type()): alloc(alloc) {
-    // vector(size_type count, const_reference value)との曖昧さ回避をする
+         const allocator_type& alloc = allocator_type())
+      : alloc(alloc) {
     typedef typename ft::is_integral<InputIterator>::type integral;
     initialize_dispatch(first, last, integral());
   }
 
-  // TODO deep copy
   vector(const vector& other)
-      : first(allocate(0)), last(first), reserved_last(first + size()),
-        alloc(allocator_type()) {
-    resize(other.size(), T());
+      : alloc(allocator_type()), first(allocate(0)), last(first),
+        reserved_last(first + size()) {
     *this = other;
   }
 
   ~vector() {
-    clear();      // Call destructor
-    deallocate(); // Deallocate memory
+    clear();
+    deallocate();
   }
 
   vector& operator=(const vector& other) {
@@ -73,7 +70,7 @@ public:
       return *this;
     }
     resize(other.size());
-    ft::copy(other.begin(), other.end(), begin());
+    std::copy(other.begin(), other.end(), begin());
     return *this;
   }
 
@@ -131,7 +128,7 @@ public:
   * Capacity
   */
   bool empty() const { return begin() == end(); }
-  size_type size() const { return ft::distance(begin(), end()); }
+  size_type size() const { return std::distance(begin(), end()); }
   size_type max_size() const { return alloc.max_size(); }
 
   void reserve(size_type sz) {
@@ -235,10 +232,10 @@ public:
 
 private:
   // Member
+  allocator_type alloc;  // Store of raw memory
   pointer first;         // Head to storage
   pointer last;          // Tail - 1 to storage
   pointer reserved_last; // Tail to storage
-  allocator_type alloc;  // Store of raw memory
 
   // Helper Method
   pointer allocate(size_type n) { return alloc.allocate(n); }
@@ -270,7 +267,7 @@ private:
     last = first;
     reserved_last = first + size();
 
-    std::ptrdiff_t diff = ft::distance(other_first, other_last);
+    std::ptrdiff_t diff = std::distance(other_first, other_last);
     reserve(diff);
     for (InputIterator itr = other_first; itr != other_last; ++itr) {
       push_back(*itr);
@@ -363,8 +360,7 @@ private:
 template <class T, class Alloc>
 bool operator==(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {
-  return lhs.size() == rhs.size() &&
-         ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  return !(lhs < rhs) && !(lhs > rhs);
 }
 
 // operator !=

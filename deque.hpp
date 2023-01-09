@@ -1,11 +1,12 @@
 #ifndef DEQUE_HPP
 #define DEQUE_HPP
 
-#include <memory>
 #include "is_integral.hpp"
 #include "utils.hpp"
 #include "reverse_iterator.hpp"
-#include <cassert>
+#include "lexicographical_compare.hpp"
+#include <memory>
+#include <algorithm>
 
 namespace ft {
 
@@ -409,7 +410,7 @@ public:
     if (size() != other.size()) {
       resize(other.size());
     }
-    ft::copy(other.begin(), other.end(), begin());
+    std::copy(other.begin(), other.end(), begin());
     return *this;
   }
 
@@ -845,8 +846,7 @@ private:
 template <class T, class Alloc>
 bool operator==(const ft::deque<T, Alloc>& lhs,
                 const ft::deque<T, Alloc>& rhs) {
-  return lhs.size() == rhs.size() &&
-         ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  return !(lhs < rhs) && !(lhs > rhs);
 }
 template <class T, class Alloc>
 bool operator!=(const ft::deque<T, Alloc>& lhs,

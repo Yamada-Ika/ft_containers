@@ -3,13 +3,14 @@
 
 #include <functional>
 #include <memory>
+#include <algorithm>
 #include "tree.hpp"
 #include "pair.hpp"
 #include "utils.hpp"
 #include "reverse_iterator.hpp"
 
 namespace ft {
-template <class Key, class T, class Compare = ft::less<Key>,
+template <class Key, class T, class Compare = std::less<Key>,
           class Allocator = std::allocator<ft::pair<const Key, T> > >
 class map {
 public:
@@ -27,10 +28,13 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
-                          Allocator>::iterator iterator;
-  typedef typename __tree<Key, value_type, ft::Select1st<value_type>, Compare,
-                          Allocator>::__const_iterator const_iterator;
+  typedef typename ft::detail::__tree<Key, value_type,
+                                      ft::detail::__Select1st<value_type>,
+                                      Compare, Allocator>::iterator iterator;
+  typedef
+      typename ft::detail::__tree<Key, value_type,
+                                  ft::detail::__Select1st<value_type>, Compare,
+                                  Allocator>::__const_iterator const_iterator;
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -215,8 +219,9 @@ public:
   }
 
 private:
-  typedef typename ft::__tree<key_type, value_type, ft::Select1st<value_type>,
-                              Compare, Allocator>
+  typedef typename ft::detail::__tree<key_type, value_type,
+                                      ft::detail::__Select1st<value_type>,
+                                      Compare, Allocator>
       __tree;
 
   __tree __tree_;

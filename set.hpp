@@ -3,16 +3,13 @@
 
 #include <functional>
 #include <memory>
+#include <algorithm>
 #include "tree.hpp"
 #include "reverse_iterator.hpp"
 #include "utils.hpp"
 
 namespace ft {
-
-// Function object for performing comparisons. Unless specialized, invokes operator< on type T.
-// std::less
-
-template <class Key, class Compare = ft::less<Key>,
+template <class Key, class Compare = std::less<Key>,
           class Allocator = std::allocator<Key> >
 class set {
 public:
@@ -30,11 +27,11 @@ public:
   typedef const value_type& const_reference;
   typedef typename Allocator::pointer pointer;
   typedef typename Allocator::const_pointer const_pointer;
-  typedef
-      typename __tree<Key, Key, ft::Identity<Key>, Compare, Allocator>::iterator
-          iterator;
-  typedef typename __tree<Key, Key, ft::Identity<Key>, Compare,
-                          Allocator>::__const_iterator const_iterator;
+  typedef typename ft::detail::__tree<Key, Key, ft::detail::__Identity<Key>,
+                                      Compare, Allocator>::iterator iterator;
+  typedef typename ft::detail::__tree<Key, Key, ft::detail::__Identity<Key>,
+                                      Compare, Allocator>::__const_iterator
+      const_iterator;
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -177,8 +174,9 @@ public:
   }
 
 private:
-  typedef typename ft::__tree<key_type, key_type, ft::Identity<value_type>,
-                              Compare, Allocator>
+  typedef typename ft::detail::__tree<key_type, key_type,
+                                      ft::detail::__Identity<value_type>,
+                                      Compare, Allocator>
       __tree;
 
   __tree __tree_;
