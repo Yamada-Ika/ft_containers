@@ -13,7 +13,7 @@ template <typename T, typename Allocator = std::allocator<T> >
 class vector {
 public:
   /*
-  * Member type
+  * Member types
   */
   typedef T value_type;
   typedef Allocator allocator_type;
@@ -75,9 +75,9 @@ public:
   }
 
   void assign(size_type count, const T& value) { fill_assign(count, value); }
+
   template <class InputIt>
   void assign(InputIt first, InputIt last) {
-    // 曖昧さ回避
     typedef typename ft::is_integral<InputIt>::type integral;
     assign_dispatch(first, last, integral());
   }
@@ -93,6 +93,7 @@ public:
     }
     return first[pos];
   }
+
   const_reference at(size_type pos) const {
     if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
@@ -101,34 +102,47 @@ public:
   }
 
   reference operator[](size_type pos) { return first[pos]; }
+
   const_reference operator[](size_type pos) const { return first[pos]; }
 
   reference front() { return *first; }
+
   const_reference front() const { return *first; }
 
   reference back() { return *(last - 1); }
+
   const_reference back() const { return *(last - 1); }
 
   pointer data() { return first; }
+
   const_pointer data() const { return first; }
 
   /*
   * Iterators
   */
   iterator begin() { return first; }
+
   iterator end() { return last; }
+
   const_iterator begin() const { return first; }
+
   const_iterator end() const { return last; }
+
   reverse_iterator rbegin() { return reverse_iterator(last); }
+
   reverse_iterator rend() { return reverse_iterator(first); }
+
   const_reverse_iterator rbegin() const { return reverse_iterator(last); }
+
   const_reverse_iterator rend() const { return reverse_iterator(first); }
 
   /*
   * Capacity
   */
   bool empty() const { return begin() == end(); }
+
   size_type size() const { return std::distance(begin(), end()); }
+
   size_type max_size() const { return alloc.max_size(); }
 
   void reserve(size_type sz) {
@@ -153,7 +167,7 @@ public:
 
     alloc.deallocate(old_first, old_capacity);
 
-    // Deallocate old memory
+    // deallocate old memory
     for (reverse_iterator riter = reverse_iterator(old_last),
                           rend = reverse_iterator(old_first);
          riter != rend; ++riter) {
@@ -171,17 +185,19 @@ public:
   iterator insert(const_iterator pos, const T& value) {
     return insert(pos, 1, value);
   }
+
   iterator insert(const_iterator pos, size_type count, const T& value) {
     return insert_fill(pos, count, value);
   }
+
   template <class InputIt>
   iterator insert(const_iterator pos, InputIt first, InputIt last) {
-    // 曖昧さ回避
     typedef typename ft::is_integral<InputIt>::type integral;
     return insert_dispatch(pos, first, last, integral());
   }
 
   iterator erase(iterator pos) { return erase_range(pos, pos + 1); }
+
   iterator erase(iterator first, iterator last) {
     return erase_range(first, last);
   }
@@ -230,13 +246,11 @@ public:
   }
 
 private:
-  // Member
-  allocator_type alloc;  // Store of raw memory
-  pointer first;         // Head to storage
-  pointer last;          // Tail - 1 to storage
-  pointer reserved_last; // Tail to storage
+  allocator_type alloc;
+  pointer first;
+  pointer last;
+  pointer reserved_last;
 
-  // Helper Method
   pointer allocate(size_type n) { return alloc.allocate(n); }
   void deallocate() { alloc.deallocate(first, capacity()); }
   void construct(pointer ptr) { alloc.construct(ptr); }
@@ -273,12 +287,11 @@ private:
     }
   }
 
-  // TODO : make private
   template <typename Integral>
   void assign_dispatch(Integral n, Integral val, true_type) {
     fill_assign(n, val);
   }
-  // TODO : make private
+
   template <typename InputIt>
   void assign_dispatch(InputIt first, InputIt last, false_type) {
     resize(0);
@@ -362,7 +375,6 @@ bool operator==(const ft::vector<T, Alloc>& lhs,
   return !(lhs < rhs) && !(lhs > rhs);
 }
 
-// operator !=
 template <class T, class Alloc>
 bool operator!=(const ft::vector<T, Alloc>& lhs,
                 const ft::vector<T, Alloc>& rhs) {

@@ -645,7 +645,7 @@ private:
     node_pointer cl = n->left;
     node_pointer cr = n->right;
 
-    // TODO 要素がrootだけの時
+    // 要素がrootだけの時
     if (n == n->parent && cl->is_nil_node() && cr->is_nil_node()) {
       destruct_erased_node(root_);
       root_ = NULL;
