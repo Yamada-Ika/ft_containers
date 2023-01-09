@@ -228,6 +228,6 @@ void swap(ft::map<Key, Compare, Alloc>& lhs,
           ft::map<Key, Compare, Alloc>& rhs) {
   lhs.swap(rhs);
 }
-}; // namespace ft
+} // namespace ft
 
 #endif

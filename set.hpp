@@ -192,7 +192,6 @@ void swap(ft::set<Key, Compare, Alloc>& lhs,
           ft::set<Key, Compare, Alloc>& rhs) {
   lhs.swap(rhs);
 }
-
-}; // namespace ft
+} // namespace ft
 
 #endif

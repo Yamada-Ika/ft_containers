@@ -80,6 +80,6 @@ protected:
   Container c;
 };
 
-}; // namespace ft
+} // namespace ft
 
 #endif

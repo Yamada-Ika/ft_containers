@@ -121,9 +121,14 @@ public:
   AlwaysThrowAllocator(const AlwaysThrowAllocator<U>&) {}
   ~AlwaysThrowAllocator() {}
   pointer allocate(size_type n, const void* hint = 0) {
+    (void)n;
+    (void)hint;
     throw std::runtime_error("AlwaysThrowAllocator throw exception !");
   }
-  void deallocate(pointer p, size_type num) { ::operator delete(p); }
+  void deallocate(pointer p, size_type num) {
+    (void)num;
+    ::operator delete(p);
+  }
   void construct(pointer p, const T& value) { new ((void*)p) T(value); }
   void destroy(pointer p) { ((T*)p)->~T(); }
   pointer address(reference value) const { return &value; }
@@ -1549,8 +1554,8 @@ void test_map() {
     ft::map<int, int>::iterator myitr1 = mymp.begin();
     ft::map<int, int>::iterator myitr2 = mymp.end();
 
-    std::map<int, int>::iterator libret = libmp.erase(libitr1, libitr2);
-    ft::map<int, int>::iterator myret = mymp.erase(myitr1, myitr2);
+    libmp.erase(libitr1, libitr2);
+    mymp.erase(myitr1, myitr2);
 
     ASSERT_EQ(libmp.size(), mymp.size());
   }
@@ -1634,6 +1639,9 @@ void test_map() {
 
     ASSERT_EQ(stdmp.size(), ftmp.size());
     ASSERT_EQ(stdmp.empty(), ftmp.empty());
+
+    (void)stdret;
+    (void)ftret;
   }
 
   {
@@ -1648,10 +1656,8 @@ void test_map() {
     ftmp.insert(ft::make_pair(5, 1));
     ftmp.insert(ft::make_pair(15, 1));
 
-    std::map<int, int>::iterator stdret =
-        stdmp.erase(stdmp.begin(), ++stdmp.begin());
-    ft::map<int, int>::iterator ftret =
-        ftmp.erase(ftmp.begin(), ++ftmp.begin());
+    stdmp.erase(stdmp.begin(), ++stdmp.begin());
+    ftmp.erase(ftmp.begin(), ++ftmp.begin());
 
     ASSERT_EQ(stdmp.size(), ftmp.size());
 
@@ -1691,51 +1697,8 @@ void test_map() {
     ++stditr;
     ++ftitr;
 
-    std::map<int, int>::iterator stdret = stdmp.erase(stditr, ++stditr);
-    ft::map<int, int>::iterator ftret = ftmp.erase(ftitr, ++ftitr);
-
-    ASSERT_EQ(stdmp.size(), ftmp.size());
-
-    stditr = stdmp.begin();
-    ftitr = ftmp.begin();
-
-    ASSERT_EQ(stditr->first, ftitr->first);
-    ASSERT_EQ(stditr->second, ftitr->second);
-    ++stditr;
-    ++ftitr;
-    ASSERT_EQ(stditr->first, ftitr->first);
-    ASSERT_EQ(stditr->second, ftitr->second);
-    ++stditr;
-    ++ftitr;
-    ASSERT_EQ(stditr->first, ftitr->first);
-    ASSERT_EQ(stditr->second, ftitr->second);
-    ++stditr;
-    ++ftitr;
-    ASSERT_EQ(stditr, stdmp.end());
-    ASSERT_EQ(ftitr, ftmp.end());
-  }
-
-  {
-    std::map<int, int> stdmp;
-    stdmp.insert(std::make_pair(1, 1));
-    stdmp.insert(std::make_pair(10, 1));
-    stdmp.insert(std::make_pair(5, 1));
-    stdmp.insert(std::make_pair(15, 1));
-    ft::map<int, int> ftmp;
-    ftmp.insert(ft::make_pair(1, 1));
-    ftmp.insert(ft::make_pair(10, 1));
-    ftmp.insert(ft::make_pair(5, 1));
-    ftmp.insert(ft::make_pair(15, 1));
-
-    std::map<int, int>::iterator stditr = stdmp.begin();
-    ft::map<int, int>::iterator ftitr = ftmp.begin();
-    ++stditr;
-    ++ftitr;
-    ++stditr;
-    ++ftitr;
-
-    std::map<int, int>::iterator stdret = stdmp.erase(stditr, ++stditr);
-    ft::map<int, int>::iterator ftret = ftmp.erase(ftitr, ++ftitr);
+    stdmp.erase(stditr, ++stditr);
+    ftmp.erase(ftitr, ++ftitr);
 
     ASSERT_EQ(stdmp.size(), ftmp.size());
 
@@ -1776,11 +1739,54 @@ void test_map() {
     ++ftitr;
     ++stditr;
     ++ftitr;
+
+    stdmp.erase(stditr, ++stditr);
+    ftmp.erase(ftitr, ++ftitr);
+
+    ASSERT_EQ(stdmp.size(), ftmp.size());
+
+    stditr = stdmp.begin();
+    ftitr = ftmp.begin();
+
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(stditr, stdmp.end());
+    ASSERT_EQ(ftitr, ftmp.end());
+  }
+
+  {
+    std::map<int, int> stdmp;
+    stdmp.insert(std::make_pair(1, 1));
+    stdmp.insert(std::make_pair(10, 1));
+    stdmp.insert(std::make_pair(5, 1));
+    stdmp.insert(std::make_pair(15, 1));
+    ft::map<int, int> ftmp;
+    ftmp.insert(ft::make_pair(1, 1));
+    ftmp.insert(ft::make_pair(10, 1));
+    ftmp.insert(ft::make_pair(5, 1));
+    ftmp.insert(ft::make_pair(15, 1));
+
+    std::map<int, int>::iterator stditr = stdmp.begin();
+    ft::map<int, int>::iterator ftitr = ftmp.begin();
+    ++stditr;
+    ++ftitr;
+    ++stditr;
+    ++ftitr;
     ++stditr;
     ++ftitr;
 
-    std::map<int, int>::iterator stdret = stdmp.erase(stditr, ++stditr);
-    ft::map<int, int>::iterator ftret = ftmp.erase(ftitr, ++ftitr);
+    stdmp.erase(stditr, ++stditr);
+    ftmp.erase(ftitr, ++ftitr);
 
     ASSERT_EQ(stdmp.size(), ftmp.size());
 
@@ -1830,8 +1836,8 @@ void test_map() {
     std::map<int, int>::iterator stditr = stdmp.begin();
     ft::map<int, int>::iterator ftitr = ftmp.begin();
 
-    std::map<int, int>::iterator stdret = stdmp.erase(stditr, ++stditr);
-    ft::map<int, int>::iterator ftret = ftmp.erase(ftitr, ++ftitr);
+    stdmp.erase(stditr, ++stditr);
+    ftmp.erase(ftitr, ++ftitr);
 
     ASSERT_EQ(stdmp.size(), ftmp.size());
 
@@ -1911,8 +1917,8 @@ void test_map() {
     ++stditr;
     ++ftitr;
 
-    std::map<int, int>::iterator stdret = stdmp.erase(stditr, ++stditr);
-    ft::map<int, int>::iterator ftret = ftmp.erase(ftitr, ++ftitr);
+    stdmp.erase(stditr, ++stditr);
+    ftmp.erase(ftitr, ++ftitr);
 
     ASSERT_EQ(stdmp.size(), ftmp.size());
 
@@ -6296,9 +6302,9 @@ void test_set() {
 
     ft::set<int>::iterator myitr = mydata.begin();
 
-    ft::set<int>::iterator myitr2 = mydata.erase(myitr, ++myitr);
+    mydata.erase(myitr, ++myitr);
 
-    ASSERT_EQ(mydata.size(), 3);
+    ASSERT_EQ(mydata.size(), 3UL);
 
     myitr = mydata.begin();
 
@@ -9265,31 +9271,31 @@ void test_tree() {
   // __size
   {
     ft::__tree<int, int, ft::Identity<int> > t;
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(1);
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
   }
 
   {
     ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
     ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
     t.__insert(ft::make_pair(1, 1));
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
   }
 
   {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(1);
     t.__insert(2);
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
   }
 
   {
@@ -9297,7 +9303,7 @@ void test_tree() {
     t.__insert(1);
     t.__insert(2);
     t.__insert(3);
-    ASSERT_EQ(t.__size(), 3);
+    ASSERT_EQ(t.__size(), 3UL);
   }
 
   {
@@ -9305,7 +9311,7 @@ void test_tree() {
     t.__insert(1);
     t.__insert(1);
     t.__insert(1);
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
   }
 
   {
@@ -9313,14 +9319,14 @@ void test_tree() {
     t.__insert(1);
     t.__insert(2);
     t.__insert(1);
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
   }
 
   {
     ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
     t.__insert(ft::make_pair(1, 1));
     t.__insert(ft::make_pair(2, 2));
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
   }
 
   {
@@ -9328,7 +9334,7 @@ void test_tree() {
     t.__insert(ft::make_pair(1, 1));
     t.__insert(ft::make_pair(2, 2));
     t.__insert(ft::make_pair(3, 3));
-    ASSERT_EQ(t.__size(), 3);
+    ASSERT_EQ(t.__size(), 3UL);
   }
 
   {
@@ -9336,7 +9342,7 @@ void test_tree() {
     t.__insert(ft::make_pair(1, 1));
     t.__insert(ft::make_pair(1, 1));
     t.__insert(ft::make_pair(1, 1));
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
   }
 
   {
@@ -9344,7 +9350,7 @@ void test_tree() {
     t.__insert(ft::make_pair(1, 1));
     t.__insert(ft::make_pair(1, 2));
     t.__insert(ft::make_pair(1, 3));
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
   }
 
   {
@@ -9352,7 +9358,7 @@ void test_tree() {
     t.__insert(ft::make_pair(1, 1));
     t.__insert(ft::make_pair(2, 2));
     t.__insert(ft::make_pair(1, 3));
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
   }
 
   // __empty
@@ -9625,35 +9631,35 @@ void test_tree() {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(10);
 
-    ASSERT_EQ(t.__count(10), 1);
+    ASSERT_EQ(t.__count(10), 1UL);
   }
 
   {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(10);
 
-    ASSERT_EQ(t.__count(42), 0);
+    ASSERT_EQ(t.__count(42), 0UL);
   }
 
   {
     ft::__tree<int, int, ft::Identity<int> > t;
     t.__insert(1);
 
-    ASSERT_EQ(t.__count(42), 0);
+    ASSERT_EQ(t.__count(42), 0UL);
   }
 
   {
     ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
     t.__insert(ft::make_pair(1, 1));
 
-    ASSERT_EQ(t.__count(1), 1);
+    ASSERT_EQ(t.__count(1), 1UL);
   }
 
   {
     ft::__tree<int, ft::pair<int, int>, ft::Select1st<ft::pair<int, int> > > t;
     t.__insert(ft::make_pair(1, 1));
 
-    ASSERT_EQ(t.__count(42), 0);
+    ASSERT_EQ(t.__count(42), 0UL);
   }
 
   // // max_size
@@ -9738,7 +9744,7 @@ void test_tree() {
     t.__insert(1);
     t.__erase(1);
 
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -9749,7 +9755,7 @@ void test_tree() {
 
     ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
 
     ASSERT_EQ(r->__is_black_node(), true);
     ASSERT_EQ(r->left->__is_nil_node(), true);
@@ -9769,7 +9775,7 @@ void test_tree() {
 
     ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-    ASSERT_EQ(t.__size(), 1);
+    ASSERT_EQ(t.__size(), 1UL);
 
     ASSERT_EQ(r->__is_black_node(), true);
     ASSERT_EQ(r->left->__is_nil_node(), true);
@@ -9791,7 +9797,7 @@ void test_tree() {
 
     ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
 
     ASSERT_EQ(r->__is_black_node(), true);
     ASSERT_EQ(r->left->__is_nil_node(), true);
@@ -9819,7 +9825,7 @@ void test_tree() {
 
     ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
 
     ASSERT_EQ(r->__is_black_node(), true);
     ASSERT_EQ(r->left->__is_black_node(), false);
@@ -9848,7 +9854,7 @@ void test_tree() {
 
     ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-    ASSERT_EQ(t.__size(), 2);
+    ASSERT_EQ(t.__size(), 2UL);
 
     ASSERT_EQ(r->__is_black_node(), true);
     ASSERT_EQ(r->left->__is_red_node(), true);
@@ -9877,7 +9883,7 @@ void test_tree() {
 
     ft::__tree<int, int, ft::Identity<int> >::node_pointer r = t.root();
 
-    ASSERT_EQ(t.__size(), 3);
+    ASSERT_EQ(t.__size(), 3UL);
 
     ASSERT_EQ(r->__is_black_node(), true);
     ASSERT_EQ(r->left->__is_black_node(), true);
@@ -10317,7 +10323,7 @@ void test_tree() {
     t.__erase(2);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10331,7 +10337,7 @@ void test_tree() {
     t.__erase(-1);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10347,7 +10353,7 @@ void test_tree() {
     t.__erase(10);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10365,7 +10371,7 @@ void test_tree() {
     t.__erase(-10);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10385,7 +10391,7 @@ void test_tree() {
     t.__erase(5);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10424,14 +10430,14 @@ void test_tree() {
     ASSERT_EQ(r->right->left->parent, r->right);
     ASSERT_EQ(r->right->right->parent, r->right);
 
-    ASSERT_EQ(t.__size(), 3);
+    ASSERT_EQ(t.__size(), 3UL);
 
     t.__erase(1);
     t.__erase(500);
     t.__erase(300);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10444,7 +10450,7 @@ void test_tree() {
     t.__erase(30);
 
     ASSERT_EQ(t.__empty(), true);
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10646,7 +10652,7 @@ void test_tree() {
 
     t.__erase(20);
 
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
   }
 
   {
@@ -10760,7 +10766,7 @@ void test_tree() {
 
     t.__erase(50);
 
-    ASSERT_EQ(t.__size(), 0);
+    ASSERT_EQ(t.__size(), 0UL);
     ASSERT_EQ(t.__empty(), true);
   }
 
@@ -13929,8 +13935,8 @@ void test_deque() {
     ft::deque<int>::iterator ftitr1 = ftdec.begin();
     ft::deque<int>::iterator ftitr2 = ftdec.begin();
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -13955,8 +13961,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -13982,8 +13988,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14010,8 +14016,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.empty(), ftdec.empty());
@@ -14032,8 +14038,8 @@ void test_deque() {
     ft::deque<int>::iterator ftitr1 = ftdec.begin();
     ft::deque<int>::iterator ftitr2 = ftdec.begin();
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14058,8 +14064,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14085,8 +14091,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14113,8 +14119,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.empty(), ftdec.empty());
@@ -14135,8 +14141,8 @@ void test_deque() {
     ft::deque<int>::iterator ftitr1 = ftdec.begin();
     ft::deque<int>::iterator ftitr2 = ftdec.begin();
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14161,8 +14167,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14188,8 +14194,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14216,8 +14222,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.empty(), ftdec.empty());
@@ -14238,8 +14244,8 @@ void test_deque() {
     ft::deque<int>::iterator ftitr1 = ftdec.begin();
     ft::deque<int>::iterator ftitr2 = ftdec.begin();
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14264,8 +14270,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14291,8 +14297,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -14319,8 +14325,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.empty(), ftdec.empty());
@@ -14348,8 +14354,8 @@ void test_deque() {
     ++stditr2;
     ++ftitr2;
 
-    std::deque<int>::iterator stdret = stddec.erase(stditr1, stditr2);
-    ft::deque<int>::iterator ftret = ftdec.erase(ftitr1, ftitr2);
+    stddec.erase(stditr1, stditr2);
+    ftdec.erase(ftitr1, ftitr2);
 
     ASSERT_EQ(stddec.size(), ftdec.size());
     ASSERT_EQ(stddec.at(0), ftdec.at(0));
@@ -15368,7 +15374,7 @@ void test_stack() {
     ft::stack<int, std::deque<int> > ftst(container);
     ftst.push(1);
 
-    ASSERT_EQ(ftst.size(), 1);
+    ASSERT_EQ(ftst.size(), 1UL);
   }
 
   /*

@@ -49,7 +49,7 @@ public:
 
   template <typename InputIterator>
   vector(InputIterator first, InputIterator last,
-         const allocator_type& alloc = allocator_type()) {
+         const allocator_type& alloc = allocator_type()): alloc(alloc) {
     // vector(size_type count, const_reference value)との曖昧さ回避をする
     typedef typename ft::is_integral<InputIterator>::type integral;
     initialize_dispatch(first, last, integral());
@@ -285,7 +285,6 @@ private:
   // TODO : make private
   template <typename InputIt>
   void assign_dispatch(InputIt first, InputIt last, false_type) {
-    size_type sz = distance(first, last);
     resize(0);
     size_type i = 0;
     for (iterator itr = first; itr != last; ++itr) {

@@ -301,7 +301,7 @@ public:
     __insert(first, last);
   }
   explicit __tree(const Compare& comp, const Allocator& alloc = Allocator())
-      : node_alloc_(node_allocator()), root_(NULL),
+      : node_alloc_(node_allocator(alloc)), root_(NULL),
         end_node_(__allocate_end_node()), __comp_(comp), __tree_size_(0) {}
   __tree(const __tree& other)
       : node_alloc_(node_allocator()), root_(NULL),
@@ -373,6 +373,7 @@ public:
   }
 
   iterator __insert(iterator pos, const_reference value) {
+    (void)pos;
     // TODO テキトー
     // posの直前に要素を挿入
     return __insert(value).first;
@@ -1422,9 +1423,7 @@ private:
   //         NL       NR        S       NL
   void __rotate_left(node_pointer p, node_pointer n) {
     node_pointer g = p->parent;
-    node_pointer s = p->left;
     node_pointer nl = n->left;
-    node_pointer nr = n->right;
 
     p->right = nl;
     nl->parent = p;
@@ -1464,8 +1463,6 @@ private:
   //
   void __rotate_right(node_pointer p, node_pointer n) {
     node_pointer g = p->parent;
-    node_pointer s = p->right;
-    node_pointer nl = n->left;
     node_pointer nr = n->right;
 
     p->left = nr;
@@ -1539,6 +1536,6 @@ bool operator<=(
     const ft::__tree<Key, Val, KeyOfValue, Compare, Allocator>& rhs) {
   return !(lhs > rhs);
 }
-}; // namespace ft
+} // namespace ft
 
 #endif

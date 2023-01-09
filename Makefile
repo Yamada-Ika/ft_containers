@@ -1,8 +1,6 @@
 CC			:= c++
-# CXXFLAGS	:= -Wall -Wextra -Werror -MMD -MP
-# COPTS		:= -std=c++98 -pedantic-errors
-CXXFLAGS	:=
-COPTS		:=
+CXXFLAGS	:= -Wall -Wextra -Werror -MMD -MP
+COPTS		:= -std=c++98 -pedantic-errors
 
 NAME	:= 42-test
 SRCS	:= main.cpp
@@ -17,7 +15,7 @@ $(NAME): $(OBJS)
 
 obj/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CC) $(CXXFLAGS) $(COPTS) -o $@ -c $^
+	$(CC) $(CXXFLAGS) $(COPTS) -o $@ -c $<
 
 clean:
 	rm -rf $(OBJS)

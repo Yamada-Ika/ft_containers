@@ -368,31 +368,31 @@ public:
   * Member functions
   */
   deque()
-      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(first_),
-        back_(front_), current_bufsize(buffer_size) {}
+      : first_(allocate(buffer_size)), front_(first_), back_(front_),
+        alloc_(Allocator()), current_bufsize(buffer_size) {}
 
   explicit deque(const Allocator& alloc)
-      : alloc_(alloc), first_(allocate(buffer_size)), front_(first_),
-        back_(front_), current_bufsize(buffer_size) {}
+      : first_(allocate(buffer_size)), front_(first_), back_(front_),
+        alloc_(alloc), current_bufsize(buffer_size) {}
 
   explicit deque(size_type count, const T& value = T(),
                  const Allocator& alloc = Allocator())
-      : alloc_(alloc), first_(allocate(buffer_size)), front_(first_),
-        back_(front_), current_bufsize(buffer_size) {
+      : first_(allocate(buffer_size)), front_(first_), back_(front_),
+        alloc_(alloc), current_bufsize(buffer_size) {
     assign_fill(count, value);
   }
 
   template <class InputIt>
   deque(InputIt first, InputIt last, const Allocator& alloc = Allocator())
-      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(first_),
-        back_(front_), current_bufsize(buffer_size) { // 曖昧さ回避
+      : first_(allocate(buffer_size)), front_(first_), back_(front_),
+        alloc_(alloc), current_bufsize(buffer_size) { // 曖昧さ回避
     typedef typename ft::is_integral<InputIt>::type integral;
     initialize_dispatch(first, last, integral());
   }
 
   deque(const deque& other)
-      : alloc_(Allocator()), first_(allocate(buffer_size)), front_(first_),
-        back_(front_), current_bufsize(buffer_size) {
+      : first_(allocate(buffer_size)), front_(first_), back_(front_),
+        alloc_(Allocator()), current_bufsize(buffer_size) {
     assign_fill(other.size(), T());
     *this = other;
   }
@@ -679,7 +679,7 @@ private:
   // 最後の要素がある場所を指すポインターを一個手前にずらす
   void decrement_back_pointer() { decrease_back_pointer(1); }
   // 最後の要素がある場所を指すポインターをn個手前にずらす
-  void decrease_back_pointer(difference_type n) {
+  void decrease_back_pointer(size_type n) {
     // xxxxxxxxxxxxx
     //   f       b
     if (front_ < back_) {
@@ -751,8 +751,6 @@ private:
     if (size() + count < current_bufsize) {
       size_type offset = front_ - first_;
       // pos_idxから後ろの要素をcountだけずらす
-      size_type num_to_be_shited = back_ - first_ + pos_idx;
-      size_type new_size = size() + count;
       // backを更新
       back_ = back_ + count;
       for (size_type i = size() - 1; i >= pos_idx; --i) {
@@ -805,7 +803,7 @@ private:
       }
       return;
     }
-    difference_type sz = last - first;
+    size_type sz = last - first;
     back_ = front_ + sz;
     for (size_type i = 0; i < sz; ++i) {
       at(i) = first[i];
@@ -879,6 +877,6 @@ template <class T, class Alloc>
 void swap(ft::deque<T, Alloc>& lhs, ft::deque<T, Alloc>& rhs) {
   lhs.swap(rhs);
 }
-}; // namespace ft
+} // namespace ft
 
 #endif
