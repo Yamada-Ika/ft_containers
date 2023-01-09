@@ -1,13 +1,11 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-// #include <cstddef>
-
 namespace ft {
 /// @brief Used for package internal
 namespace detail {
-// treeでvalueからkeyを取得するときに使う構造体
-// mapの内部で使う木の中で使うやつ
+
+/// @brief Used for retrieve key of node value in map
 template <typename Pair>
 struct __Select1st {
   typename Pair::first_type& operator()(Pair& __x) const { return __x.first; }
@@ -16,7 +14,7 @@ struct __Select1st {
   }
 };
 
-// setで使うやつ
+/// @brief Used for retrieve key of node value in set
 template <typename T>
 struct __Identity {
   T& operator()(T& __x) const { return __x; }
