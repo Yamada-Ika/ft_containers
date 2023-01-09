@@ -1,10 +1,10 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <cstddef>
+// #include <cstddef>
 
 namespace ft {
-// Used for helper
+/// @brief Used for package internal
 namespace detail {
 // treeでvalueからkeyを取得するときに使う構造体
 // mapの内部で使う木の中で使うやつ

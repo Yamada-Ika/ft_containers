@@ -3,3 +3,4 @@ test/build/
 42-test
 orig-test
 obj/**
+tmp.cpp

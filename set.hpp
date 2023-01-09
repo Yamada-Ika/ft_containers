@@ -30,7 +30,7 @@ public:
   typedef typename ft::detail::__tree<Key, Key, ft::detail::__Identity<Key>,
                                       Compare, Allocator>::iterator iterator;
   typedef typename ft::detail::__tree<Key, Key, ft::detail::__Identity<Key>,
-                                      Compare, Allocator>::__const_iterator
+                                      Compare, Allocator>::const_iterator
       const_iterator;
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
@@ -66,37 +66,37 @@ public:
   }
 
   allocator_type get_allocator() const {
-    return allocator_type(__tree_.__get_allocator());
+    return allocator_type(__tree_.get_allocator());
   }
 
   /*
   *  Iterators
   */
-  iterator begin() { return __tree_.__begin(); }
-  const_iterator begin() const { return __tree_.__begin(); }
-  iterator end() { return __tree_.__end(); }
-  const_iterator end() const { return __tree_.__end(); }
-  reverse_iterator rbegin() { return __tree_.__rbegin(); }
-  const_reverse_iterator rbegin() const { return __tree_.__rbegin(); }
-  reverse_iterator rend() { return __tree_.__rend(); }
-  const_reverse_iterator rend() const { return __tree_.__rend(); }
+  iterator begin() { return __tree_.begin(); }
+  const_iterator begin() const { return __tree_.begin(); }
+  iterator end() { return __tree_.end(); }
+  const_iterator end() const { return __tree_.end(); }
+  reverse_iterator rbegin() { return __tree_.rbegin(); }
+  const_reverse_iterator rbegin() const { return __tree_.rbegin(); }
+  reverse_iterator rend() { return __tree_.rend(); }
+  const_reverse_iterator rend() const { return __tree_.rend(); }
 
   /*
   *  Capacity
   */
-  bool empty() const { return __tree_.__empty(); }
-  size_type size() const { return __tree_.__size(); }
-  size_type max_size() const { return __tree_.__max_size(); }
+  bool empty() const { return __tree_.empty(); }
+  size_type size() const { return __tree_.size(); }
+  size_type max_size() const { return __tree_.max_size(); }
 
   /*
   *  Modifiers
   */
   void clear() { erase(begin(), end()); }
   ft::pair<iterator, bool> insert(const value_type& value) {
-    return __tree_.__insert(value);
+    return __tree_.insert(value);
   }
   iterator insert(iterator pos, const value_type& value) {
-    return __tree_.__insert(pos, value);
+    return __tree_.insert(pos, value);
   }
   template <class InputIt>
   void insert(InputIt first, InputIt last) {
@@ -104,11 +104,11 @@ public:
       insert(*first);
     }
   }
-  iterator erase(iterator pos) { return __tree_.__erase(pos); }
+  iterator erase(iterator pos) { return __tree_.erase(pos); }
   iterator erase(iterator first, iterator last) {
-    return __tree_.__erase(first, last);
+    return __tree_.erase(first, last);
   }
-  size_type erase(const Key& key) { return __tree_.__erase(key); }
+  size_type erase(const Key& key) { return __tree_.erase(key); }
   void swap(set& other) {
     set tmp;
     tmp.insert(other.begin(), other.end());
@@ -121,18 +121,18 @@ public:
   /*
   *  Lookup
   */
-  size_type count(const Key& key) const { return __tree_.__count(key); }
-  iterator find(const Key& key) { return __tree_.__find(key); }
-  const_iterator find(const Key& key) const { return __tree_.__find(key); }
+  size_type count(const Key& key) const { return __tree_.count(key); }
+  iterator find(const Key& key) { return __tree_.find(key); }
+  const_iterator find(const Key& key) const { return __tree_.find(key); }
   ft::pair<iterator, iterator> equal_range(const Key& key) {
-    return __tree_.__equal_range(key);
+    return __tree_.equal_range(key);
   }
   ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
-    return __tree_.__equal_range_const(key);
+    return __tree_.equal_range_const(key);
   }
-  iterator lower_bound(const Key& key) { return __tree_.__lower_bound(key); }
+  iterator lower_bound(const Key& key) { return __tree_.lower_bound(key); }
   const_iterator lower_bound(const Key& key) const {
-    return __tree_.__lower_bound_const(key);
+    return __tree_.lower_bound(key);
   }
   iterator upper_bound(const Key& key) { return __tree_.__upper_bound(key); }
   const_iterator upper_bound(const Key& key) const {
@@ -142,7 +142,7 @@ public:
   /*
   *  Observers
   */
-  key_compare key_comp() const { return __tree_.__key_comp(); }
+  key_compare key_comp() const { return __tree_.key_comp(); }
   value_compare value_comp() const { return key_comp(); }
 
   /*
