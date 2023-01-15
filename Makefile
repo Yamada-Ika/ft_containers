@@ -1,13 +1,13 @@
-CC			:= c++
-CXXFLAGS	:= -Wall -Wextra -Werror -MMD -MP
-COPTS		:= -std=c++98 -pedantic-errors
+CC       := c++
+CXXFLAGS := -Wall -Wextra -Werror -MMD -MP
+COPTS    := -std=c++98 -pedantic-errors
 
-NAME	:= 42-test
-SRCS	:= main.cpp
-OBJS	:= $(SRCS:%.cpp=%.o)
-OBJS	:= $(addprefix obj/, $(OBJS))
-DEPS    := $(OBJS:.o=.d)
-INCS    := $(addprefix -I, srcs) 
+NAME     := 42-test
+SRCS     := main.cpp
+OBJS     := $(SRCS:%.cpp=%.o)
+OBJS     := $(addprefix obj/, $(OBJS))
+DEPS     := $(OBJS:.o=.d)
+INCS     := $(addprefix -I, srcs) 
 
 all: $(NAME)
 
@@ -26,6 +26,8 @@ fclean: clean
 
 re: fclean all
 
+-include $(DEPS)
+
 .PHONY: all clean fclean re
 
 test: FORCE
@@ -40,5 +42,3 @@ leak-linux: FORCE
 FORCE: ;
 
 .PHONY: test leak-mac leak-linux FORCE
-
--include $(DEPS)
