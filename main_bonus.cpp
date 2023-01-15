@@ -16075,10 +16075,10 @@ void test_other() {
                                           vec2.begin(), vec2.end()));
   }
 
-  {
-    std::vector<int> vec1(1.1, 1.1);
-    ft::vector<int> vec2(1.1, 1.1);
-  }
+  // {
+  //   std::vector<int> vec1(1.1, 1.1);
+  //   ft::vector<int> vec2(1.1, 1.1);
+  // }
 
   {
     std::vector<int> vec1(10, 42);

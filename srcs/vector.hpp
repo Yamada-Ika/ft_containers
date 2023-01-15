@@ -7,6 +7,7 @@
 #include "lexicographical_compare.hpp"
 #include <memory>
 #include <algorithm>
+#include <iostream>
 
 namespace ft {
 template <typename T, typename Allocator = std::allocator<T> >
