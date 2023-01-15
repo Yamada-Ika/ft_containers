@@ -7,6 +7,7 @@ SRCS	:= main.cpp
 OBJS	:= $(SRCS:%.cpp=%.o)
 OBJS	:= $(addprefix obj/, $(OBJS))
 DEPS    := $(OBJS:.o=.d)
+INCS    := $(addprefix -I, srcs) 
 
 all: $(NAME)
 
@@ -15,10 +16,10 @@ $(NAME): $(OBJS)
 
 obj/%.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CC) $(CXXFLAGS) $(COPTS) -o $@ -c $<
+	$(CC) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
 
 clean:
-	rm -rf $(OBJS)
+	rm -rf $(OBJS) $(DEPS)
 
 fclean: clean
 	rm -rf $(NAME)
