@@ -43,6 +43,7 @@ template <>
 struct is_integral<char> : public true_type {};
 template <>
 struct is_integral<bool> : public true_type {};
+
 } // namespace ft
 
 #endif

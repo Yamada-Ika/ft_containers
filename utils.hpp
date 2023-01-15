@@ -20,6 +20,7 @@ struct __Identity {
   T& operator()(T& __x) const { return __x; }
   const T& operator()(const T& __x) const { return __x; }
 };
+
 } // namespace detail
 } // namespace ft
 

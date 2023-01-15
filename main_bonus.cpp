@@ -16076,6 +16076,11 @@ void test_other() {
   }
 
   {
+    std::vector<int> vec1(1.1, 1.1);
+    ft::vector<int> vec2(1.1, 1.1);
+  }
+
+  {
     std::vector<int> vec1(10, 42);
     std::vector<int> vec2(9, 42);
     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
