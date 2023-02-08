@@ -3,6 +3,7 @@
 
 #include "utils.hpp"
 #include "is_integral.hpp"
+#include "enable_if.hpp"
 #include "reverse_iterator.hpp"
 #include "lexicographical_compare.hpp"
 #include <memory>
@@ -33,31 +34,40 @@ public:
   * Member functions
   */
   vector()
-      : alloc(allocator_type()), first(allocate(0)), last(first),
-        reserved_last(first + size()) {}
+      : alloc_(allocator_type()), first_(allocate(0)), last_(first_),
+        reserved_last_(first_ + size()) {}
 
-  explicit vector(const allocator_type& alloc)
-      : alloc(alloc), first(allocate(0)), last(first),
-        reserved_last(first + size()) {}
+  explicit vector(const allocator_type& alloc_)
+      : alloc_(alloc_), first_(allocate(0)), last_(first_),
+        reserved_last_(first_ + size()) {}
 
   explicit vector(size_type count, const_reference value = T(),
-                  const allocator_type& alloc = allocator_type())
-      : alloc(alloc), first(allocate(0)), last(first),
-        reserved_last(first + size()) {
+                  const allocator_type& alloc_ = allocator_type())
+      : alloc_(alloc_), first_(allocate(0)), last_(first_),
+        reserved_last_(first_ + size()) {
     resize(count, value);
   }
 
   template <typename InputIterator>
-  vector(InputIterator first, InputIterator last,
+  vector(InputIterator first,
+         typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+                                InputIterator>::type last,
          const allocator_type& alloc = allocator_type())
-      : alloc(alloc) {
-    typedef typename ft::is_integral<InputIterator>::type integral;
-    initialize_dispatch(first, last, integral());
+      : alloc_(alloc) {
+    first_ = allocate(0);
+    last_ = first_;
+    reserved_last_ = first_ + size();
+
+    std::ptrdiff_t diff = std::distance(first, last);
+    reserve(diff);
+    for (InputIterator itr = first; itr != last; ++itr) {
+      push_back(*itr);
+    }
   }
 
   vector(const vector& other)
-      : alloc(allocator_type()), first(allocate(0)), last(first),
-        reserved_last(first + size()) {
+      : alloc_(allocator_type()), first_(allocate(0)), last_(first_),
+        reserved_last_(first_ + size()) {
     *this = other;
   }
 
@@ -78,12 +88,12 @@ public:
   void assign(size_type count, const T& value) { fill_assign(count, value); }
 
   template <class InputIt>
-  void assign(InputIt first, InputIt last) {
+  void assign(InputIt first_, InputIt last_) {
     typedef typename ft::is_integral<InputIt>::type integral;
-    assign_dispatch(first, last, integral());
+    assign_dispatch(first_, last_, integral());
   }
 
-  allocator_type get_allocator() { return alloc; }
+  allocator_type get_allocator() { return alloc_; }
 
   /*
   * Element access
@@ -92,50 +102,50 @@ public:
     if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
     }
-    return first[pos];
+    return first_[pos];
   }
 
   const_reference at(size_type pos) const {
     if (pos >= size()) {
       throw std::out_of_range("Error: index is out of range.");
     }
-    return first[pos];
+    return first_[pos];
   }
 
-  reference operator[](size_type pos) { return first[pos]; }
+  reference operator[](size_type pos) { return first_[pos]; }
 
-  const_reference operator[](size_type pos) const { return first[pos]; }
+  const_reference operator[](size_type pos) const { return first_[pos]; }
 
-  reference front() { return *first; }
+  reference front() { return *first_; }
 
-  const_reference front() const { return *first; }
+  const_reference front() const { return *first_; }
 
-  reference back() { return *(last - 1); }
+  reference back() { return *(last_ - 1); }
 
-  const_reference back() const { return *(last - 1); }
+  const_reference back() const { return *(last_ - 1); }
 
-  pointer data() { return first; }
+  pointer data() { return first_; }
 
-  const_pointer data() const { return first; }
+  const_pointer data() const { return first_; }
 
   /*
   * Iterators
   */
-  iterator begin() { return first; }
+  iterator begin() { return first_; }
 
-  iterator end() { return last; }
+  iterator end() { return last_; }
 
-  const_iterator begin() const { return first; }
+  const_iterator begin() const { return first_; }
 
-  const_iterator end() const { return last; }
+  const_iterator end() const { return last_; }
 
-  reverse_iterator rbegin() { return reverse_iterator(last); }
+  reverse_iterator rbegin() { return reverse_iterator(last_); }
 
-  reverse_iterator rend() { return reverse_iterator(first); }
+  reverse_iterator rend() { return reverse_iterator(first_); }
 
-  const_reverse_iterator rbegin() const { return reverse_iterator(last); }
+  const_reverse_iterator rbegin() const { return reverse_iterator(last_); }
 
-  const_reverse_iterator rend() const { return reverse_iterator(first); }
+  const_reverse_iterator rend() const { return reverse_iterator(first_); }
 
   /*
   * Capacity
@@ -144,7 +154,7 @@ public:
 
   size_type size() const { return std::distance(begin(), end()); }
 
-  size_type max_size() const { return alloc.max_size(); }
+  size_type max_size() const { return alloc_.max_size(); }
 
   void reserve(size_type sz) {
     if (sz <= capacity()) {
@@ -153,30 +163,30 @@ public:
 
     // memory allocate before deallocate this instance's memmory
     pointer tmp = allocate(sz);
-    iterator old_first = first;
-    iterator old_last = last;
+    iterator old_first_ = first_;
+    iterator old_last = last_;
     size_type old_capacity = capacity();
-    first = tmp;
-    last = first;
-    reserved_last = first + sz;
+    first_ = tmp;
+    last_ = first_;
+    reserved_last_ = first_ + sz;
 
     // copy
-    for (iterator old_iter = old_first; old_iter != old_last;
-         ++old_iter, ++last) {
-      construct(last, *old_iter);
+    for (iterator old_iter = old_first_; old_iter != old_last;
+         ++old_iter, ++last_) {
+      construct(last_, *old_iter);
     }
 
-    alloc.deallocate(old_first, old_capacity);
+    alloc_.deallocate(old_first_, old_capacity);
 
     // deallocate old memory
     for (reverse_iterator riter = reverse_iterator(old_last),
-                          rend = reverse_iterator(old_first);
+                          rend = reverse_iterator(old_first_);
          riter != rend; ++riter) {
       destroy(&*riter);
     }
   }
 
-  size_type capacity() const { return reserved_last - first; }
+  size_type capacity() const { return reserved_last_ - first_; }
 
   /*
   * Modifiers
@@ -192,15 +202,15 @@ public:
   }
 
   template <class InputIt>
-  iterator insert(const_iterator pos, InputIt first, InputIt last) {
+  iterator insert(const_iterator pos, InputIt first_, InputIt last_) {
     typedef typename ft::is_integral<InputIt>::type integral;
-    return insert_dispatch(pos, first, last, integral());
+    return insert_dispatch(pos, first_, last_, integral());
   }
 
   iterator erase(iterator pos) { return erase_range(pos, pos + 1); }
 
-  iterator erase(iterator first, iterator last) {
-    return erase_range(first, last);
+  iterator erase(iterator first_, iterator last_) {
+    return erase_range(first_, last_);
   }
 
   void push_back(const_reference v) {
@@ -214,13 +224,13 @@ public:
       }
       reserve(cur_sz);
     }
-    construct(last, v);
-    ++last;
+    construct(last_, v);
+    ++last_;
   }
 
   void pop_back() {
-    alloc.destroy(last);
-    --last;
+    alloc_.destroy(last_);
+    --last_;
   }
 
   void resize(size_type sz, const_reference v = T()) {
@@ -231,12 +241,12 @@ public:
     if (sz < cur_sz) {
       size_type diff = cur_sz - sz;
       destroy_until(rbegin() + diff);
-      last = first + sz;
+      last_ = first_ + sz;
       return;
     }
     reserve(sz);
-    for (; last != reserved_last; ++last) {
-      construct(last, v);
+    for (; last_ != reserved_last_; ++last_) {
+      construct(last_, v);
     }
   }
 
@@ -247,44 +257,22 @@ public:
   }
 
 private:
-  allocator_type alloc;
-  pointer first;
-  pointer last;
-  pointer reserved_last;
+  allocator_type alloc_;
+  pointer first_;
+  pointer last_;
+  pointer reserved_last_;
 
-  pointer allocate(size_type n) { return alloc.allocate(n); }
-  void deallocate() { alloc.deallocate(first, capacity()); }
-  void construct(pointer ptr) { alloc.construct(ptr); }
+  pointer allocate(size_type n) { return alloc_.allocate(n); }
+  void deallocate() { alloc_.deallocate(first_, capacity()); }
+  void construct(pointer ptr) { alloc_.construct(ptr); }
   void construct(pointer ptr, const_reference value) {
-    alloc.construct(ptr, value);
+    alloc_.construct(ptr, value);
   }
-  void destroy(pointer ptr) { alloc.destroy(ptr); }
-  void destroy_all() { destroy(reserved_last); }
+  void destroy(pointer ptr) { alloc_.destroy(ptr); }
+  void destroy_all() { destroy(reserved_last_); }
   void destroy_until(reverse_iterator rend) {
-    for (reverse_iterator riter = rbegin(); riter != rend; ++riter, --last) {
+    for (reverse_iterator riter = rbegin(); riter != rend; ++riter, --last_) {
       destroy(&*riter);
-    }
-  }
-
-  template <typename Integral>
-  void initialize_dispatch(Integral count, Integral value, true_type) {
-    first = allocate(0);
-    last = first;
-    reserved_last = first + size();
-    resize(count, value);
-  }
-
-  template <typename InputIterator>
-  void initialize_dispatch(InputIterator other_first, InputIterator other_last,
-                           false_type) {
-    first = allocate(0);
-    last = first;
-    reserved_last = first + size();
-
-    std::ptrdiff_t diff = std::distance(other_first, other_last);
-    reserve(diff);
-    for (InputIterator itr = other_first; itr != other_last; ++itr) {
-      push_back(*itr);
     }
   }
 
@@ -294,10 +282,10 @@ private:
   }
 
   template <typename InputIt>
-  void assign_dispatch(InputIt first, InputIt last, false_type) {
+  void assign_dispatch(InputIt first_, InputIt last_, false_type) {
     resize(0);
     size_type i = 0;
-    for (iterator itr = first; itr != last; ++itr) {
+    for (iterator itr = first_; itr != last_; ++itr) {
       push_back(*itr);
       ++i;
     }
@@ -306,11 +294,11 @@ private:
   void fill_assign(size_type count, const T& value) { resize(count, value); }
 
   template <class InputIt>
-  iterator insert_dispatch(const_iterator pos, InputIt first, InputIt last,
+  iterator insert_dispatch(const_iterator pos, InputIt first_, InputIt last_,
                            false_type) {
     size_type insert_from = pos - begin();
     iterator pos_itr = const_cast<iterator>(pos);
-    for (InputIt itr = first; itr != last; ++itr) {
+    for (InputIt itr = first_; itr != last_; ++itr) {
       pos_itr = insert(pos_itr, *itr);
       ++pos_itr;
     }
@@ -337,7 +325,7 @@ private:
 
     // 後ろからposまで値をムーブ
     for (size_type i = size() + count - 1; i > insert_to; --i) {
-      first[i] = first[i - count];
+      first_[i] = first_[i - count];
       // ラップアラウンドによる意図せぬループを防ぐ
       if (i == 0) {
         break;
@@ -346,8 +334,8 @@ private:
     // 挿入
     // TODO ラップアラウンド
     for (size_type i = insert_from; i <= insert_to; ++i) {
-      first[i] = value;
-      ++last; //　挿入した分要素が増える
+      first_[i] = value;
+      ++last_; //　挿入した分要素が増える
     }
     return begin() + insert_from;
   }
@@ -359,9 +347,9 @@ private:
     // posの一個後ろから最後の要素まで前に詰める
     // TODO ラップアラウンド対策
     for (size_type i = erased_from; i + count <= size() - 1; ++i) {
-      first[i] = first[i + count];
+      first_[i] = first_[i + count];
     }
-    last -= count;
+    last_ -= count;
     // posの一個後ろのイテレータを返す
     return begin() + erased_from;
   }
