@@ -31,13 +31,13 @@ re: fclean all
 .PHONY: all clean fclean re
 
 test: FORCE
-	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_bonus.cpp && ./orig-test && $(RM) orig-test
+	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_orig.cpp && ./orig-test && $(RM) orig-test
 
 leak-mac: FORCE
-	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_bonus.cpp && leaks --atExit -- ./orig-test && $(RM) orig-test
+	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_orig.cpp && leaks --atExit -- ./orig-test && $(RM) orig-test
 
 leak-linux: FORCE
-	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_bonus.cpp && valgrind --leak-check=full ./orig-test && $(RM) orig-test
+	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_orig.cpp && valgrind --leak-check=full ./orig-test && $(RM) orig-test
 
 FORCE: ;
 
