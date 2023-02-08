@@ -85,12 +85,18 @@ public:
     return *this;
   }
 
-  void assign(size_type count, const T& value) { fill_assign(count, value); }
+  void assign(size_type count, const T& value) { resize(count, value); }
 
   template <class InputIt>
-  void assign(InputIt first_, InputIt last_) {
-    typedef typename ft::is_integral<InputIt>::type integral;
-    assign_dispatch(first_, last_, integral());
+  void assign(InputIt first,
+              typename ft::enable_if<!ft::is_integral<InputIt>::value,
+                                     InputIt>::type last) {
+    resize(0);
+    size_type i = 0;
+    for (iterator itr = first; itr != last; ++itr) {
+      push_back(*itr);
+      ++i;
+    }
   }
 
   allocator_type get_allocator() { return alloc_; }
@@ -202,15 +208,22 @@ public:
   }
 
   template <class InputIt>
-  iterator insert(const_iterator pos, InputIt first_, InputIt last_) {
-    typedef typename ft::is_integral<InputIt>::type integral;
-    return insert_dispatch(pos, first_, last_, integral());
+  iterator insert(const_iterator pos, InputIt first,
+                  typename ft::enable_if<!ft::is_integral<InputIt>::value,
+                                         InputIt>::type last) {
+    size_type insert_from = pos - begin();
+    iterator pos_itr = const_cast<iterator>(pos);
+    for (InputIt itr = first; itr != last; ++itr) {
+      pos_itr = insert(pos_itr, *itr);
+      ++pos_itr;
+    }
+    return begin() + insert_from;
   }
 
   iterator erase(iterator pos) { return erase_range(pos, pos + 1); }
 
-  iterator erase(iterator first_, iterator last_) {
-    return erase_range(first_, last_);
+  iterator erase(iterator first, iterator last) {
+    return erase_range(first, last);
   }
 
   void push_back(const_reference v) {
@@ -274,41 +287,6 @@ private:
     for (reverse_iterator riter = rbegin(); riter != rend; ++riter, --last_) {
       destroy(&*riter);
     }
-  }
-
-  template <typename Integral>
-  void assign_dispatch(Integral n, Integral val, true_type) {
-    fill_assign(n, val);
-  }
-
-  template <typename InputIt>
-  void assign_dispatch(InputIt first_, InputIt last_, false_type) {
-    resize(0);
-    size_type i = 0;
-    for (iterator itr = first_; itr != last_; ++itr) {
-      push_back(*itr);
-      ++i;
-    }
-  }
-
-  void fill_assign(size_type count, const T& value) { resize(count, value); }
-
-  template <class InputIt>
-  iterator insert_dispatch(const_iterator pos, InputIt first_, InputIt last_,
-                           false_type) {
-    size_type insert_from = pos - begin();
-    iterator pos_itr = const_cast<iterator>(pos);
-    for (InputIt itr = first_; itr != last_; ++itr) {
-      pos_itr = insert(pos_itr, *itr);
-      ++pos_itr;
-    }
-    return begin() + insert_from;
-  }
-
-  template <class Integral>
-  iterator insert_dispatch(const_iterator pos, Integral count, Integral value,
-                           true_type) {
-    return insert_fill(pos, count, value);
   }
 
   iterator insert_fill(const_iterator pos, size_type count, const T& value) {
