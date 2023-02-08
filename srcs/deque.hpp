@@ -2,6 +2,7 @@
 #define DEQUE_HPP
 
 #include "is_integral.hpp"
+#include "enable_if.hpp"
 #include "utils.hpp"
 #include "reverse_iterator.hpp"
 #include "lexicographical_compare.hpp"
@@ -384,11 +385,13 @@ public:
   }
 
   template <class InputIt>
-  deque(InputIt first, InputIt last, const Allocator& alloc = Allocator())
+  deque(InputIt first,
+        typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type
+            last,
+        const Allocator& alloc = Allocator())
       : first_(allocate(buffer_size)), front_(first_), back_(front_),
         alloc_(alloc), current_bufsize(buffer_size) {
-    typedef typename ft::is_integral<InputIt>::type integral;
-    initialize_dispatch(first, last, integral());
+    assign_with_iterator(first, last);
   }
 
   deque(const deque& other)
@@ -417,9 +420,10 @@ public:
   void assign(size_type count, const T& value) { assign_fill(count, value); }
 
   template <class InputIt>
-  void assign(InputIt first, InputIt last) {
-    typedef typename ft::is_integral<InputIt>::type integral;
-    assign_dispatch(first, last, integral());
+  void assign(InputIt first,
+              typename ft::enable_if<!ft::is_integral<InputIt>::value,
+                                     InputIt>::type last) {
+    assign_with_iterator(first, last);
   }
 
   allocator_type get_allocator() const { return alloc_; }
@@ -554,9 +558,16 @@ public:
   }
 
   template <class InputIt>
-  iterator insert(const_iterator pos, InputIt first, InputIt last) {
-    typedef typename ft::is_integral<InputIt>::type integral;
-    return insert_dispatch(pos, first, last, integral());
+  iterator insert(const_iterator pos,
+                  typename ft::enable_if<!ft::is_integral<InputIt>::value,
+                                         InputIt>::type first,
+                  InputIt last) {
+    size_type pos_at = pos - begin();
+    for (InputIt ritr = first; ritr != last; ++ritr) {
+      insert(pos, *ritr);
+      ++pos;
+    }
+    return begin() + pos_at;
   }
 
   iterator erase(iterator pos) { return erase(pos, pos + 1); }
@@ -724,24 +735,6 @@ private:
     back_ -= n;
   }
 
-  // inser helper
-  template <typename Integral>
-  iterator insert_dispatch(const_iterator pos, Integral count, Integral value,
-                           true_type) {
-    return insert_fill(pos, count, value);
-  }
-
-  template <typename InputIt>
-  iterator insert_dispatch(const_iterator pos, InputIt first, InputIt last,
-                           false_type) {
-    size_type pos_at = pos - begin();
-    for (InputIt ritr = first; ritr != last; ++ritr) {
-      insert(pos, *ritr);
-      ++pos;
-    }
-    return begin() + pos_at;
-  }
-
   // insert helper
   iterator insert_fill(const_iterator pos, size_type count, const T& value) {
     size_type pos_idx = pos - begin();
@@ -777,26 +770,6 @@ private:
       }
     }
     return begin() + pos_idx;
-  }
-
-  template <class InputIt>
-  void initialize_dispatch(InputIt first, InputIt last, false_type) {
-    assign_with_iterator(first, last);
-  }
-
-  template <class Integral>
-  void initialize_dispatch(Integral count, Integral value, true_type) {
-    assign_fill(count, value);
-  }
-
-  template <class Integral>
-  void assign_dispatch(Integral count, Integral value, true_type) {
-    assign_fill(count, value);
-  }
-
-  template <class InputIt>
-  void assign_dispatch(InputIt first, InputIt last, false_type) {
-    assign_with_iterator(first, last);
   }
 
   template <class InputIt>
