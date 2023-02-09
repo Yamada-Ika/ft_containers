@@ -34,7 +34,7 @@ test: FORCE
 	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_orig.cpp && ./orig-test && $(RM) orig-test
 
 bench: FORCE
-	$(CXX) -o bench-test -std=c++11 $(INCS) main_bench.cpp && ./bench-test && $(RM) bench-test
+	$(CXX) -o bench-test -std=c++11 -O0 $(INCS) main_bench.cpp && ./bench-test && $(RM) bench-test
 
 leak-mac: FORCE
 	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_orig.cpp && leaks --atExit -- ./orig-test && $(RM) orig-test

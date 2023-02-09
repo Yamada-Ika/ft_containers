@@ -149,10 +149,10 @@ public:
     return tree_.lower_bound(key);
   }
 
-  iterator upper_bound(const Key& key) { return tree_.__upper_bound(key); }
+  iterator upper_bound(const Key& key) { return tree_.upper_bound(key); }
 
   const_iterator upper_bound(const Key& key) const {
-    return tree_.__upper_bound(key);
+    return tree_.upper_bound(key);
   }
 
   /*
