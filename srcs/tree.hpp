@@ -436,7 +436,7 @@ public:
   }
 
   ft::pair<iterator, iterator> equal_range(const Key& key) {
-    return ft::make_pair(lower_bound(key), uppper_bound(key));
+    return ft::make_pair(lower_bound(key), upper_bound(key));
   }
 
   ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {
@@ -459,7 +459,7 @@ public:
     return const_iterator(ptr, end_node());
   }
 
-  iterator uppper_bound(const Key& k) {
+  iterator upper_bound(const Key& k) {
     iterator itr = lower_bound(k);
     if (itr == end()) {
       return end();

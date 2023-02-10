@@ -9649,7 +9649,7 @@ void test_tree() {
     t.insert(50);
 
     ft::detail::__tree<int, int, ft::detail::__Identity<int> >::iterator itr =
-        t.uppper_bound(10);
+        t.upper_bound(10);
 
     ASSERT_EQ(*itr, 20);
     ++itr;

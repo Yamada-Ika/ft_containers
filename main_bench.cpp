@@ -690,13 +690,13 @@ void std_set_lower_bound() {
 
 // --------- set/upper_bound ---------
 void ft_set_upper_bound() {
-  //   ft::set<int> s;
-  //   for (int i = 0; i < 100000; ++i) {
-  //     s.insert(i);
-  //   }
-  //   for (int i = 0; i < 100000; ++i) {
-  //     s.upper_bound(i);
-  //   }
+  ft::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(i);
+  }
+  for (int i = 0; i < 100000; ++i) {
+    s.upper_bound(i);
+  }
 }
 void std_set_upper_bound() {
   std::set<int> s;
