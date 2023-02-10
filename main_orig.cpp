@@ -658,20 +658,20 @@ void test_map() {
   /*
   * begin const (mutable instance)
   */
-  // {
-  //   std::map<int, int> libmp;
-  //   libmp.insert(std::make_pair(1, 1));
-  //   ft::map<int, int> mymp;
-  //   mymp.insert(ft::make_pair(1, 1));
-  //   std::map<int, int>::const_iterator libitr = libmp.begin();
-  //   ft::map<int, int>::const_iterator myitr = mymp.begin();
-  //   ASSERT_EQ(libitr->first, myitr->first);
-  //   ASSERT_EQ(libitr->second, myitr->second);
-  //   ++libitr;
-  //   ++myitr;
-  //   ASSERT_EQ(libitr->first, myitr->first);
-  //   ASSERT_EQ(libitr->second, myitr->second);
-  // }
+  {
+    std::map<int, int> libmp;
+    libmp.insert(std::make_pair(1, 1));
+    ft::map<int, int> mymp;
+    mymp.insert(ft::make_pair(1, 1));
+    std::map<int, int>::const_iterator libitr = libmp.begin();
+    ft::map<int, int>::const_iterator myitr = mymp.begin();
+    ASSERT_EQ(libitr->first, myitr->first);
+    ASSERT_EQ(libitr->second, myitr->second);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(libitr, libmp.end());
+    ASSERT_EQ(myitr, mymp.end());
+  }
 
   /*
   * end
@@ -773,9 +773,27 @@ void test_map() {
     ASSERT_EQ(libitr->second, myitr->second);
   }
 
+  // TODO
   /*
   * rbegin const (mutable instance)
   */
+  // {
+  //   std::map<int, int> liborigin;
+  //   liborigin.insert(std::make_pair(1, 1));
+  //   ft::map<int, int> myorigin;
+  //   myorigin.insert(ft::make_pair(1, 1));
+  //   std::map<int, int> libmp(liborigin.begin(), liborigin.end());
+  //   ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
+  //   std::map<int, int>::const_reverse_iterator libitr = libmp.rbegin();
+  //   ft::map<int, int>::const_reverse_iterator myitr = mymp.rbegin();
+  //   ASSERT_EQ(libitr->first, myitr->first);
+  //   ASSERT_EQ(libitr->second, myitr->second);
+  //   ++libitr;
+  //   ++myitr;
+  //   ASSERT_EQ(libitr, libmp.rend());
+  //   ASSERT_EQ(myitr, mymp.rend());
+  // }
+
   // {
   //   std::map<int, int> liborigin;
   //   liborigin.insert(std::make_pair(1, 1));
@@ -834,6 +852,7 @@ void test_map() {
     ASSERT_EQ(libitr->second, myitr->second);
   }
 
+  // TODO
   /*
   * rend const (mutable instance)
   */
@@ -1014,8 +1033,6 @@ void test_map() {
   {
     std::map<int, int> libmp;
     ft::map<int, int> mymp;
-    std::cerr << "map/lib max_size " << libmp.max_size() << std::endl;
-    std::cerr << "map/my  max_size " << mymp.max_size() << std::endl;
     ASSERT_EQ(libmp.max_size(), mymp.max_size());
   }
 
@@ -4748,14 +4765,13 @@ void test_set() {
     ASSERT_EQ(libst.size(), myst.size());
   }
 
+  // TODO
   /*
   * max_size
   */
   // {
   //   std::set<int> libst;
   //   ft::set<int> myst;
-  //   std::cerr << "set/lib max_size " << libst.max_size() << std::endl;
-  //   std::cerr << "set/my  max_size " << myst.max_size() << std::endl;
   //   ASSERT_EQ(libst.max_size(), myst.max_size());
   // }
 
@@ -8159,12 +8175,6 @@ void test_tree() {
     t.insert(2);
     t.insert(-2);
 
-    //            1r
-    //      +-----+-----+
-    //     -1b           2b
-    //  +---+---+
-    // -2r
-
     ft::detail::__tree<int, int, ft::detail::__Identity<int> >::iterator itr =
         t.begin();
     ASSERT_EQ(*itr, -2);
@@ -8906,10 +8916,6 @@ void test_tree() {
     t.insert(2);
     t.insert(3);
 
-    //      2b
-    //  +---+---+
-    // 1r        3r
-
     ft::detail::__tree<int, int, ft::detail::__Identity<int> >::node_pointer
         root = t.root();
 
@@ -8962,12 +8968,6 @@ void test_tree() {
     t.insert(3);
     t.insert(4);
 
-    //               2b
-    //        +------+------+
-    //        1b            3b
-    //    +---+---+     +---+---+
-    //                          4r
-
     ft::detail::__tree<int, int, ft::detail::__Identity<int> >::node_pointer
         root = t.root();
     ASSERT_EQ(root->is_black_node(), true);
@@ -8993,12 +8993,6 @@ void test_tree() {
     t.insert(3);
     t.insert(4);
     t.insert(5);
-
-    //               2b
-    //        +------+------+
-    //        1b            4b
-    //    +---+---+     +---+---+
-    //                  3r       5r
 
     ft::detail::__tree<int, int, ft::detail::__Identity<int> >::node_pointer
         root = t.root();
@@ -9699,8 +9693,6 @@ void test_tree() {
 
     ASSERT_EQ(t.count(42), 0UL);
   }
-
-  // // max_size
 
   // operator==
   {
@@ -11380,6 +11372,22 @@ void test_vector() {
     ASSERT_EQ(ftitr, ftvec.rend());
   }
 
+  {
+    std::vector<std::pair<int, int> > stdvec;
+    ft::vector<std::pair<int, int> > ftvec;
+
+    stdvec.push_back(std::make_pair(1, 32));
+    ftvec.push_back(std::make_pair(1, 32));
+
+    std::vector<std::pair<int, int> >::const_reverse_iterator stditr =
+        stdvec.rbegin();
+    ft::vector<std::pair<int, int> >::const_reverse_iterator ftitr =
+        ftvec.rbegin();
+
+    ASSERT_EQ(stditr->first, ftitr->first);
+    ASSERT_EQ(stditr->second, ftitr->second);
+  }
+
   /*
   * rend
   */
@@ -12467,10 +12475,6 @@ void test_deque() {
     ftdec.push_front(1);
     ftdec.push_back(2);
 
-    // 2xxxxxxxxxx1
-    //  b         f
-    // r          l
-
     std::deque<int>::iterator stditr1 = stddec.begin();
     std::deque<int>::iterator stditr2 = stddec.begin();
     ft::deque<int>::iterator ftitr1 = ftdec.begin();
@@ -12489,10 +12493,6 @@ void test_deque() {
     ft::deque<int> ftdec;
     ftdec.push_front(1);
     ftdec.push_front(2);
-
-    // xxxxxxxxxx21
-    // b         f
-    //           lr
 
     std::deque<int>::iterator stditr1 = stddec.begin();
     std::deque<int>::iterator stditr2 = stddec.begin();
@@ -12514,9 +12514,6 @@ void test_deque() {
     ftdec.push_front(1);
     ftdec.push_back(2);
     ftdec.push_front(3);
-
-    // 12xxxxxxxxxxxx3
-    //  b            f
 
     std::deque<int>::iterator stditr1 = stddec.begin();
     std::deque<int>::iterator stditr2 = stddec.begin();
@@ -12548,9 +12545,6 @@ void test_deque() {
     ftdec.push_back(4);
     ftdec.push_front(5);
     ftdec.push_back(6);
-
-    // 12xxxxxxxxxxxx3
-    //  b            f
 
     std::deque<int>::iterator stditr1 = stddec.begin();
     std::deque<int>::iterator stditr2 = stddec.begin();
@@ -13712,8 +13706,6 @@ void test_deque() {
     ftdec.push_back(42);
     ftdec.push_back(5);
 
-    // 1 42 5 x x x x x x x x x x x
-
     std::deque<int>::iterator stditr = stddec.begin();
     ft::deque<int>::iterator ftitr = ftdec.begin();
 
@@ -13739,8 +13731,6 @@ void test_deque() {
     ftdec.push_front(1);
     ftdec.push_back(42);
     ftdec.push_back(5);
-
-    // 42 5 x x x x x x 1
 
     std::deque<int>::iterator stditr = stddec.begin();
     ft::deque<int>::iterator ftitr = ftdec.begin();
@@ -16074,11 +16064,6 @@ void test_other() {
               ft::lexicographical_compare(vec1.begin(), vec1.end(),
                                           vec2.begin(), vec2.end()));
   }
-
-  // {
-  //   std::vector<int> vec1(1.1, 1.1);
-  //   ft::vector<int> vec2(1.1, 1.1);
-  // }
 
   {
     std::vector<int> vec1(10, 42);
