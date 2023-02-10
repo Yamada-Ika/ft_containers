@@ -52,18 +52,23 @@ public:
     end = std::chrono::steady_clock::now();
     std::chrono::duration<double> ft_block_erapsed_time = end - start;
 
-    double performance_ratio =
-        ft_block_erapsed_time.count() / std_block_erapsed_time.count();
+    double std_result = std_block_erapsed_time.count();
+    double ft_result = ft_block_erapsed_time.count();
+    double performance_ratio = ft_result / std_result;
 
     // ftコンテナライブラリが20倍遅いと許容できない
     if (performance_ratio > 20.000) {
-      std::cerr << "RESULT: \e[31mNG\e[0m" << std::endl;
-      std::cerr << "  " << ft_block_name << "/" << std_block_name << " -> "
-                << performance_ratio << std::endl;
+      std::cerr << "RESULT: \e[31mNG\e[0m"
+                << " case: " << std_block_name << ", " << ft_block_name
+                << std::endl;
+      std::cerr << "  std: " << std_result << ", ft: " << ft_result
+                << " , ratio: " << performance_ratio << std::endl;
     } else {
-      std::cerr << "RESULT: \e[32mOK\e[0m " << std::endl;
-      std::cerr << "  " << ft_block_name << "/" << std_block_name << " -> "
-                << performance_ratio << std::endl;
+      std::cerr << "RESULT: \e[32mOK\e[0m"
+                << " case: " << std_block_name << ", " << ft_block_name
+                << std::endl;
+      std::cerr << "  std: " << std_result << ", ft: " << ft_result
+                << " , ratio: " << performance_ratio << std::endl;
     }
   }
 
@@ -694,13 +699,13 @@ void ft_set_upper_bound() {
   //   }
 }
 void std_set_upper_bound() {
-  //   std::set<int> s;
-  //   for (int i = 0; i < 100000; ++i) {
-  //     s.insert(i);
-  //   }
-  //   for (int i = 0; i < 100000; ++i) {
-  //     s.upper_bound(i);
-  //   }
+  std::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(i);
+  }
+  for (int i = 0; i < 100000; ++i) {
+    s.upper_bound(i);
+  }
 }
 
 typedef void (*testRunnable)();
@@ -720,39 +725,39 @@ int main() {
   runner.ADDBENCHMARKFUNC(std_vector_swap, ft_vector_swap);
 
   // stack
-  runner.ADDBENCHMARKFUNC(ft_stack_top, std_stack_top);
-  runner.ADDBENCHMARKFUNC(ft_stack_size, std_stack_size);
-  runner.ADDBENCHMARKFUNC(ft_stack_push, std_stack_push);
-  runner.ADDBENCHMARKFUNC(ft_stack_pop, std_stack_pop);
+  runner.ADDBENCHMARKFUNC(std_stack_top, ft_stack_top);
+  runner.ADDBENCHMARKFUNC(std_stack_size, ft_stack_size);
+  runner.ADDBENCHMARKFUNC(std_stack_push, ft_stack_push);
+  runner.ADDBENCHMARKFUNC(std_stack_pop, ft_stack_pop);
 
   // map
-  runner.ADDBENCHMARKFUNC(ft_map_at, std_map_at);
-  runner.ADDBENCHMARKFUNC(ft_map_iterator, std_map_iterator);
-  runner.ADDBENCHMARKFUNC(ft_map_empty, std_map_empty);
-  runner.ADDBENCHMARKFUNC(ft_map_size, std_map_size);
-  runner.ADDBENCHMARKFUNC(ft_map_clear, std_map_clear);
-  runner.ADDBENCHMARKFUNC(ft_map_insert, std_map_insert);
-  runner.ADDBENCHMARKFUNC(ft_map_erase, std_map_erase);
-  runner.ADDBENCHMARKFUNC(ft_map_swap, std_map_swap);
-  runner.ADDBENCHMARKFUNC(ft_map_count, std_map_count);
-  runner.ADDBENCHMARKFUNC(ft_map_find, std_map_find);
-  runner.ADDBENCHMARKFUNC(ft_map_equal_range, std_map_equal_range);
-  runner.ADDBENCHMARKFUNC(ft_map_lower_bound, std_map_lower_bound);
-  runner.ADDBENCHMARKFUNC(ft_map_upper_bound, std_map_upper_bound);
+  runner.ADDBENCHMARKFUNC(std_map_at, ft_map_at);
+  runner.ADDBENCHMARKFUNC(std_map_iterator, ft_map_iterator);
+  runner.ADDBENCHMARKFUNC(std_map_empty, ft_map_empty);
+  runner.ADDBENCHMARKFUNC(std_map_size, ft_map_size);
+  runner.ADDBENCHMARKFUNC(std_map_clear, ft_map_clear);
+  runner.ADDBENCHMARKFUNC(std_map_insert, ft_map_insert);
+  runner.ADDBENCHMARKFUNC(std_map_erase, ft_map_erase);
+  runner.ADDBENCHMARKFUNC(std_map_swap, ft_map_swap);
+  runner.ADDBENCHMARKFUNC(std_map_count, ft_map_count);
+  runner.ADDBENCHMARKFUNC(std_map_find, ft_map_find);
+  runner.ADDBENCHMARKFUNC(std_map_equal_range, ft_map_equal_range);
+  runner.ADDBENCHMARKFUNC(std_map_lower_bound, ft_map_lower_bound);
+  runner.ADDBENCHMARKFUNC(std_map_upper_bound, ft_map_upper_bound);
 
   // set
-  runner.ADDBENCHMARKFUNC(ft_set_iterator, std_set_iterator);
-  runner.ADDBENCHMARKFUNC(ft_set_empty, std_set_empty);
-  runner.ADDBENCHMARKFUNC(ft_set_size, std_set_size);
-  runner.ADDBENCHMARKFUNC(ft_set_clear, std_set_clear);
-  runner.ADDBENCHMARKFUNC(ft_set_insert, std_set_insert);
-  runner.ADDBENCHMARKFUNC(ft_set_erase, std_set_erase);
-  runner.ADDBENCHMARKFUNC(ft_set_swap, std_set_swap);
-  runner.ADDBENCHMARKFUNC(ft_set_count, std_set_count);
-  runner.ADDBENCHMARKFUNC(ft_set_find, std_set_find);
-  runner.ADDBENCHMARKFUNC(ft_set_equal_range, std_set_equal_range);
-  runner.ADDBENCHMARKFUNC(ft_set_lower_bound, std_set_lower_bound);
-  runner.ADDBENCHMARKFUNC(ft_set_upper_bound, std_set_upper_bound);
+  runner.ADDBENCHMARKFUNC(std_set_iterator, ft_set_iterator);
+  runner.ADDBENCHMARKFUNC(std_set_empty, ft_set_empty);
+  runner.ADDBENCHMARKFUNC(std_set_size, ft_set_size);
+  runner.ADDBENCHMARKFUNC(std_set_clear, ft_set_clear);
+  runner.ADDBENCHMARKFUNC(std_set_insert, ft_set_insert);
+  runner.ADDBENCHMARKFUNC(std_set_erase, ft_set_erase);
+  runner.ADDBENCHMARKFUNC(std_set_swap, ft_set_swap);
+  runner.ADDBENCHMARKFUNC(std_set_count, ft_set_count);
+  runner.ADDBENCHMARKFUNC(std_set_find, ft_set_find);
+  runner.ADDBENCHMARKFUNC(std_set_equal_range, ft_set_equal_range);
+  runner.ADDBENCHMARKFUNC(std_set_lower_bound, ft_set_lower_bound);
+  runner.ADDBENCHMARKFUNC(std_set_upper_bound, ft_set_upper_bound);
 
   runner.runAll();
 
