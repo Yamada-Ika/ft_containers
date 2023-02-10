@@ -58,13 +58,13 @@ public:
 
     // ftコンテナライブラリが20倍遅いと許容できない
     if (performance_ratio > 20.000) {
-      std::cerr << "RESULT: \e[31mNG\e[0m"
+      std::cerr << "RESULT: \033[31mNG\033[0m"
                 << " case: " << std_block_name << ", " << ft_block_name
                 << std::endl;
       std::cerr << "  std: " << std_result << ", ft: " << ft_result
                 << " , ratio: " << performance_ratio << std::endl;
     } else {
-      std::cerr << "RESULT: \e[32mOK\e[0m"
+      std::cerr << "RESULT: \033[32mOK\033[0m"
                 << " case: " << std_block_name << ", " << ft_block_name
                 << std::endl;
       std::cerr << "  std: " << std_result << ", ft: " << ft_result

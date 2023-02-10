@@ -16136,4 +16136,6 @@ int main(int ac, char** av) {
     test_pair();
   if (avs == "other" || avs == "all")
     test_other();
+
+  std::cerr << "RESULT: \033[32mOK\033[0m" << std::endl;
 }
