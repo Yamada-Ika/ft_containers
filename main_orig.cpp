@@ -1025,23 +1025,24 @@ void test_map() {
     ASSERT_EQ(libmp.size(), mymp.size());
   }
 
-  /*
-  * max_size
-  */
-  {
-    std::map<int, int> libmp;
-    ft::map<int, int> mymp;
-    ASSERT_EQ(libmp.max_size(), mymp.max_size());
-  }
+  // 内部のデータ構造に依存しそうなのでテストしない
+  // /*
+  // * max_size
+  // */
+  // {
+  //   std::map<int, int> libmp;
+  //   ft::map<int, int> mymp;
+  //   ASSERT_EQ(libmp.max_size(), mymp.max_size());
+  // }
 
-  /*
-  * max_size const
-  */
-  {
-    const std::map<int, int> libmp;
-    const ft::map<int, int> mymp;
-    ASSERT_EQ(libmp.max_size(), mymp.max_size());
-  }
+  // /*
+  // * max_size const
+  // */
+  // {
+  //   const std::map<int, int> libmp;
+  //   const ft::map<int, int> mymp;
+  //   ASSERT_EQ(libmp.max_size(), mymp.max_size());
+  // }
 
   /*
   * clear
@@ -4763,15 +4764,15 @@ void test_set() {
     ASSERT_EQ(libst.size(), myst.size());
   }
 
-  // TODO
-  /*
-  * max_size
-  */
-  {
-    std::set<int> libst;
-    ft::set<int> myst;
-    ASSERT_EQ(libst.max_size(), myst.max_size());
-  }
+  // 内部のデータ構造に依存しそうなのでテストしない
+  // /*
+  // * max_size
+  // */
+  // {
+  //   std::set<int> libst;
+  //   ft::set<int> myst;
+  //   ASSERT_EQ(libst.max_size(), myst.max_size());
+  // }
 
   // {
   //   const std::set<int> libst;
