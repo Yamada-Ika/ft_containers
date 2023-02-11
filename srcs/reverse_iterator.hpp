@@ -44,7 +44,9 @@ public:
     iterator_type tmp = current;
     return *--tmp;
   }
-  pointer operator->() const { return std::addressof(operator*()); }
+  pointer operator->() const {
+    return const_cast<pointer>(std::addressof(operator*()));
+  }
   reference operator[](difference_type n) const { return base()[-n - 1]; }
   reverse_iterator& operator++() {
     --current;

@@ -773,43 +773,42 @@ void test_map() {
     ASSERT_EQ(libitr->second, myitr->second);
   }
 
-  // TODO
   /*
   * rbegin const (mutable instance)
   */
-  // {
-  //   std::map<int, int> liborigin;
-  //   liborigin.insert(std::make_pair(1, 1));
-  //   ft::map<int, int> myorigin;
-  //   myorigin.insert(ft::make_pair(1, 1));
-  //   std::map<int, int> libmp(liborigin.begin(), liborigin.end());
-  //   ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
-  //   std::map<int, int>::const_reverse_iterator libitr = libmp.rbegin();
-  //   ft::map<int, int>::const_reverse_iterator myitr = mymp.rbegin();
-  //   ASSERT_EQ(libitr->first, myitr->first);
-  //   ASSERT_EQ(libitr->second, myitr->second);
-  //   ++libitr;
-  //   ++myitr;
-  //   ASSERT_EQ(libitr, libmp.rend());
-  //   ASSERT_EQ(myitr, mymp.rend());
-  // }
+  {
+    std::map<int, int> liborigin;
+    liborigin.insert(std::make_pair(1, 1));
+    ft::map<int, int> myorigin;
+    myorigin.insert(ft::make_pair(1, 1));
+    std::map<int, int> libmp(liborigin.begin(), liborigin.end());
+    ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
+    std::map<int, int>::const_reverse_iterator libitr = libmp.rbegin();
+    ft::map<int, int>::const_reverse_iterator myitr = mymp.rbegin();
+    ASSERT_EQ(libitr->first, myitr->first);
+    ASSERT_EQ(libitr->second, myitr->second);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(libitr, libmp.rend());
+    ASSERT_EQ(myitr, mymp.rend());
+  }
 
-  // {
-  //   std::map<int, int> liborigin;
-  //   liborigin.insert(std::make_pair(1, 1));
-  //   ft::map<int, int> myorigin;
-  //   myorigin.insert(ft::make_pair(1, 1));
-  //   const std::map<int, int> libmp(liborigin.begin(), liborigin.end());
-  //   const ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
-  //   std::map<int, int>::const_reverse_iterator libitr = libmp.rbegin();
-  //   ft::map<int, int>::const_reverse_iterator myitr = mymp.rbegin();
-  //   ASSERT_EQ(libitr->first, myitr->first);
-  //   ASSERT_EQ(libitr->second, myitr->second);
-  //   ++libitr;
-  //   ++myitr;
-  //   ASSERT_EQ(libitr, libmp.rend());
-  //   ASSERT_EQ(myitr, mymp.rend());
-  // }
+  {
+    std::map<int, int> liborigin;
+    liborigin.insert(std::make_pair(1, 1));
+    ft::map<int, int> myorigin;
+    myorigin.insert(ft::make_pair(1, 1));
+    const std::map<int, int> libmp(liborigin.begin(), liborigin.end());
+    const ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
+    std::map<int, int>::const_reverse_iterator libitr = libmp.rbegin();
+    ft::map<int, int>::const_reverse_iterator myitr = mymp.rbegin();
+    ASSERT_EQ(libitr->first, myitr->first);
+    ASSERT_EQ(libitr->second, myitr->second);
+    ++libitr;
+    ++myitr;
+    ASSERT_EQ(libitr, libmp.rend());
+    ASSERT_EQ(myitr, mymp.rend());
+  }
 
   /*
   * rend
@@ -852,26 +851,25 @@ void test_map() {
     ASSERT_EQ(libitr->second, myitr->second);
   }
 
-  // TODO
   /*
   * rend const (mutable instance)
   */
-  // {
-  //   std::map<int, int> liborigin;
-  //   liborigin.insert(std::make_pair(1, 1));
-  //   ft::map<int, int> myorigin;
-  //   myorigin.insert(ft::make_pair(1, 1));
-  //   const std::map<int, int> libmp(liborigin.begin(), liborigin.end());
-  //   const ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
-  //   std::map<int, int>::const_reverse_iterator libitr = libmp.rend();
-  //   ft::map<int, int>::const_reverse_iterator myitr = mymp.rend();
-  //   --libitr;
-  //   --myitr;
-  //   ASSERT_EQ(libitr->first, myitr->first);
-  //   ASSERT_EQ(libitr->second, myitr->second);
-  //   ASSERT_EQ(libitr, libmp.rbegin());
-  //   ASSERT_EQ(myitr, mymp.rbegin());
-  // }
+  {
+    std::map<int, int> liborigin;
+    liborigin.insert(std::make_pair(1, 1));
+    ft::map<int, int> myorigin;
+    myorigin.insert(ft::make_pair(1, 1));
+    const std::map<int, int> libmp(liborigin.begin(), liborigin.end());
+    const ft::map<int, int> mymp(myorigin.begin(), myorigin.end());
+    std::map<int, int>::const_reverse_iterator libitr = libmp.rend();
+    ft::map<int, int>::const_reverse_iterator myitr = mymp.rend();
+    --libitr;
+    --myitr;
+    ASSERT_EQ(libitr->first, myitr->first);
+    ASSERT_EQ(libitr->second, myitr->second);
+    ASSERT_EQ(libitr, libmp.rbegin());
+    ASSERT_EQ(myitr, mymp.rbegin());
+  }
 
   /*
   * empty
@@ -7970,6 +7968,33 @@ void test_tree() {
         t.begin();
 
     ASSERT_EQ(itr1 == itr2, true);
+  }
+
+  {
+    ft::detail::__tree<int, ft::pair<int, int>,
+                       ft::detail::__Select1st<ft::pair<int, int> > >
+        t;
+    t.insert(ft::make_pair(42, 42));
+    ft::detail::__tree<
+        int, ft::pair<int, int>,
+        ft::detail::__Select1st<ft::pair<int, int> > >::reverse_iterator itr1 =
+        t.rbegin();
+
+    ASSERT_EQ(itr1->first, 42);
+    ASSERT_EQ(itr1->second, 42);
+  }
+
+  {
+    ft::detail::__tree<int, ft::pair<int, int>,
+                       ft::detail::__Select1st<ft::pair<int, int> > >
+        t;
+    t.insert(ft::make_pair(42, 42));
+    ft::detail::__tree<int, ft::pair<int, int>,
+                       ft::detail::__Select1st<ft::pair<int, int> > >::
+        const_reverse_iterator itr1 = t.rbegin();
+
+    ASSERT_EQ(itr1->first, 42);
+    ASSERT_EQ(itr1->second, 42);
   }
 
   {
