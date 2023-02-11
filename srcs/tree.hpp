@@ -56,8 +56,6 @@ public:
     left = other.left;
     right = other.right;
     parent = other.parent;
-    // pair<const Key, Value>の代入はコンパイルエラーになるのでそれを避ける
-    // value = other.value;
     node_alloc = other.node_alloc;
     node_kind = other.node_kind;
     return *this;
@@ -539,7 +537,6 @@ private:
     deallocate_node(ptr);
   }
   void destruct_erased_node(node_pointer ptr) {
-    // end_node_はメモリ解放しなくて良い
     if (ptr->right != NULL && ptr->right->is_nil_node() &&
         ptr->right != end_node_) {
       destroy_node(ptr->right);
@@ -553,16 +550,13 @@ private:
     deallocate_node(ptr);
   }
 
-  // rootかどうか
   bool is_root(node_pointer nd) { return nd->parent == nd; }
 
-  // TODO tree_baseみたいなの作ってnodeいじるメソッドはそっちに移動させたい
   node_pointer allocate() {
     node_pointer n = node_alloc_.allocate(1);
     return n;
   }
 
-  // nodeをアロケーションする
   node_pointer allocate_node(const_reference v) {
     node_pointer n = allocate();
     node_alloc_.construct(n, v);
