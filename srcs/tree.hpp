@@ -254,7 +254,7 @@ private:
   node_pointer end_nd;
 };
 
-/// @brief Red Black Tree used in set and map
+/// @brief Red Black Tree used for set and map
 template <typename Key, typename Val, typename KeyOfValue,
           class Compare = std::less<Key>,
           typename Allocator = std::allocator<Key> >

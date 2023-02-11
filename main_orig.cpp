@@ -4767,11 +4767,11 @@ void test_set() {
   /*
   * max_size
   */
-  // {
-  //   std::set<int> libst;
-  //   ft::set<int> myst;
-  //   ASSERT_EQ(libst.max_size(), myst.max_size());
-  // }
+  {
+    std::set<int> libst;
+    ft::set<int> myst;
+    ASSERT_EQ(libst.max_size(), myst.max_size());
+  }
 
   // {
   //   const std::set<int> libst;
