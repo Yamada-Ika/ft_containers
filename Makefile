@@ -31,7 +31,7 @@ re: fclean all
 .PHONY: all clean fclean re
 
 test: FORCE
-	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors $(INCS) main_orig.cpp && ./orig-test && $(RM) orig-test
+	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors -g -fsanitize=address $(INCS) main_orig.cpp && ./orig-test && $(RM) orig-test
 
 bench: FORCE
 	$(CXX) -o bench-test -std=c++11 -O0 $(INCS) main_bench.cpp && ./bench-test && $(RM) bench-test
