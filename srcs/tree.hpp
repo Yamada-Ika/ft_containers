@@ -510,6 +510,10 @@ private:
     tree_size_ = 0;
   }
   void destruct_partial_tree(node_pointer n) {
+    if (n == NULL) {
+      return;
+    }
+
     ft::stack<node_pointer> st;
     node_pointer nd = n;
     st.push(nd);
@@ -569,6 +573,10 @@ private:
 
   node_pointer allocate_nil_node() {
     node_pointer n = allocate();
+
+    if (n == NULL) {
+      return NULL;
+    }
     node_alloc_.construct(n, value_type());
     n->left = NULL;
     n->right = NULL;

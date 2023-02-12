@@ -78,6 +78,46 @@ public:
   }
 };
 
+template <class T>
+class AlwaysFaildedToAllocateAllocator {
+public:
+  typedef std::size_t size_type;
+  typedef ptrdiff_t difference_type;
+  typedef T* pointer;
+  typedef const T* const_pointer;
+  typedef T& reference;
+  typedef const T& const_reference;
+  typedef T value_type;
+
+  template <typename U>
+  struct rebind {
+    typedef AlwaysFaildedToAllocateAllocator<U> other;
+  };
+
+  AlwaysFaildedToAllocateAllocator() {}
+  AlwaysFaildedToAllocateAllocator(const AlwaysFaildedToAllocateAllocator&) {}
+  template <typename U>
+  AlwaysFaildedToAllocateAllocator(const AlwaysFaildedToAllocateAllocator<U>&) {
+  }
+  ~AlwaysFaildedToAllocateAllocator() {}
+  pointer allocate(size_type n, const void* hint = 0) {
+    (void)n;
+    (void)hint;
+    return NULL;
+  }
+  void deallocate(pointer p, size_type num) {
+    (void)num;
+    ::operator delete(p);
+  }
+  void construct(pointer p, const T& value) { new ((void*)p) T(value); }
+  void destroy(pointer p) { ((T*)p)->~T(); }
+  pointer address(reference value) const { return &value; }
+  const_pointer address(const_reference value) const { return &value; }
+  size_type max_size() const {
+    return std::numeric_limits<std::size_t>::max() / sizeof(T);
+  }
+};
+
 void test_map() {
   /*
   * constructor 1
@@ -159,6 +199,21 @@ void test_map() {
       printf("   caused by %s\n", e.what());
       std::exit(1);
     }
+  }
+
+  {
+    std::greater<int> ftcomp;
+    AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > ftalloc;
+    std::cerr << "hoge" << std::endl;
+    std::map<const int, int, std::greater<int>,
+             AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > >
+        ftmp(ftcomp, ftalloc);
+
+    AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > myalloc;
+    std::cerr << "fuga" << std::endl;
+    ft::map<const int, int, std::greater<int>,
+            AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > >
+        mymp(ftcomp, myalloc);
   }
 
   /*
@@ -12041,7 +12096,7 @@ void test_vector() {
     std::vector<int>::iterator stditr = stdvec.begin();
     ft::vector<int>::iterator ftitr = ftvec.begin();
 
-    ASSERT_EQ(*stdret, *ftret);
+    ASSERT_EQ(stdret == stdvec.end(), ftret == ftvec.end());
     ASSERT_EQ(stdvec.size(), ftvec.size());
 
     ASSERT_EQ(*stditr, *ftitr);
