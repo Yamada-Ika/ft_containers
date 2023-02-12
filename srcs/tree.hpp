@@ -310,6 +310,8 @@ public:
       return *this;
     }
     destruct_tree();
+    // node_alloc_ = other.node_alloc_;
+    // comp_ = other.comp_;
     insert(other.begin(), other.end());
     return *this;
   }
@@ -404,6 +406,10 @@ public:
       first = erase(first);
     }
     return last;
+  }
+
+  void swap(__tree& other) {
+    // tree_.swap(other.tree_);
   }
 
   /*

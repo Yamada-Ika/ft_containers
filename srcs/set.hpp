@@ -124,6 +124,8 @@ public:
     set tmp(other);
     other = *this;
     *this = tmp;
+
+    // tree_.swap(other.tree_);
   }
 
   /*
