@@ -7,7 +7,7 @@ SRCS     := main.cpp
 OBJS     := $(SRCS:%.cpp=%.o)
 OBJS     := $(addprefix obj/, $(OBJS))
 DEPS     := $(OBJS:.o=.d)
-INCS     := $(addprefix -I, srcs) 
+INCS     := $(addprefix -I, includes) 
 
 all: $(NAME)
 
