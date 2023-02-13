@@ -310,8 +310,6 @@ public:
       return *this;
     }
     destruct_tree();
-    // node_alloc_ = other.node_alloc_;
-    // comp_ = other.comp_;
     insert(other.begin(), other.end());
     return *this;
   }
@@ -409,7 +407,23 @@ public:
   }
 
   void swap(__tree& other) {
-    // tree_.swap(other.tree_);
+    node_allocator tmp_node_alloc = node_alloc_;
+    node_pointer tmp_root = root_;
+    node_pointer tmp_end_node = end_node_;
+    key_compare tmp_comp = comp_;
+    size_type tmp_tree_size = tree_size_;
+
+    node_alloc_ = other.node_alloc_;
+    root_ = other.root_;
+    end_node_ = other.end_node_;
+    comp_ = other.comp_;
+    tree_size_ = other.tree_size_;
+
+    other.node_alloc_ = tmp_node_alloc;
+    other.root_ = tmp_root;
+    other.end_node_ = tmp_end_node;
+    other.comp_ = tmp_comp;
+    other.tree_size_ = tmp_tree_size;
   }
 
   /*

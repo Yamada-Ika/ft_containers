@@ -6695,64 +6695,6 @@ void test_set() {
   }
 
   {
-    std::greater<int> c;
-    std::set<int, std::greater<int> > libdata1(c);
-    libdata1.insert(1);
-    libdata1.insert(2);
-    libdata1.insert(3);
-    libdata1.insert(4);
-
-    for (std::set<int, std::greater<int> >::iterator itr = libdata1.begin();
-         itr != libdata1.end(); ++itr) {
-      std::cerr << "s *itr: " << *itr << std::endl;
-    }
-
-    std::set<int> libdata2;
-    libdata2.insert(8);
-    libdata2.insert(9);
-    libdata2.insert(10);
-    libdata2.insert(11);
-    libdata2.insert(12);
-    libdata2.insert(13);
-
-    ft::set<int, std::greater<int> > mydata1(c);
-    mydata1.insert(1);
-    mydata1.insert(2);
-    mydata1.insert(3);
-    mydata1.insert(4);
-    ft::set<int> mydata2;
-    mydata2.insert(8);
-    mydata2.insert(9);
-    mydata2.insert(10);
-    mydata2.insert(11);
-    mydata2.insert(12);
-    mydata2.insert(13);
-
-    libdata1.swap(libdata2);
-    mydata1.swap(mydata2);
-
-    ASSERT_EQ(libdata1.size(), mydata1.size());
-    ASSERT_EQ(libdata2.size(), mydata2.size());
-
-    std::set<int, std::greater<int> >::iterator libitr1 = libdata1.begin();
-    std::set<int, std::greater<int> >::iterator libitr2 = libdata2.begin();
-    ft::set<int, std::greater<int> >::iterator myitr1 = mydata1.begin();
-    ft::set<int, std::greater<int> >::iterator myitr2 = mydata2.begin();
-
-    for (; libitr1 != libdata1.end(); ++libitr1, ++myitr1) {
-      ASSERT_EQ(*libitr1, *myitr1);
-    }
-    for (; libitr2 != libdata2.end(); ++libitr2, ++myitr2) {
-      ASSERT_EQ(*libitr2, *myitr2);
-    }
-
-    for (std::set<int, std::greater<int> >::iterator itr = libdata1.begin();
-         itr != libdata1.end(); ++itr) {
-      std::cerr << "s *itr: " << *itr << std::endl;
-    }
-  }
-
-  {
     std::set<int> libdata1;
     libdata1.insert(1);
     libdata1.insert(2);

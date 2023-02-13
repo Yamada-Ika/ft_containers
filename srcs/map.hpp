@@ -171,11 +171,7 @@ public:
 
   size_type erase(const Key& key) { return tree_.erase(key); }
 
-  void swap(map& other) {
-    map tmp(other);
-    other = *this;
-    *this = tmp;
-  }
+  void swap(map& other) { tree_.swap(other.tree_); }
 
   /*
   *  Lookup
