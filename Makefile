@@ -27,9 +27,29 @@ OBJS_FT_COMP_OUT     := $(SRCS_FT_COMP_OUT:%.cpp=%.o)
 OBJS_FT_COMP_OUT     := $(addprefix obj/, $(OBJS_FT_COMP_OUT))
 DEPS_FT_COMP_OUT     := $(OBJS_FT_COMP_OUT:.o=.d)
 
+# -- produce binary used std container for perf --
+
+NAME_STD_PERF := test_std_perf
+SRCS_STD_PERF := main_std_for_perf.cpp
+OBJS_STD_PERF := $(SRCS_STD_PERF:%.cpp=%.o)
+OBJS_STD_PERF := $(addprefix obj/, $(OBJS_STD_PERF))
+DEPS_STD_PERF := $(OBJS_STD_PERF:.o=.d)
+
+# -- produce binary used ft container for perf --
+
+NAME_FT_PERF := test_ft_perf
+SRCS_FT_PERF := main_ft_for_perf.cpp
+OBJS_FT_PERF := $(SRCS_FT_PERF:%.cpp=%.o)
+OBJS_FT_PERF := $(addprefix obj/, $(OBJS_FT_PERF))
+DEPS_FT_PERF := $(OBJS_FT_PERF:.o=.d)
+
 # -- build rule --
 
-all: $(NAME) $(NAME_STD_COMP_OUT) $(NAME_FT_COMP_OUT)
+all: $(NAME) \
+	 $(NAME_STD_COMP_OUT) \
+	 $(NAME_FT_COMP_OUT) \
+	 $(NAME_STD_PERF) \
+	 $(NAME_FT_PERF)
 
 $(NAME): $(OBJS)
 	@if [ ! -d $(OBJ_DIR) ]; \
@@ -68,15 +88,46 @@ obj/%.o: %.cpp
 
 -include $(DEPS_FT_COMP_OUT)
 
+# -- perf test rule for std container --
+
+$(NAME_STD_PERF): $(OBJS_STD_PERF)
+	@if [ ! -d $(OBJ_DIR) ]; \
+		then mkdir -p obj; \
+	fi
+	$(CXX) -o $(NAME_STD_PERF) $(CXXFLAGS) $(COPTS) $(OBJS_STD_PERF)
+
+obj/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
+
+-include $(DEPS_STD_PERF)
+
+# -- perf test rule for ft container --
+
+$(NAME_FT_PERF): $(OBJS_FT_PERF)
+	@if [ ! -d $(OBJ_DIR) ]; \
+		then mkdir -p obj; \
+	fi
+	$(CXX) -o $(NAME_FT_PERF) $(CXXFLAGS) $(COPTS) $(OBJS_FT_PERF)
+
+obj/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
+
+-include $(DEPS_FT_PERF)
+
 # -- common rule --
 
 clean:
 	$(RM) $(OBJS) $(DEPS) \
 		$(OBJS_STD_COMP_OUT) $(DEPS_STD_COMP_OUT) \
-		$(OBJS_FT_COMP_OUT) $(DEPS_FT_COMP_OUT)
+		$(OBJS_FT_COMP_OUT) $(DEPS_FT_COMP_OUT) \
+		$(OBJS_STD_PERF) $(DEPS_STD_PERF) \
+		$(OBJS_FT_PERF) $(DEPS_FT_PERF)
 
 fclean: clean
-	$(RM) $(NAME) $(NAME_STD_COMP_OUT) $(NAME_FT_COMP_OUT)
+	$(RM) $(NAME) $(NAME_STD_COMP_OUT) \
+		$(NAME_FT_COMP_OUT)	\
+		$(NAME_STD_PERF)	\
+		$(NAME_FT_PERF)	\
 
 re: fclean all
 
