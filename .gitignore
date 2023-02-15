@@ -10,3 +10,5 @@ obj/**
 tmp.cpp
 a.out
 *.plist
+ft.perf
+std.perf
