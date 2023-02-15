@@ -76,6 +76,26 @@ private:
   std::queue<std::tuple<std::string, std::string, Func, Func> > runnableQueu;
 };
 
+// test data
+ft::vector<int> g_ft_vec(1000000, 42);
+std::vector<int> g_std_vec(1000000, 42);
+ft::stack<int> g_ft_stack;
+std::stack<int> g_std_stack;
+
+// --------- vector/construct ---------
+void ft_vector_construct() { ft::vector<int> v(1000000, 42); }
+void std_vector_construct() { std::vector<int> v(1000000, 42); }
+
+// --------- vector/assign operator ---------
+void ft_vector_assign_operator() {
+  ft::vector<int> v1;
+  v1 = g_ft_vec;
+}
+void std_vector_assign_operator() {
+  std::vector<int> v1;
+  v1 = g_std_vec;
+}
+
 // --------- vector/assign ---------
 void ft_vector_assign() {
   ft::vector<int> v;
@@ -86,26 +106,147 @@ void std_vector_assign() {
   v.assign(1, 10000);
 }
 
+void ft_vector_assign_1() {
+  ft::vector<int> v;
+  v.assign(g_ft_vec.begin(), g_ft_vec.end());
+}
+void std_vector_assign_1() {
+  std::vector<int> v;
+  v.assign(g_std_vec.begin(), g_std_vec.end());
+}
+
+// --------- vector/at ---------
+void ft_vector_at() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.at(i);
+  }
+}
+void std_vector_at() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.at(i);
+  }
+}
+
+// --------- vector/brackets operator ---------
+void ft_vector_brackets_operator() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec[i];
+  }
+}
+void std_vector_brackets_operator() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec[i];
+  }
+}
+
+// --------- vector/front ---------
+void ft_vector_front() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.front();
+  }
+}
+void std_vector_front() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.front();
+  }
+}
+
+// --------- vector/back ---------
+void ft_vector_back() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.back();
+  }
+}
+void std_vector_back() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.back();
+  }
+}
+
+// --------- vector/data ---------
+void ft_vector_data() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.data();
+  }
+}
+void std_vector_data() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.data();
+  }
+}
+
+// --------- vector/begin ---------
+void ft_vector_begin() {
+  for (ft::vector<int>::iterator itr = g_ft_vec.begin(); itr != g_ft_vec.end();
+       ++itr) {
+  }
+}
+void std_vector_begin() {
+  for (std::vector<int>::iterator itr = g_std_vec.begin();
+       itr != g_std_vec.end(); ++itr) {
+  }
+}
+
+// --------- vector/empty ---------
+void ft_vector_empty() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.empty();
+  }
+}
+void std_vector_empty() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.empty();
+  }
+}
+
 // --------- vector/size ---------
 void ft_vector_size() {
-  ft::vector<int> v;
-  v.assign(1, 10000);
-  v.size();
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.size();
+  }
 }
 void std_vector_size() {
-  std::vector<int> v;
-  v.assign(1, 10000);
-  v.size();
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.size();
+  }
+}
+
+// --------- vector/max_size ---------
+void ft_vector_max_size() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.max_size();
+  }
+}
+void std_vector_max_size() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.max_size();
+  }
 }
 
 // --------- vector/reserve ---------
 void ft_vector_reserve() {
   ft::vector<int> v;
-  v.reserve(100000);
+  for (int i = 0; i < 100000; ++i) {
+    v.reserve(i);
+  }
 }
 void std_vector_reserve() {
   std::vector<int> v;
-  v.reserve(100000);
+  for (int i = 0; i < 100000; ++i) {
+    v.reserve(i);
+  }
+}
+
+// --------- vector/capacity ---------
+void ft_vector_capacity() {
+  for (size_t i = 0; i < g_ft_vec.size(); ++i) {
+    g_ft_vec.capacity();
+  }
+}
+void std_vector_capacity() {
+  for (size_t i = 0; i < g_std_vec.size(); ++i) {
+    g_std_vec.capacity();
+  }
 }
 
 // --------- vector/clear ---------
@@ -155,6 +296,21 @@ void std_vector_erase() {
   v.erase(v.begin(), v.end());
 }
 
+void ft_vector_erase_1() {
+  ft::vector<int> v;
+  v.insert(v.begin(), 10000, 42);
+  for (size_t i = 0; i < v.size(); ++i) {
+    v.erase(v.begin());
+  }
+}
+void std_vector_erase_1() {
+  std::vector<int> v;
+  v.insert(v.begin(), 10000, 42);
+  for (size_t i = 0; i < v.size(); ++i) {
+    v.erase(v.begin());
+  }
+}
+
 // --------- vector/push_back ---------
 void ft_vector_push_back() {
   ft::vector<int> v;
@@ -188,11 +344,15 @@ void std_vector_pop_back() {
 // --------- vector/resize ---------
 void ft_vector_resize() {
   ft::vector<int> v;
-  v.resize(10000);
+  for (int i = 0; i < 10000; ++i) {
+    v.resize(i);
+  }
 }
 void std_vector_resize() {
   std::vector<int> v;
-  v.resize(10000);
+  for (int i = 0; i < 10000; ++i) {
+    v.resize(i);
+  }
 }
 
 // --------- vector/swap ---------
@@ -210,6 +370,10 @@ void std_vector_swap() {
   v2.assign(42, 10000);
   v.swap(v2);
 }
+
+// --------- stack/construct ---------
+void ft_stack_construct() { ft::stack<int> s(g_ft_stack); }
+void std_stack_construct() { std::stack<int> s(g_std_stack); }
 
 // --------- stack/top ---------
 void ft_stack_top() {
@@ -724,13 +888,32 @@ void std_set_upper_bound() {
 typedef void (*testRunnable)();
 
 int main() {
+  for (int i = 0; i < 100000; ++i) {
+    g_ft_stack.push(i);
+    g_std_stack.push(i);
+  }
+
   TestRunner<testRunnable> runner;
 
   // vector
+  runner.ADDBENCHMARKFUNC(std_vector_construct, ft_vector_construct);
+  runner.ADDBENCHMARKFUNC(std_vector_assign_operator,
+                          ft_vector_assign_operator);
   runner.ADDBENCHMARKFUNC(std_vector_assign, ft_vector_assign);
+  runner.ADDBENCHMARKFUNC(std_vector_assign_1, ft_vector_assign_1);
+  runner.ADDBENCHMARKFUNC(std_vector_at, ft_vector_at);
+  runner.ADDBENCHMARKFUNC(std_vector_front, ft_vector_front);
+  runner.ADDBENCHMARKFUNC(std_vector_back, ft_vector_back);
+  runner.ADDBENCHMARKFUNC(std_vector_data, ft_vector_data);
+  runner.ADDBENCHMARKFUNC(std_vector_begin, ft_vector_begin);
+  runner.ADDBENCHMARKFUNC(std_vector_empty, ft_vector_empty);
   runner.ADDBENCHMARKFUNC(std_vector_size, ft_vector_size);
+  runner.ADDBENCHMARKFUNC(std_vector_max_size, ft_vector_max_size);
   runner.ADDBENCHMARKFUNC(std_vector_reserve, ft_vector_reserve);
+  runner.ADDBENCHMARKFUNC(std_vector_capacity, ft_vector_reserve);
   runner.ADDBENCHMARKFUNC(std_vector_clear, ft_vector_clear);
+  runner.ADDBENCHMARKFUNC(std_vector_erase, ft_vector_erase);
+  runner.ADDBENCHMARKFUNC(std_vector_erase_1, ft_vector_erase_1);
   runner.ADDBENCHMARKFUNC(std_vector_insert, ft_vector_insert);
   runner.ADDBENCHMARKFUNC(std_vector_insert_1, ft_vector_insert_1);
   runner.ADDBENCHMARKFUNC(std_vector_push_back, ft_vector_push_back);
@@ -739,6 +922,7 @@ int main() {
   runner.ADDBENCHMARKFUNC(std_vector_swap, ft_vector_swap);
 
   // stack
+  runner.ADDBENCHMARKFUNC(std_stack_construct, ft_stack_construct);
   runner.ADDBENCHMARKFUNC(std_stack_top, ft_stack_top);
   runner.ADDBENCHMARKFUNC(std_stack_size, ft_stack_size);
   runner.ADDBENCHMARKFUNC(std_stack_push, ft_stack_push);
