@@ -143,7 +143,6 @@ perf: all
 	./test_std_perf > std.perf
 	./test_ft_perf > ft.perf
 	paste ft.perf std.perf | awk '{print $$1 / $$2}'
-	$(RM) ft.perf std.perf
 
 test: FORCE
 	$(CXX) -o orig-test -Wall -Wextra -Werror -std=c++98 -pedantic-errors -g -fsanitize=address $(INCS) main_orig.cpp && ./orig-test && $(RM) orig-test
