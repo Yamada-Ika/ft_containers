@@ -227,15 +227,8 @@ public:
   }
 
   void push_back(const_reference v) {
-    size_type cur_sz = size();
-
-    if (cur_sz + 1 > capacity()) {
-      if (cur_sz == 0) {
-        cur_sz = 1;
-      } else {
-        cur_sz *= 2; // TODO care of overflow
-      }
-      reserve(cur_sz);
+    if (should_grow_memory()) {
+      grow_memory();
     }
     construct(last_, v);
     ++last_;
@@ -296,9 +289,13 @@ private:
 
     // capaのチェック
     if (size() + count >= capacity()) {
-      // 挿入したら要素がcountの数だけ増えるのでreserveする
-      // TODO メモリ成長の効率化
-      reserve(size() + count);
+      if (size() + count > size() * 2) {
+        // 挿入したら要素がcountの数だけ増えるのでreserveする
+        // TODO メモリ成長の効率化
+        reserve(size() + count);
+      } else {
+        grow_memory();
+      }
     }
 
     // 後ろからposまで値をムーブ
@@ -331,6 +328,19 @@ private:
     // posの一個後ろのイテレータを返す
     return begin() + erased_from;
   }
+
+  void grow_memory() {
+    size_type cur_sz = size();
+
+    if (cur_sz == 0) {
+      cur_sz = 1;
+    } else {
+      cur_sz *= 2; // TODO care of overflow
+    }
+    reserve(cur_sz);
+  }
+
+  bool should_grow_memory() { return size() + 1 > capacity(); }
 };
 
 /*

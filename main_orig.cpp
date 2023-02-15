@@ -11744,9 +11744,79 @@ void test_vector() {
     ASSERT_EQ(ftitr, ftvec.end());
   }
 
+  {
+    std::vector<int> stdvec;
+    ft::vector<int> ftvec;
+
+    for (int i = 0; i < 1000; ++i) {
+      stdvec.insert(stdvec.begin(), i);
+      ftvec.insert(ftvec.begin(), i);
+    }
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    std::vector<int>::iterator stditr = stdvec.begin();
+    ft::vector<int>::iterator ftitr = ftvec.begin();
+    while (stditr != stdvec.end() && ftitr != ftvec.end()) {
+      ASSERT_EQ(*stditr, *ftitr);
+      ++stditr;
+      ++ftitr;
+    }
+  }
+
+  {
+    std::vector<int> stdvec;
+    ft::vector<int> ftvec;
+
+    for (int i = 0; i < 10000; ++i) {
+      stdvec.insert(stdvec.begin(), i);
+      ftvec.insert(ftvec.begin(), i);
+    }
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    std::vector<int>::iterator stditr = stdvec.begin();
+    ft::vector<int>::iterator ftitr = ftvec.begin();
+    while (stditr != stdvec.end() && ftitr != ftvec.end()) {
+      ASSERT_EQ(*stditr, *ftitr);
+      ++stditr;
+      ++ftitr;
+    }
+  }
+
   /*
   * insert 3
   */
+  {
+    ft::vector<int> ftvec;
+    ftvec.insert(ftvec.begin(), 1000, 42);
+    std::vector<int> stdvec;
+    stdvec.insert(stdvec.begin(), 1000, 42);
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    std::vector<int>::iterator stditr = stdvec.begin();
+    ft::vector<int>::iterator ftitr = ftvec.begin();
+    while (stditr != stdvec.end() && ftitr != ftvec.end()) {
+      ASSERT_EQ(*stditr, *ftitr);
+      ++stditr;
+      ++ftitr;
+    }
+  }
+
+  {
+    ft::vector<int> ftvec;
+    ftvec.insert(ftvec.begin(), 10000, 42);
+    std::vector<int> stdvec;
+    stdvec.insert(stdvec.begin(), 10000, 42);
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    std::vector<int>::iterator stditr = stdvec.begin();
+    ft::vector<int>::iterator ftitr = ftvec.begin();
+    while (stditr != stdvec.end() && ftitr != ftvec.end()) {
+      ASSERT_EQ(*stditr, *ftitr);
+      ++stditr;
+      ++ftitr;
+    }
+  }
+
   {
     std::vector<int> stdvec(3, 42);
     ft::vector<int> ftvec(3, 42);

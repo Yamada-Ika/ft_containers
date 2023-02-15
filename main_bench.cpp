@@ -130,6 +130,19 @@ void std_vector_insert() {
   v.insert(v.begin(), 10000, 42);
 }
 
+void ft_vector_insert_1() {
+  ft::vector<int> v;
+  for (int i = 0; i < 10000; ++i) {
+    v.insert(v.begin(), i);
+  }
+}
+void std_vector_insert_1() {
+  std::vector<int> v;
+  for (int i = 0; i < 10000; ++i) {
+    v.insert(v.begin(), i);
+  }
+}
+
 // --------- vector/erase ---------
 void ft_vector_erase() {
   ft::vector<int> v;
@@ -719,6 +732,7 @@ int main() {
   runner.ADDBENCHMARKFUNC(std_vector_reserve, ft_vector_reserve);
   runner.ADDBENCHMARKFUNC(std_vector_clear, ft_vector_clear);
   runner.ADDBENCHMARKFUNC(std_vector_insert, ft_vector_insert);
+  runner.ADDBENCHMARKFUNC(std_vector_insert_1, ft_vector_insert_1);
   runner.ADDBENCHMARKFUNC(std_vector_push_back, ft_vector_push_back);
   runner.ADDBENCHMARKFUNC(std_vector_pop_back, ft_vector_pop_back);
   runner.ADDBENCHMARKFUNC(std_vector_resize, ft_vector_resize);
