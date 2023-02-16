@@ -162,19 +162,22 @@ public:
 
   size_type max_size() const { return alloc_.max_size(); }
 
-  void reserve(size_type sz) {
-    if (sz <= capacity()) {
+  void reserve(size_type new_cap) {
+    if (new_cap > max_size()) {
+      throw std::length_error("vector::reserve");
+    }
+    if (new_cap <= capacity()) {
       return;
     }
 
     // memory allocate before deallocate this instance's memmory
-    pointer tmp = allocate(sz);
+    pointer tmp = allocate(new_cap);
     iterator old_first_ = first_;
     iterator old_last = last_;
     size_type old_capacity = capacity();
     first_ = tmp;
     last_ = first_;
-    reserved_last_ = first_ + sz;
+    reserved_last_ = first_ + new_cap;
 
     // copy
     for (iterator old_iter = old_first_; old_iter != old_last;
@@ -182,9 +185,8 @@ public:
       construct(last_, *old_iter);
     }
 
-    alloc_.deallocate(old_first_, old_capacity);
-
     // deallocate old memory
+    alloc_.deallocate(old_first_, old_capacity);
     for (reverse_iterator riter = reverse_iterator(old_last),
                           rend = reverse_iterator(old_first_);
          riter != rend; ++riter) {
@@ -197,7 +199,7 @@ public:
   /*
   * Modifiers
   */
-  void clear() { destroy_until(rend()); }
+  void clear() { destroy_from_to_in_reverse_order(rend()); }
 
   iterator insert(const_iterator pos, const T& value) {
     return insert(pos, 1, value);
@@ -227,8 +229,8 @@ public:
   }
 
   void push_back(const_reference v) {
-    if (should_grow_memory()) {
-      grow_memory();
+    if (should_grow_memory_double()) {
+      grow_memory_twice();
     }
     construct(last_, v);
     ++last_;
@@ -239,18 +241,21 @@ public:
     --last_;
   }
 
-  void resize(size_type sz, const_reference v = T()) {
-    size_type cur_sz = size();
+  void resize(size_type count, const_reference v = T()) {
+    size_type current_size = size();
 
-    if (sz == cur_sz)
-      return;
-    if (sz < cur_sz) {
-      size_type diff = cur_sz - sz;
-      destroy_until(rbegin() + diff);
-      last_ = first_ + sz;
+    if (count == current_size) {
       return;
     }
-    reserve(sz);
+
+    if (current_size > count) {
+      size_type size_to_be_destroyed = current_size - count;
+      destroy_from_to_in_reverse_order(rbegin() + size_to_be_destroyed);
+      last_ = first_ + count;
+      return;
+    }
+
+    grow_memory_if_needed(count);
     for (; last_ != reserved_last_; ++last_) {
       construct(last_, v);
     }
@@ -276,7 +281,7 @@ private:
   }
   void destroy(pointer ptr) { alloc_.destroy(ptr); }
   void destroy_all() { destroy(reserved_last_); }
-  void destroy_until(reverse_iterator rend) {
+  void destroy_from_to_in_reverse_order(reverse_iterator rend) {
     for (reverse_iterator riter = rbegin(); riter != rend; ++riter, --last_) {
       destroy(&*riter);
     }
@@ -287,16 +292,7 @@ private:
     size_type insert_from = pos - begin();
     size_type insert_to = insert_from + count - 1;
 
-    // capaのチェック
-    if (size() + count >= capacity()) {
-      if (size() + count > size() * 2) {
-        // 挿入したら要素がcountの数だけ増えるのでreserveする
-        // TODO メモリ成長の効率化
-        reserve(size() + count);
-      } else {
-        grow_memory();
-      }
-    }
+    grow_memory_if_needed(count);
 
     // 後ろからposまで値をムーブ
     for (size_type i = size() + count - 1; i > insert_to; --i) {
@@ -329,7 +325,18 @@ private:
     return begin() + erased_from;
   }
 
-  void grow_memory() {
+  void grow_memory_if_needed(size_type count) {
+    // capaのチェック
+    if (size() + count >= capacity()) {
+      if (size() + count > size() * 2) {
+        reserve(size() + count);
+      } else {
+        grow_memory_twice();
+      }
+    }
+  }
+
+  void grow_memory_twice() {
     size_type cur_sz = size();
 
     if (cur_sz == 0) {
@@ -340,7 +347,7 @@ private:
     reserve(cur_sz);
   }
 
-  bool should_grow_memory() { return size() + 1 > capacity(); }
+  bool should_grow_memory_double() { return size() + 1 > capacity(); }
 };
 
 /*

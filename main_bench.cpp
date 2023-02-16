@@ -81,6 +81,10 @@ ft::vector<int> g_ft_vec(1000000, 42);
 std::vector<int> g_std_vec(1000000, 42);
 ft::stack<int> g_ft_stack;
 std::stack<int> g_std_stack;
+ft::map<int, int> g_ft_mp;
+std::map<int, int> g_std_mp;
+ft::set<int> g_ft_set;
+std::set<int> g_std_set;
 
 // --------- vector/construct ---------
 void ft_vector_construct() { ft::vector<int> v(1000000, 42); }
@@ -375,35 +379,48 @@ void std_vector_swap() {
 void ft_stack_construct() { ft::stack<int> s(g_ft_stack); }
 void std_stack_construct() { std::stack<int> s(g_std_stack); }
 
+void ft_stack_construct_1() {
+  ft::stack<int> s;
+  s = g_ft_stack;
+}
+void std_stack_construct_1() {
+  std::stack<int> s;
+  s = g_std_stack;
+}
+
 // --------- stack/top ---------
 void ft_stack_top() {
-  ft::stack<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.push(i);
-    s.top();
+    g_ft_stack.top();
   }
 }
 void std_stack_top() {
-  std::stack<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.push(i);
-    s.top();
+    g_std_stack.top();
+  }
+}
+
+// --------- stack/empty ---------
+void ft_stack_empty() {
+  for (int i = 0; i < 100000; ++i) {
+    g_ft_stack.empty();
+  }
+}
+void std_stack_empty() {
+  for (int i = 0; i < 100000; ++i) {
+    g_std_stack.empty();
   }
 }
 
 // --------- stack/size ---------
 void ft_stack_size() {
-  ft::stack<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.push(i);
-    s.size();
+    g_ft_stack.size();
   }
 }
 void std_stack_size() {
-  std::stack<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.push(i);
-    s.size();
+    g_std_stack.size();
   }
 }
 
@@ -423,88 +440,116 @@ void std_stack_push() {
 
 // --------- stack/pop ---------
 void ft_stack_pop() {
-  ft::stack<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.push(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.pop();
+    g_ft_stack.pop();
   }
 }
 void std_stack_pop() {
-  std::stack<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.push(i);
+    g_std_stack.pop();
   }
-  for (int i = 0; i < 100000; ++i) {
-    s.pop();
-  }
+}
+
+// --------- map/construct ---------
+void ft_map_construct() { ft::map<int, int> m(g_ft_mp.begin(), g_ft_mp.end()); }
+void std_map_construct() {
+  std::map<int, int> m(g_std_mp.begin(), g_std_mp.end());
+}
+
+void ft_map_construct_1() { ft::map<int, int> m(g_ft_mp); }
+void std_map_construct_1() { std::map<int, int> m(g_std_mp); }
+
+// --------- map/assign_operator ---------
+void ft_map_assign_operator() {
+  ft::map<int, int> m;
+  m = g_ft_mp;
+}
+void std_map_assign_operator() {
+  std::map<int, int> m;
+  m = g_std_mp;
 }
 
 // --------- map/at ---------
 void ft_map_at() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
+    g_ft_mp.at(i);
   }
-  m.at(42);
 }
 void std_map_at() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
+    g_std_mp.at(i);
   }
-  m.at(42);
+}
+
+// --------- map/bracket_operator ---------
+void ft_map_bracket_operator() {
+  for (int i = 0; i < 100000; ++i) {
+    g_ft_mp[i];
+  }
+}
+void std_map_bracket_operator() {
+  for (int i = 0; i < 100000; ++i) {
+    g_std_mp[i];
+  }
 }
 
 // --------- map/iterator ---------
 void ft_map_iterator() {
-  ft::map<int, int> m;
-  for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
-  }
-  for (ft::map<int, int>::iterator itr = m.begin(); itr != m.end(); ++itr) {
+  for (ft::map<int, int>::iterator itr = g_ft_mp.begin(); itr != g_ft_mp.end();
+       ++itr) {
   }
 }
 void std_map_iterator() {
-  std::map<int, int> m;
-  for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
+  for (std::map<int, int>::iterator itr = g_std_mp.begin();
+       itr != g_std_mp.end(); ++itr) {
   }
-  for (std::map<int, int>::iterator itr = m.begin(); itr != m.end(); ++itr) {
+}
+
+void ft_map_iterator_1() {
+  for (ft::map<int, int>::reverse_iterator itr = g_ft_mp.rbegin();
+       itr != g_ft_mp.rend(); ++itr) {
+  }
+}
+void std_map_iterator_1() {
+  for (std::map<int, int>::reverse_iterator itr = g_std_mp.rbegin();
+       itr != g_std_mp.rend(); ++itr) {
   }
 }
 
 // --------- map/empty ---------
 void ft_map_empty() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
+    g_ft_mp.empty();
   }
-  m.empty();
 }
 void std_map_empty() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
+    g_std_mp.empty();
   }
-  m.empty();
 }
 
 // --------- map/size ---------
 void ft_map_size() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
+    g_ft_mp.size();
   }
-  m.size();
 }
 void std_map_size() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
+    g_std_mp.size();
   }
-  m.size();
+}
+
+// --------- map/max_size ---------
+void ft_map_max_size() {
+  for (int i = 0; i < 100000; ++i) {
+    g_ft_mp.max_size();
+  }
+}
+void std_map_max_size() {
+  for (int i = 0; i < 100000; ++i) {
+    g_std_mp.max_size();
+  }
 }
 
 // --------- map/clear ---------
@@ -537,6 +582,28 @@ void std_map_insert() {
   }
 }
 
+void ft_map_insert_1() {
+  ft::map<int, int> m;
+  for (int i = 0; i < 100000; ++i) {
+    m.insert(m.begin(), ft::make_pair(i, i));
+  }
+}
+void std_map_insert_1() {
+  std::map<int, int> m;
+  for (int i = 0; i < 100000; ++i) {
+    m.insert(m.begin(), std::make_pair(i, i));
+  }
+}
+
+void ft_map_insert_2() {
+  ft::map<int, int> m;
+  m.insert(g_ft_mp.begin(), g_ft_mp.end());
+}
+void std_map_insert_2() {
+  std::map<int, int> m;
+  m.insert(g_std_mp.begin(), g_std_mp.end());
+}
+
 // --------- map/erase ---------
 void ft_map_erase() {
   ft::map<int, int> m;
@@ -551,6 +618,44 @@ void std_map_erase() {
     m.insert(std::make_pair(i, i));
   }
   m.erase(m.begin(), m.end());
+}
+
+void ft_map_erase_1() {
+  ft::map<int, int> m;
+  for (int i = 0; i < 100000; ++i) {
+    m.insert(ft::make_pair(i, i));
+  }
+  for (int i = 0; i < 100000; ++i) {
+    m.erase(m.begin());
+  }
+}
+void std_map_erase_1() {
+  std::map<int, int> m;
+  for (int i = 0; i < 100000; ++i) {
+    m.insert(std::make_pair(i, i));
+  }
+  for (int i = 0; i < 100000; ++i) {
+    m.erase(m.begin());
+  }
+}
+
+void ft_map_erase_2() {
+  ft::map<int, int> m;
+  for (int i = 0; i < 100000; ++i) {
+    m.insert(ft::make_pair(i, i));
+  }
+  for (int i = 0; i < 100000; ++i) {
+    m.erase(i);
+  }
+}
+void std_map_erase_2() {
+  std::map<int, int> m;
+  for (int i = 0; i < 100000; ++i) {
+    m.insert(std::make_pair(i, i));
+  }
+  for (int i = 0; i < 100000; ++i) {
+    m.erase(i);
+  }
 }
 
 // --------- map/swap ---------
@@ -573,152 +678,127 @@ void std_map_swap() {
 
 // --------- map/count ---------
 void ft_map_count() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.count(i);
+    g_ft_mp.count(i);
   }
 }
 void std_map_count() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.count(i);
+    g_std_mp.count(i);
   }
 }
 
 // --------- map/find ---------
 void ft_map_find() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.find(i);
+    g_ft_mp.find(i);
   }
 }
 void std_map_find() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.find(i);
+    g_std_mp.find(i);
   }
 }
 
 // --------- map/equal_range ---------
 void ft_map_equal_range() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.equal_range(i);
+    g_ft_mp.equal_range(i);
   }
 }
 void std_map_equal_range() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.equal_range(i);
+    g_std_mp.equal_range(i);
   }
 }
 
 // --------- map/lower_bound ---------
 void ft_map_lower_bound() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.lower_bound(i);
+    g_ft_mp.lower_bound(i);
   }
 }
 void std_map_lower_bound() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.lower_bound(i);
+    g_std_mp.lower_bound(i);
   }
 }
 
 // --------- map/upper_bound ---------
 void ft_map_upper_bound() {
-  ft::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(ft::make_pair(i, i));
-  }
-  for (int i = 0; i < 100000; ++i) {
-    m.upper_bound(i);
+    g_ft_mp.upper_bound(i);
   }
 }
 void std_map_upper_bound() {
-  std::map<int, int> m;
   for (int i = 0; i < 100000; ++i) {
-    m.insert(std::make_pair(i, i));
+    g_std_mp.upper_bound(i);
   }
-  for (int i = 0; i < 100000; ++i) {
-    m.upper_bound(i);
-  }
+}
+
+// --------- set/construct ---------
+void ft_set_construct() { ft::set<int> s(g_ft_set.begin(), g_ft_set.end()); }
+void std_set_construct() {
+  std::set<int> s(g_std_set.begin(), g_std_set.end());
+}
+
+void ft_set_construct_1() { ft::set<int> s(g_ft_set); }
+void std_set_construct_1() { std::set<int> s(g_std_set); }
+
+void ft_set_construct_2() {
+  ft::set<int> s;
+  s = g_ft_set;
+}
+void std_set_construct_2() {
+  std::set<int> s;
+  s = g_std_set;
 }
 
 // --------- set/iterator ---------
 void ft_set_iterator() {
-  ft::set<int> s;
-  for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (ft::set<int>::iterator itr = s.begin(); itr != s.end(); ++itr) {
+  for (ft::set<int>::iterator itr = g_ft_set.begin(); itr != g_ft_set.end();
+       ++itr) {
   }
 }
 void std_set_iterator() {
-  std::set<int> s;
-  for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
+  for (std::set<int>::iterator itr = g_std_set.begin(); itr != g_std_set.end();
+       ++itr) {
   }
-  for (std::set<int>::iterator itr = s.begin(); itr != s.end(); ++itr) {
+}
+
+void ft_set_iterator_1() {
+  for (ft::set<int>::reverse_iterator itr = g_ft_set.rbegin();
+       itr != g_ft_set.rend(); ++itr) {
+  }
+}
+void std_set_iterator_1() {
+  for (std::set<int>::reverse_iterator itr = g_std_set.rbegin();
+       itr != g_std_set.rend(); ++itr) {
   }
 }
 
 // --------- set/empty ---------
 void ft_set_empty() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
+    g_ft_set.empty();
   }
-  s.empty();
 }
 void std_set_empty() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
+    g_std_set.empty();
   }
-  s.empty();
 }
 
 // --------- set/size ---------
 void ft_set_size() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
+    g_ft_set.size();
   }
-  s.size();
 }
 void std_set_size() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
+    g_std_set.size();
   }
-  s.size();
 }
 
 // --------- set/clear ---------
@@ -751,6 +831,28 @@ void std_set_insert() {
   }
 }
 
+void ft_set_insert_1() {
+  ft::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(s.begin(), i);
+  }
+}
+void std_set_insert_1() {
+  std::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(s.begin(), i);
+  }
+}
+
+void ft_set_insert_2() {
+  ft::set<int> s;
+  s.insert(g_ft_set.begin(), g_ft_set.end());
+}
+void std_set_insert_2() {
+  std::set<int> s;
+  s.insert(g_std_set.begin(), g_std_set.end());
+}
+
 // --------- set/erase ---------
 void ft_set_erase() {
   ft::set<int> s;
@@ -765,6 +867,44 @@ void std_set_erase() {
     s.insert(i);
   }
   s.erase(s.begin(), s.end());
+}
+
+void ft_set_erase_1() {
+  ft::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(i);
+  }
+  for (int i = 0; i < 100000; ++i) {
+    s.erase(s.begin());
+  }
+}
+void std_set_erase_1() {
+  std::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(i);
+  }
+  for (int i = 0; i < 100000; ++i) {
+    s.erase(s.begin());
+  }
+}
+
+void ft_set_erase_2() {
+  ft::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(i);
+  }
+  for (int i = 0; i < 100000; ++i) {
+    s.erase(i);
+  }
+}
+void std_set_erase_2() {
+  std::set<int> s;
+  for (int i = 0; i < 100000; ++i) {
+    s.insert(i);
+  }
+  for (int i = 0; i < 100000; ++i) {
+    s.erase(i);
+  }
 }
 
 // --------- set/swap ---------
@@ -787,110 +927,74 @@ void std_set_swap() {
 
 // --------- set/count ---------
 void ft_set_count() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.count(i);
+    g_ft_set.count(i);
   }
 }
 void std_set_count() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.count(i);
+    g_std_set.count(i);
   }
 }
 
 // --------- set/find ---------
 void ft_set_find() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.find(i);
+    g_ft_set.find(i);
   }
 }
 void std_set_find() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.find(i);
+    g_std_set.find(i);
   }
 }
 
 // --------- set/equal_range ---------
 void ft_set_equal_range() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.equal_range(i);
+    g_ft_set.equal_range(i);
   }
 }
 void std_set_equal_range() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.equal_range(i);
+    g_std_set.equal_range(i);
   }
 }
 
 // --------- set/lower_bound ---------
 void ft_set_lower_bound() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.lower_bound(i);
+    g_ft_set.lower_bound(i);
   }
 }
 void std_set_lower_bound() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.lower_bound(i);
+    g_std_set.lower_bound(i);
   }
 }
 
 // --------- set/upper_bound ---------
 void ft_set_upper_bound() {
-  ft::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.upper_bound(i);
+    g_ft_set.upper_bound(i);
   }
 }
 void std_set_upper_bound() {
-  std::set<int> s;
   for (int i = 0; i < 100000; ++i) {
-    s.insert(i);
-  }
-  for (int i = 0; i < 100000; ++i) {
-    s.upper_bound(i);
+    g_std_set.upper_bound(i);
   }
 }
 
 typedef void (*testRunnable)();
 
 int main() {
-  for (int i = 0; i < 100000; ++i) {
+  for (int i = 0; i < 1000000; ++i) {
     g_ft_stack.push(i);
     g_std_stack.push(i);
+    g_ft_mp.insert(ft::pair<int, int>(i, i));
+    g_std_mp.insert(std::pair<int, int>(i, i));
+    g_ft_set.insert(i);
+    g_std_set.insert(i);
   }
 
   TestRunner<testRunnable> runner;
@@ -910,7 +1014,7 @@ int main() {
   runner.ADDBENCHMARKFUNC(std_vector_size, ft_vector_size);
   runner.ADDBENCHMARKFUNC(std_vector_max_size, ft_vector_max_size);
   runner.ADDBENCHMARKFUNC(std_vector_reserve, ft_vector_reserve);
-  runner.ADDBENCHMARKFUNC(std_vector_capacity, ft_vector_reserve);
+  runner.ADDBENCHMARKFUNC(std_vector_capacity, ft_vector_capacity);
   runner.ADDBENCHMARKFUNC(std_vector_clear, ft_vector_clear);
   runner.ADDBENCHMARKFUNC(std_vector_erase, ft_vector_erase);
   runner.ADDBENCHMARKFUNC(std_vector_erase_1, ft_vector_erase_1);
@@ -923,19 +1027,31 @@ int main() {
 
   // stack
   runner.ADDBENCHMARKFUNC(std_stack_construct, ft_stack_construct);
+  runner.ADDBENCHMARKFUNC(std_stack_construct_1, ft_stack_construct_1);
   runner.ADDBENCHMARKFUNC(std_stack_top, ft_stack_top);
+  runner.ADDBENCHMARKFUNC(std_stack_empty, ft_stack_empty);
   runner.ADDBENCHMARKFUNC(std_stack_size, ft_stack_size);
   runner.ADDBENCHMARKFUNC(std_stack_push, ft_stack_push);
   runner.ADDBENCHMARKFUNC(std_stack_pop, ft_stack_pop);
 
   // map
+  runner.ADDBENCHMARKFUNC(std_map_construct, ft_map_construct);
+  runner.ADDBENCHMARKFUNC(std_map_construct_1, ft_map_construct_1);
+  runner.ADDBENCHMARKFUNC(std_map_assign_operator, ft_map_assign_operator);
   runner.ADDBENCHMARKFUNC(std_map_at, ft_map_at);
+  runner.ADDBENCHMARKFUNC(std_map_bracket_operator, ft_map_bracket_operator);
   runner.ADDBENCHMARKFUNC(std_map_iterator, ft_map_iterator);
+  runner.ADDBENCHMARKFUNC(std_map_iterator_1, ft_map_iterator_1);
   runner.ADDBENCHMARKFUNC(std_map_empty, ft_map_empty);
   runner.ADDBENCHMARKFUNC(std_map_size, ft_map_size);
+  runner.ADDBENCHMARKFUNC(std_map_max_size, ft_map_max_size);
   runner.ADDBENCHMARKFUNC(std_map_clear, ft_map_clear);
   runner.ADDBENCHMARKFUNC(std_map_insert, ft_map_insert);
+  runner.ADDBENCHMARKFUNC(std_map_insert_1, ft_map_insert_1);
+  runner.ADDBENCHMARKFUNC(std_map_insert_2, ft_map_insert_2);
   runner.ADDBENCHMARKFUNC(std_map_erase, ft_map_erase);
+  runner.ADDBENCHMARKFUNC(std_map_erase_1, ft_map_erase_1);
+  runner.ADDBENCHMARKFUNC(std_map_erase_2, ft_map_erase_2);
   runner.ADDBENCHMARKFUNC(std_map_swap, ft_map_swap);
   runner.ADDBENCHMARKFUNC(std_map_count, ft_map_count);
   runner.ADDBENCHMARKFUNC(std_map_find, ft_map_find);
@@ -944,12 +1060,20 @@ int main() {
   runner.ADDBENCHMARKFUNC(std_map_upper_bound, ft_map_upper_bound);
 
   // set
+  runner.ADDBENCHMARKFUNC(ft_set_construct, ft_set_construct);
+  runner.ADDBENCHMARKFUNC(ft_set_construct_1, ft_set_construct_1);
+  runner.ADDBENCHMARKFUNC(ft_set_construct_2, std_set_construct_2);
   runner.ADDBENCHMARKFUNC(std_set_iterator, ft_set_iterator);
+  runner.ADDBENCHMARKFUNC(std_set_iterator_1, ft_set_iterator_1);
   runner.ADDBENCHMARKFUNC(std_set_empty, ft_set_empty);
   runner.ADDBENCHMARKFUNC(std_set_size, ft_set_size);
   runner.ADDBENCHMARKFUNC(std_set_clear, ft_set_clear);
   runner.ADDBENCHMARKFUNC(std_set_insert, ft_set_insert);
+  runner.ADDBENCHMARKFUNC(std_set_insert_1, ft_set_insert_1);
+  runner.ADDBENCHMARKFUNC(std_set_insert_2, ft_set_insert_2);
   runner.ADDBENCHMARKFUNC(std_set_erase, ft_set_erase);
+  runner.ADDBENCHMARKFUNC(std_set_erase_1, ft_set_erase_1);
+  runner.ADDBENCHMARKFUNC(std_set_erase_2, ft_set_erase_2);
   runner.ADDBENCHMARKFUNC(std_set_swap, ft_set_swap);
   runner.ADDBENCHMARKFUNC(std_set_count, ft_set_count);
   runner.ADDBENCHMARKFUNC(std_set_find, ft_set_find);
