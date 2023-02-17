@@ -12346,8 +12346,6 @@ void test_vector() {
     ft::vector<int> ftvec(3, 42);
     ftvec.resize(5);
 
-    std::cerr << "ft " << ftvec.size() << std::endl;
-
     ASSERT_EQ(stdvec.size(), ftvec.size());
 
     std::vector<int>::iterator stditr = stdvec.begin();
