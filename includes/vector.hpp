@@ -229,8 +229,8 @@ public:
   }
 
   void push_back(const_reference v) {
-    if (should_grow_memory_double()) {
-      grow_memory_twice();
+    if (size() + 1 > capacity()) {
+      grow_memory_twice_if_needed();
     }
     construct(last_, v);
     ++last_;
@@ -255,8 +255,9 @@ public:
       return;
     }
 
-    grow_memory_if_needed(count);
-    for (; last_ != reserved_last_; ++last_) {
+    grow_memory_if_needed(count - current_size);
+
+    for (; current_size < count; ++last_, ++current_size) {
       construct(last_, v);
     }
   }
@@ -331,12 +332,12 @@ private:
       if (size() + count > size() * 2) {
         reserve(size() + count);
       } else {
-        grow_memory_twice();
+        grow_memory_twice_if_needed();
       }
     }
   }
 
-  void grow_memory_twice() {
+  void grow_memory_twice_if_needed() {
     size_type cur_sz = size();
 
     if (cur_sz == 0) {
@@ -346,8 +347,6 @@ private:
     }
     reserve(cur_sz);
   }
-
-  bool should_grow_memory_double() { return size() + 1 > capacity(); }
 };
 
 /*
