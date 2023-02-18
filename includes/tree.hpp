@@ -969,7 +969,6 @@ private:
     //      N2            NR1
     //  +---+---+
     // NL2     NR2
-    // TODO N1とN2が親子
     if (p2 == n1) {
       if (nl1 == n2) {
         if (n1 == root_) {
@@ -1022,7 +1021,6 @@ private:
         nr2->parent = n1;
       }
 
-      // TODO 色も交換する？
       exchange_node_color(n1, n2);
       return;
     }
@@ -1057,7 +1055,6 @@ private:
     n1->right = nr2;
     nr2->parent = n1;
 
-    // TODO 色も交換する？
     exchange_node_color(n1, n2);
   }
 
@@ -1161,7 +1158,6 @@ private:
   }
 
   node_pointer lower_bound_pointer(const Key& k) const {
-    // TODO うまくinsertと共通化したい
     if (empty()) {
       return NULL;
     }
@@ -1177,7 +1173,6 @@ private:
         break;
       }
 
-      // TODO end nodeまで到達するとこれ以上のノードは存在しないので、見つからなかったとする
       if (nd == end_node_) {
         return NULL;
       }
@@ -1318,7 +1313,6 @@ private:
       // rootにつける
       root_ = inserted_node;
       root_->parent = root_;
-      // TODO 最後のイテレータのためだけにつける
       attach_end_node(inserted_node);
       attach_nil_node_to_left(inserted_node);
       has_inserted = true;
@@ -1353,7 +1347,6 @@ private:
           inserted_node = allocate_node(value);
           // rightにノードをつける
           attach_node_to_right(nd->parent, inserted_node);
-          // TODO 最後のイテレータのためだけにつける
           attach_end_node(inserted_node);
           // nil nodeをつける
           attach_nil_node_to_left(inserted_node);
@@ -1365,7 +1358,6 @@ private:
           break;
         }
 
-        // TODO rightがend nodeじゃない時もある
         if (nd->is_nil_node()) {
           inserted_node = allocate_node(value);
           // rightにノードをつける　

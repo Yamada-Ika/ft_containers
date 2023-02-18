@@ -142,7 +142,6 @@ public:
         // xxxxxxxxxxxxxxx
         //  r b      f  l
         return -(lhs.cap_ - (lhs.pos_ - rhs.pos_));
-        // return lhs.cap_ - (lhs.pos_ - rhs.pos_);
       } else {
         // xxxxxxxxxxxxxxx
         //    b      f r l
@@ -312,7 +311,6 @@ public:
         // xxxxxxxxxxxxxxx
         //  r b      f  l
         return -(lhs.cap_ - (lhs.pos_ - rhs.pos_));
-        // return lhs.cap_ - (lhs.pos_ - rhs.pos_);
       } else {
         // xxxxxxxxxxxxxxx
         //    b      f r l
@@ -649,14 +647,10 @@ private:
 
   void deallocate(pointer ptr) { alloc_.deallocate(ptr, current_bufsize); }
 
-  // helper
-  // 一番後ろのインデックスを返す
   size_type last_index() { return back_ - first_; }
 
-  // 一番前のインデックスを返す
   size_type first_index() { return front_ - first_; }
 
-  // push_frontした時に値を挿入すべきインデックスを返す
   size_type calc_index_to_be_first() {
     if (first_index() == 0) {
       return current_bufsize - 1;
@@ -664,8 +658,6 @@ private:
     return first_index() - 1;
   }
 
-  // posのポインターを返す
-  // TODO メモリ再確保の処理ここでやる？
   pointer pointer_at(size_type pos) {
     assert(front_ != NULL);
     assert(back_ != NULL);
@@ -691,7 +683,6 @@ private:
       pos += front_ - first_;
       return first_ + pos;
     }
-    // TODO コンパイルエラー回避
     return front_ + pos;
   }
 
@@ -726,8 +717,6 @@ private:
     // xxxxxxxxxxxxxxxx
     // |      |        |
     // b    front  first[size]
-    // back_がダングリングになるのを防ぐ
-    // TODO この時リングバッファを拡張する
     if (back_ == first_) {
       back_ = first_ + current_bufsize + n;
       return;
@@ -774,7 +763,6 @@ private:
 
   template <class InputIt>
   void assign_with_iterator(InputIt first, InputIt last) {
-    // TODO リファクタ
     if (empty()) {
       for (InputIt itr = first; itr != last; ++itr) {
         push_back(*itr);

@@ -11094,6 +11094,34 @@ void test_vector() {
     ASSERT_EQ(stdvec.at(2), ftvec.at(2));
   }
 
+  {
+    std::vector<int> stdvec(5, 4242);
+    ft::vector<int> ftvec(5, 4242);
+
+    stdvec.assign(3, 42);
+    ftvec.assign(3, 42);
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    ASSERT_EQ(stdvec.at(0), ftvec.at(0));
+    ASSERT_EQ(stdvec.at(1), ftvec.at(1));
+    ASSERT_EQ(stdvec.at(2), ftvec.at(2));
+  }
+
+  {
+    std::vector<int> stdvec(3, 4242);
+    ft::vector<int> ftvec(3, 4242);
+
+    stdvec.assign(5, 42);
+    ftvec.assign(5, 42);
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    ASSERT_EQ(stdvec.at(0), ftvec.at(0));
+    ASSERT_EQ(stdvec.at(1), ftvec.at(1));
+    ASSERT_EQ(stdvec.at(2), ftvec.at(2));
+    ASSERT_EQ(stdvec.at(3), ftvec.at(3));
+    ASSERT_EQ(stdvec.at(4), ftvec.at(4));
+  }
+
   /*
   * assign 2
   */
@@ -11102,6 +11130,21 @@ void test_vector() {
     ft::vector<int> ftdata(3, 42);
     std::vector<int> stdvec;
     ft::vector<int> ftvec;
+
+    stdvec.assign(stddata.begin(), stddata.end());
+    ftvec.assign(ftdata.begin(), ftdata.end());
+
+    ASSERT_EQ(stdvec.size(), ftvec.size());
+    ASSERT_EQ(stdvec.at(0), ftvec.at(0));
+    ASSERT_EQ(stdvec.at(1), ftvec.at(1));
+    ASSERT_EQ(stdvec.at(2), ftvec.at(2));
+  }
+
+  {
+    std::vector<int> stddata(3, 42);
+    ft::vector<int> ftdata(3, 42);
+    std::vector<int> stdvec(5, 4242);
+    ft::vector<int> ftvec(5, 4242);
 
     stdvec.assign(stddata.begin(), stddata.end());
     ftvec.assign(ftdata.begin(), ftdata.end());

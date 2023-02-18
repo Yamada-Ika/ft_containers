@@ -37,21 +37,21 @@ public:
       : alloc_(allocator_type()), first_(allocate(0)), last_(first_),
         reserved_last_(first_ + size()) {}
 
-  explicit vector(const allocator_type& alloc_)
-      : alloc_(alloc_), first_(allocate(0)), last_(first_),
+  explicit vector(const Allocator& alloc)
+      : alloc_(alloc), first_(allocate(0)), last_(first_),
         reserved_last_(first_ + size()) {}
 
-  explicit vector(size_type count, const_reference value = T(),
-                  const allocator_type& alloc_ = allocator_type())
-      : alloc_(alloc_), first_(allocate(0)), last_(first_),
+  explicit vector(size_type count, const T& value = T(),
+                  const Allocator& alloc = allocator_type())
+      : alloc_(alloc), first_(allocate(0)), last_(first_),
         reserved_last_(first_ + size()) {
     resize(count, value);
   }
 
-  template <typename InputIterator>
-  vector(InputIterator first,
-         typename ft::enable_if<!ft::is_integral<InputIterator>::value,
-                                InputIterator>::type last,
+  template <typename InputIt>
+  vector(InputIt first,
+         typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type
+             last,
          const allocator_type& alloc = allocator_type())
       : alloc_(alloc) {
     first_ = allocate(0);
@@ -60,7 +60,7 @@ public:
 
     std::ptrdiff_t diff = std::distance(first, last);
     reserve(diff);
-    for (InputIterator itr = first; itr != last; ++itr) {
+    for (InputIt itr = first; itr != last; ++itr) {
       push_back(*itr);
     }
   }
@@ -85,7 +85,13 @@ public:
     return *this;
   }
 
-  void assign(size_type count, const T& value) { resize(count, value); }
+  void assign(size_type count, const T& value) {
+    resize(0);
+
+    for (size_type i = 0; i < count; ++i) {
+      push_back(value);
+    }
+  }
 
   template <class InputIt>
   void assign(InputIt first,
@@ -105,14 +111,14 @@ public:
   * Element access
   */
   reference at(size_type pos) {
-    if (pos >= size()) {
+    if (!(pos < size())) {
       throw std::out_of_range("Error: index is out of range.");
     }
     return first_[pos];
   }
 
   const_reference at(size_type pos) const {
-    if (pos >= size()) {
+    if (!(pos < size())) {
       throw std::out_of_range("Error: index is out of range.");
     }
     return first_[pos];
@@ -178,13 +184,11 @@ public:
     last_ = first_;
     reserved_last_ = first_ + new_cap;
 
-    // copy
     for (iterator old_iter = old_first_; old_iter != old_last;
          ++old_iter, ++last_) {
       construct(last_, *old_iter);
     }
 
-    // deallocate old memory
     alloc_.deallocate(old_first_, old_capacity);
     for (reverse_iterator riter = reverse_iterator(old_last),
                           rend = reverse_iterator(old_first_);
