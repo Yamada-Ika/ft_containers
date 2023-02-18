@@ -204,13 +204,11 @@ void test_map() {
   {
     std::greater<int> ftcomp;
     AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > ftalloc;
-    std::cerr << "hoge" << std::endl;
     std::map<const int, int, std::greater<int>,
              AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > >
         ftmp(ftcomp, ftalloc);
 
     AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > myalloc;
-    std::cerr << "fuga" << std::endl;
     ft::map<const int, int, std::greater<int>,
             AlwaysFaildedToAllocateAllocator<std::pair<const int, int> > >
         mymp(ftcomp, myalloc);
@@ -10962,6 +10960,19 @@ void test_vector() {
     (void)(ftvec1.begin() == ftvec2.begin());
   }
 
+  {
+    ft::vector<int> ftvec;
+    std::vector<int> stdvec;
+
+    ft::vector<int>::iterator ftitr1 = ftvec.begin();
+    ft::vector<int>::const_iterator ftitr_const = ftvec.begin();
+    std::vector<int>::iterator stditr1 = stdvec.begin();
+    std::vector<int>::const_iterator stditr_const = stdvec.begin();
+
+    ASSERT_EQ(ftitr1, ftitr_const);
+    ASSERT_EQ(stditr1, stditr_const);
+  }
+
   /*
   * constructor 1
   */
@@ -11607,6 +11618,7 @@ void test_vector() {
     ftvec.reserve(1000);
 
     ASSERT_EQ(stdvec.capacity(), ftvec.capacity());
+    ASSERT_EQ(stdvec.size(), ftvec.size());
     ASSERT_EQ(stdvec.at(0), ftvec.at(0));
     ASSERT_EQ(stdvec.at(1), ftvec.at(1));
     ASSERT_EQ(stdvec.at(2), ftvec.at(2));
