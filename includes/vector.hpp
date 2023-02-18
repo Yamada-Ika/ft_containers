@@ -335,7 +335,11 @@ private:
     if (cur_sz == 0) {
       cur_sz = 1;
     } else {
-      cur_sz *= 2;
+      if (cur_sz > std::numeric_limits<size_type>::max() / 2) {
+        cur_sz = std::numeric_limits<size_type>::max();
+      } else {
+        cur_sz *= 2;
+      }
     }
     reserve(cur_sz);
   }
