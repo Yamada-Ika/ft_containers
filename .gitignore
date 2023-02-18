@@ -12,3 +12,4 @@ a.out
 *.plist
 ft.perf
 std.perf
+bench-test
