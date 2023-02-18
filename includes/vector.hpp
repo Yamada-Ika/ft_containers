@@ -170,7 +170,6 @@ public:
       return;
     }
 
-    // memory allocate before deallocate this instance's memmory
     pointer tmp = allocate(new_cap);
     iterator old_first_ = first_;
     iterator old_last = last_;
@@ -289,25 +288,21 @@ private:
   }
 
   iterator insert_fill(const_iterator pos, size_type count, const T& value) {
-    // posにおけるインデックス
     size_type insert_from = pos - begin();
     size_type insert_to = insert_from + count - 1;
 
     grow_memory_if_needed(count);
 
-    // 後ろからposまで値をムーブ
     for (size_type i = size() + count - 1; i > insert_to; --i) {
       first_[i] = first_[i - count];
-      // ラップアラウンドによる意図せぬループを防ぐ
       if (i == 0) {
         break;
       }
     }
-    // 挿入
-    // TODO ラップアラウンド
+
     for (size_type i = insert_from; i <= insert_to; ++i) {
       first_[i] = value;
-      ++last_; //　挿入した分要素が増える
+      ++last_;
     }
     return begin() + insert_from;
   }
@@ -316,18 +311,15 @@ private:
     size_type count = to - from;
     size_type erased_from = from - begin();
 
-    // posの一個後ろから最後の要素まで前に詰める
-    // TODO ラップアラウンド対策
     for (size_type i = erased_from; i + count <= size() - 1; ++i) {
       first_[i] = first_[i + count];
     }
     last_ -= count;
-    // posの一個後ろのイテレータを返す
+
     return begin() + erased_from;
   }
 
   void grow_memory_if_needed(size_type count) {
-    // capaのチェック
     if (size() + count >= capacity()) {
       if (size() + count > size() * 2) {
         reserve(size() + count);
@@ -343,7 +335,7 @@ private:
     if (cur_sz == 0) {
       cur_sz = 1;
     } else {
-      cur_sz *= 2; // TODO care of overflow
+      cur_sz *= 2;
     }
     reserve(cur_sz);
   }
