@@ -7,6 +7,7 @@ test_ft_comp_output
 test_std_perf
 test_ft_perf
 obj/**.o
+obj/**.d
 tmp.cpp
 a.out
 *.plist
