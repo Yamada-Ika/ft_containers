@@ -20,62 +20,62 @@ void vec_test(Vector) {
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       v.push_back(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     v.assign(1000000, 42);
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       v.push_back(i);
     }
     v.clear();
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       v.insert(v.begin(), i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       v.insert(v.begin(), i);
@@ -85,15 +85,15 @@ void vec_test(Vector) {
       v.insert(v.begin(), i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       v.push_back(i);
@@ -102,15 +102,15 @@ void vec_test(Vector) {
       v.pop_back();
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
     Vector v;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       v.push_back(i);
@@ -118,9 +118,9 @@ void vec_test(Vector) {
     v.resize(10);
     v.resize(10000000);
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -135,13 +135,13 @@ void vec_test(Vector) {
       v2.push_back(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     v.swap(v2);
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 }
 
@@ -150,15 +150,15 @@ void vec_stack(Stack) {
   {
     Stack st;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.push(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -168,15 +168,15 @@ void vec_stack(Stack) {
       st.push(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.pop();
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -186,15 +186,15 @@ void vec_stack(Stack) {
       st.push(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.top();
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 }
 
@@ -203,15 +203,15 @@ void vec_map(Map, Pair) {
   {
     Map mp;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -221,15 +221,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.at(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -239,15 +239,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp[i];
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -257,15 +257,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.size();
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -275,15 +275,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.clear();
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -293,15 +293,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.erase(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -311,15 +311,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.count(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -329,15 +329,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.find(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -347,15 +347,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.equal_range(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -365,15 +365,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.lower_bound(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -383,15 +383,15 @@ void vec_map(Map, Pair) {
       mp.insert(Pair(i, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       mp.upper_bound(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -406,13 +406,13 @@ void vec_map(Map, Pair) {
       mp1.insert(Pair(i * 2, i));
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     mp.swap(mp1);
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 }
 
@@ -421,15 +421,15 @@ void vec_set(Set) {
   {
     Set st;
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.insert(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -439,13 +439,13 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     st.size();
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -455,13 +455,13 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     st.clear();
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -471,15 +471,15 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.erase(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -493,13 +493,13 @@ void vec_set(Set) {
       st2.insert(i * 2);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     st.swap(st2);
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -509,15 +509,15 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.count(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -527,15 +527,15 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.find(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -545,15 +545,15 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.equal_range(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -563,15 +563,15 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.lower_bound(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 
   {
@@ -581,15 +581,15 @@ void vec_set(Set) {
       st.insert(i);
     }
 
-    clock_t start = clock();
+    double start = static_cast<double>(clock());
 
     for (int i = 0; i < 100000; ++i) {
       st.upper_bound(i);
     }
 
-    clock_t end = clock();
+    double end = static_cast<double>(clock());
 
-    std::cout << static_cast<double>(end - start) << std::endl;
+    std::cout << end - start << std::endl;
   }
 }
 
