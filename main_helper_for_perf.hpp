@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <iomanip>
 
 #include <vector>
 #include <stack>
@@ -28,7 +29,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -40,7 +42,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -55,7 +58,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -69,7 +73,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -87,7 +92,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -104,7 +110,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -120,7 +127,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -141,7 +149,8 @@ void vec_test(Vector) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 }
 
@@ -158,7 +167,8 @@ void vec_stack(Stack) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -176,7 +186,8 @@ void vec_stack(Stack) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -194,7 +205,8 @@ void vec_stack(Stack) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 }
 
@@ -211,7 +223,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -229,7 +242,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -247,7 +261,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -265,7 +280,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -283,7 +299,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -301,7 +318,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -319,7 +337,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -337,7 +356,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -355,7 +375,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -373,7 +394,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -391,7 +413,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -412,7 +435,8 @@ void vec_map(Map, Pair) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 }
 
@@ -429,7 +453,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -445,7 +470,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -461,7 +487,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -479,7 +506,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -499,7 +527,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -517,7 +546,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -535,7 +565,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -553,7 +584,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -571,7 +603,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 
   {
@@ -589,7 +622,8 @@ void vec_set(Set) {
 
     double end = static_cast<double>(clock());
 
-    std::cout << end - start << std::endl;
+    std::cout << std::fixed << std::setprecision(15) << end - start
+              << std::endl;
   }
 }
 
