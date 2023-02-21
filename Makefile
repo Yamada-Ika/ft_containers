@@ -52,9 +52,6 @@ all: $(NAME) \
 	 $(NAME_FT_PERF)
 
 $(NAME): $(OBJS)
-	@if [ ! -d $(OBJ_DIR) ]; \
-		then mkdir -p obj; \
-	fi
 	$(CXX) -o $(NAME) $(CXXFLAGS) $(COPTS) $(OBJS)
 
 obj/%.o: %.cpp
@@ -65,9 +62,6 @@ obj/%.o: %.cpp
 # -- compare output test rule for std container --
 
 $(NAME_STD_COMP_OUT): $(OBJS_STD_COMP_OUT)
-	@if [ ! -d $(OBJ_DIR) ]; \
-		then mkdir -p obj; \
-	fi
 	$(CXX) -o $(NAME_STD_COMP_OUT) $(CXXFLAGS) $(COPTS) $(OBJS_STD_COMP_OUT)
 
 obj/%.o: %.cpp
@@ -78,9 +72,6 @@ obj/%.o: %.cpp
 # -- compare output test rule for ft container --
 
 $(NAME_FT_COMP_OUT): $(OBJS_FT_COMP_OUT)
-	@if [ ! -d $(OBJ_DIR) ]; \
-		then mkdir -p obj; \
-	fi
 	$(CXX) -o $(NAME_FT_COMP_OUT) $(CXXFLAGS) $(COPTS) $(OBJS_FT_COMP_OUT)
 
 obj/%.o: %.cpp
@@ -91,9 +82,6 @@ obj/%.o: %.cpp
 # -- perf test rule for std container --
 
 $(NAME_STD_PERF): $(OBJS_STD_PERF)
-	@if [ ! -d $(OBJ_DIR) ]; \
-		then mkdir -p obj; \
-	fi
 	$(CXX) -o $(NAME_STD_PERF) $(CXXFLAGS) $(COPTS) $(OBJS_STD_PERF)
 
 obj/%.o: %.cpp
@@ -104,9 +92,6 @@ obj/%.o: %.cpp
 # -- perf test rule for ft container --
 
 $(NAME_FT_PERF): $(OBJS_FT_PERF)
-	@if [ ! -d $(OBJ_DIR) ]; \
-		then mkdir -p obj; \
-	fi
 	$(CXX) -o $(NAME_FT_PERF) $(CXXFLAGS) $(COPTS) $(OBJS_FT_PERF)
 
 obj/%.o: %.cpp
