@@ -659,8 +659,6 @@ private:
   }
 
   pointer pointer_at(size_type pos) {
-    assert(front_ != NULL);
-    assert(back_ != NULL);
     // xxxxxxxxxxx
     //  |      |
     //  f      b
