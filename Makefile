@@ -54,7 +54,7 @@ all: $(NAME) \
 $(NAME): $(OBJS)
 	$(CXX) -o $(NAME) $(CXXFLAGS) $(COPTS) $(OBJS)
 
-obj/%.o: %.cpp
+obj/main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
 
 -include $(DEPS)
@@ -64,7 +64,7 @@ obj/%.o: %.cpp
 $(NAME_STD_COMP_OUT): $(OBJS_STD_COMP_OUT)
 	$(CXX) -o $(NAME_STD_COMP_OUT) $(CXXFLAGS) $(COPTS) $(OBJS_STD_COMP_OUT)
 
-obj/%.o: %.cpp
+obj/main_std_for_comp_output.o: main_std_for_comp_output.cpp
 	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
 
 -include $(DEPS_STD_COMP_OUT)
@@ -74,7 +74,7 @@ obj/%.o: %.cpp
 $(NAME_FT_COMP_OUT): $(OBJS_FT_COMP_OUT)
 	$(CXX) -o $(NAME_FT_COMP_OUT) $(CXXFLAGS) $(COPTS) $(OBJS_FT_COMP_OUT)
 
-obj/%.o: %.cpp
+obj/main_ft_for_comp_output.o: main_ft_for_comp_output.cpp
 	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
 
 -include $(DEPS_FT_COMP_OUT)
@@ -84,7 +84,7 @@ obj/%.o: %.cpp
 $(NAME_STD_PERF): $(OBJS_STD_PERF)
 	$(CXX) -o $(NAME_STD_PERF) $(CXXFLAGS) $(COPTS) $(OBJS_STD_PERF)
 
-obj/%.o: %.cpp
+obj/main_std_for_perf.o: main_std_for_perf.cpp
 	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
 
 -include $(DEPS_STD_PERF)
@@ -94,7 +94,7 @@ obj/%.o: %.cpp
 $(NAME_FT_PERF): $(OBJS_FT_PERF)
 	$(CXX) -o $(NAME_FT_PERF) $(CXXFLAGS) $(COPTS) $(OBJS_FT_PERF)
 
-obj/%.o: %.cpp
+obj/main_ft_for_perf.o: main_ft_for_perf.cpp
 	$(CXX) $(CXXFLAGS) $(COPTS) $(INCS) -o $@ -c $<
 
 -include $(DEPS_FT_PERF)
