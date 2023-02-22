@@ -86,10 +86,6 @@ void vec_test(Vector) {
       v.insert(v.begin(), i);
     }
 
-    for (int i = 0; i < 100000; ++i) {
-      v.insert(v.begin(), i);
-    }
-
     double end = static_cast<double>(clock());
 
     std::cout << std::fixed << std::setprecision(15) << end - start
@@ -146,6 +142,21 @@ void vec_test(Vector) {
     double start = static_cast<double>(clock());
 
     v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
+    v.swap(v2);
+    v2.swap(v);
 
     double end = static_cast<double>(clock());
 

@@ -266,9 +266,19 @@ public:
   }
 
   void swap(vector& other) {
-    vector tmp = other;
-    other = *this;
-    *this = tmp;
+    allocator_type other_allocator = other.alloc_;
+    pointer other_first = other.first_;
+    pointer other_last = other.last_;
+    pointer other_reserved_last = other.reserved_last_;
+    other.alloc_ = alloc_;
+    other.first_ = first_;
+    other.last_ = last_;
+    other.reserved_last_ = reserved_last_;
+
+    alloc_ = other_allocator;
+    first_ = other_first;
+    last_ = other_last;
+    reserved_last_ = other_reserved_last;
   }
 
 private:
