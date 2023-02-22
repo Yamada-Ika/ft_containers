@@ -16074,252 +16074,252 @@ void test_pair() {
   }
 }
 
-// void test_other() {
-//   /*
-//   * iterator_traits
-//   */
-//   {
-//     // int *
-//     if (std::is_same<ft::iterator_traits<int*>::difference_type,
-//                      std::iterator_traits<int*>::difference_type>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<int*>::value_type,
-//                      std::iterator_traits<int*>::value_type>::value == false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<int*>::pointer,
-//                      std::iterator_traits<int*>::pointer>::value == false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<int*>::reference,
-//                      std::iterator_traits<int*>::reference>::value == false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<int*>::iterator_category,
-//                      std::iterator_traits<int*>::iterator_category>::value ==
-//         false)
-//       assert(false);
+void test_other() {
+  /*
+  * iterator_traits
+  */
+  {
+    // int *
+    if (std::is_same<ft::iterator_traits<int*>::difference_type,
+                     std::iterator_traits<int*>::difference_type>::value ==
+        false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<int*>::value_type,
+                     std::iterator_traits<int*>::value_type>::value == false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<int*>::pointer,
+                     std::iterator_traits<int*>::pointer>::value == false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<int*>::reference,
+                     std::iterator_traits<int*>::reference>::value == false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<int*>::iterator_category,
+                     std::iterator_traits<int*>::iterator_category>::value ==
+        false)
+      assert(false);
 
-//     // const int *
-//     if (std::is_same<
-//             ft::iterator_traits<const int*>::difference_type,
-//             std::iterator_traits<const int*>::difference_type>::value == false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<const int*>::value_type,
-//                      std::iterator_traits<const int*>::value_type>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<const int*>::pointer,
-//                      std::iterator_traits<const int*>::pointer>::value == false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<const int*>::reference,
-//                      std::iterator_traits<const int*>::reference>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<const int*>::iterator_category,
-//             std::iterator_traits<const int*>::iterator_category>::value ==
-//         false)
-//       assert(false);
+    // const int *
+    if (std::is_same<
+            ft::iterator_traits<const int*>::difference_type,
+            std::iterator_traits<const int*>::difference_type>::value == false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<const int*>::value_type,
+                     std::iterator_traits<const int*>::value_type>::value ==
+        false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<const int*>::pointer,
+                     std::iterator_traits<const int*>::pointer>::value == false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<const int*>::reference,
+                     std::iterator_traits<const int*>::reference>::value ==
+        false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<const int*>::iterator_category,
+            std::iterator_traits<const int*>::iterator_category>::value ==
+        false)
+      assert(false);
 
-//     // vector iterator
-//     if (std::is_same<
-//             ft::iterator_traits<std::vector<int>::iterator>::difference_type,
-//             std::iterator_traits<std::vector<int>::iterator>::difference_type>::
-//             value == false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::vector<int>::iterator>::value_type,
-//             std::iterator_traits<std::vector<int>::iterator>::value_type>::
-//             value == false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::vector<int>::iterator>::pointer,
-//             std::iterator_traits<std::vector<int>::iterator>::pointer>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<ft::iterator_traits<std::vector<int>::iterator>::reference,
-//                      std::iterator_traits<
-//                          std::vector<int>::iterator>::reference>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::vector<int>::iterator>::iterator_category,
-//             std::iterator_traits<
-//                 std::vector<int>::iterator>::iterator_category>::value == false)
-//       assert(false);
+    // vector iterator
+    if (std::is_same<
+            ft::iterator_traits<std::vector<int>::iterator>::difference_type,
+            std::iterator_traits<std::vector<int>::iterator>::difference_type>::
+            value == false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::vector<int>::iterator>::value_type,
+            std::iterator_traits<std::vector<int>::iterator>::value_type>::
+            value == false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::vector<int>::iterator>::pointer,
+            std::iterator_traits<std::vector<int>::iterator>::pointer>::value ==
+        false)
+      assert(false);
+    if (std::is_same<ft::iterator_traits<std::vector<int>::iterator>::reference,
+                     std::iterator_traits<
+                         std::vector<int>::iterator>::reference>::value ==
+        false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::vector<int>::iterator>::iterator_category,
+            std::iterator_traits<
+                std::vector<int>::iterator>::iterator_category>::value == false)
+      assert(false);
 
-//     // set iterator
-//     if (std::is_same<
-//             ft::iterator_traits<std::set<int>::iterator>::difference_type,
-//             std::iterator_traits<std::set<int>::iterator>::difference_type>::
-//             value == false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::set<int>::iterator>::value_type,
-//             std::iterator_traits<std::set<int>::iterator>::value_type>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::set<int>::iterator>::pointer,
-//             std::iterator_traits<std::set<int>::iterator>::pointer>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::set<int>::iterator>::reference,
-//             std::iterator_traits<std::set<int>::iterator>::reference>::value ==
-//         false)
-//       assert(false);
-//     if (std::is_same<
-//             ft::iterator_traits<std::set<int>::iterator>::iterator_category,
-//             std::iterator_traits<std::set<int>::iterator>::iterator_category>::
-//             value == false)
-//       assert(false);
-//   }
+    // set iterator
+    if (std::is_same<
+            ft::iterator_traits<std::set<int>::iterator>::difference_type,
+            std::iterator_traits<std::set<int>::iterator>::difference_type>::
+            value == false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::set<int>::iterator>::value_type,
+            std::iterator_traits<std::set<int>::iterator>::value_type>::value ==
+        false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::set<int>::iterator>::pointer,
+            std::iterator_traits<std::set<int>::iterator>::pointer>::value ==
+        false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::set<int>::iterator>::reference,
+            std::iterator_traits<std::set<int>::iterator>::reference>::value ==
+        false)
+      assert(false);
+    if (std::is_same<
+            ft::iterator_traits<std::set<int>::iterator>::iterator_category,
+            std::iterator_traits<std::set<int>::iterator>::iterator_category>::
+            value == false)
+      assert(false);
+  }
 
-//   /*
-//   * reverse_iterator
-//   */
-//   {
-//     std::vector<int> stdvec1;
-//     stdvec1.push_back(1);
-//     stdvec1.push_back(2);
-//     stdvec1.push_back(3);
-//     std::vector<int> stdvec2;
-//     stdvec2.push_back(1);
-//     stdvec2.push_back(2);
-//     stdvec2.push_back(3);
+  /*
+  * reverse_iterator
+  */
+  {
+    std::vector<int> stdvec1;
+    stdvec1.push_back(1);
+    stdvec1.push_back(2);
+    stdvec1.push_back(3);
+    std::vector<int> stdvec2;
+    stdvec2.push_back(1);
+    stdvec2.push_back(2);
+    stdvec2.push_back(3);
 
-//     std::reverse_iterator<std::vector<int>::iterator> stditr =
-//         std::reverse_iterator<std::vector<int>::iterator>(stdvec1.end());
-//     ft::reverse_iterator<std::vector<int>::iterator> ftitr =
-//         ft::reverse_iterator<std::vector<int>::iterator>(stdvec2.end());
+    std::reverse_iterator<std::vector<int>::iterator> stditr =
+        std::reverse_iterator<std::vector<int>::iterator>(stdvec1.end());
+    ft::reverse_iterator<std::vector<int>::iterator> ftitr =
+        ft::reverse_iterator<std::vector<int>::iterator>(stdvec2.end());
 
-//     ASSERT_EQ(*stditr, *ftitr);
-//     ++stditr;
-//     ++ftitr;
-//     ASSERT_EQ(*stditr, *ftitr);
-//     ++stditr;
-//     ++ftitr;
-//     ASSERT_EQ(*stditr, *ftitr);
-//     ++stditr;
-//     ++ftitr;
-//   }
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
 
-//   {
-//     std::set<int> stdst1;
-//     stdst1.insert(1);
-//     stdst1.insert(2);
-//     stdst1.insert(3);
-//     std::set<int> stdst2;
-//     stdst2.insert(1);
-//     stdst2.insert(2);
-//     stdst2.insert(3);
+  {
+    std::set<int> stdst1;
+    stdst1.insert(1);
+    stdst1.insert(2);
+    stdst1.insert(3);
+    std::set<int> stdst2;
+    stdst2.insert(1);
+    stdst2.insert(2);
+    stdst2.insert(3);
 
-//     std::reverse_iterator<std::set<int>::iterator> stditr =
-//         std::reverse_iterator<std::set<int>::iterator>(stdst1.end());
-//     ft::reverse_iterator<std::set<int>::iterator> ftitr =
-//         ft::reverse_iterator<std::set<int>::iterator>(stdst2.end());
+    std::reverse_iterator<std::set<int>::iterator> stditr =
+        std::reverse_iterator<std::set<int>::iterator>(stdst1.end());
+    ft::reverse_iterator<std::set<int>::iterator> ftitr =
+        ft::reverse_iterator<std::set<int>::iterator>(stdst2.end());
 
-//     ASSERT_EQ(*stditr, *ftitr);
-//     ++stditr;
-//     ++ftitr;
-//     ASSERT_EQ(*stditr, *ftitr);
-//     ++stditr;
-//     ++ftitr;
-//     ASSERT_EQ(*stditr, *ftitr);
-//     ++stditr;
-//     ++ftitr;
-//   }
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+    ASSERT_EQ(*stditr, *ftitr);
+    ++stditr;
+    ++ftitr;
+  }
 
-//   /*
-//   * enable_if
-//   */
-//   {
-//     if (std::is_same<std::enable_if<true, int>::type,
-//                      ft::enable_if<true, int>::type>::value == false)
-//       assert(false);
-//     if (std::is_same<
-//             std::enable_if<true, std::vector<int>::iterator>::type,
-//             ft::enable_if<true, std::vector<int>::iterator>::type>::value ==
-//         false)
-//       assert(false);
-//   }
+  /*
+  * enable_if
+  */
+  {
+    if (std::is_same<std::enable_if<true, int>::type,
+                     ft::enable_if<true, int>::type>::value == false)
+      assert(false);
+    if (std::is_same<
+            std::enable_if<true, std::vector<int>::iterator>::type,
+            ft::enable_if<true, std::vector<int>::iterator>::type>::value ==
+        false)
+      assert(false);
+  }
 
-//   /*
-//   * is_integral
-//   */
-//   {
-//     std::true_type stdtrue_type = std::is_integral<int>();
-//     ft::true_type fttrue_type = ft::is_integral<int>();
-//     ASSERT_EQ(stdtrue_type.value, fttrue_type.value);
-//   }
+  /*
+  * is_integral
+  */
+  {
+    std::true_type stdtrue_type = std::is_integral<int>();
+    ft::true_type fttrue_type = ft::is_integral<int>();
+    ASSERT_EQ(stdtrue_type.value, fttrue_type.value);
+  }
 
-//   {
-//     std::false_type stdtrue_type = std::is_integral<double>();
-//     ft::false_type fttrue_type = ft::is_integral<double>();
-//     ASSERT_EQ(stdtrue_type.value, fttrue_type.value);
-//   }
+  {
+    std::false_type stdtrue_type = std::is_integral<double>();
+    ft::false_type fttrue_type = ft::is_integral<double>();
+    ASSERT_EQ(stdtrue_type.value, fttrue_type.value);
+  }
 
-//   /*
-//   * lexicographical_compare
-//   */
-//   {
-//     std::vector<int> vec1(10, 42);
-//     std::vector<int> vec2(10, 42);
-//     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                            vec2.begin(), vec2.end()),
-//               ft::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                           vec2.begin(), vec2.end()));
-//   }
+  /*
+  * lexicographical_compare
+  */
+  {
+    std::vector<int> vec1(10, 42);
+    std::vector<int> vec2(10, 42);
+    ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
+                                           vec2.begin(), vec2.end()),
+              ft::lexicographical_compare(vec1.begin(), vec1.end(),
+                                          vec2.begin(), vec2.end()));
+  }
 
-//   {
-//     std::vector<int> vec1(10, 42);
-//     std::vector<int> vec2(9, 42);
-//     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                            vec2.begin(), vec2.end()),
-//               ft::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                           vec2.begin(), vec2.end()));
-//   }
+  {
+    std::vector<int> vec1(10, 42);
+    std::vector<int> vec2(9, 42);
+    ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
+                                           vec2.begin(), vec2.end()),
+              ft::lexicographical_compare(vec1.begin(), vec1.end(),
+                                          vec2.begin(), vec2.end()));
+  }
 
-//   {
-//     std::vector<int> vec1(9, 42);
-//     std::vector<int> vec2(10, 42);
-//     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                            vec2.begin(), vec2.end()),
-//               ft::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                           vec2.begin(), vec2.end()));
-//   }
+  {
+    std::vector<int> vec1(9, 42);
+    std::vector<int> vec2(10, 42);
+    ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
+                                           vec2.begin(), vec2.end()),
+              ft::lexicographical_compare(vec1.begin(), vec1.end(),
+                                          vec2.begin(), vec2.end()));
+  }
 
-//   {
-//     std::set<int> vec1;
-//     vec1.insert(1);
-//     std::set<int> vec2;
-//     vec2.insert(1);
-//     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                            vec2.begin(), vec2.end()),
-//               ft::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                           vec2.begin(), vec2.end()));
-//   }
+  {
+    std::set<int> vec1;
+    vec1.insert(1);
+    std::set<int> vec2;
+    vec2.insert(1);
+    ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
+                                           vec2.begin(), vec2.end()),
+              ft::lexicographical_compare(vec1.begin(), vec1.end(),
+                                          vec2.begin(), vec2.end()));
+  }
 
-//   {
-//     std::set<int> vec1;
-//     vec1.insert(1);
-//     std::set<int> vec2;
-//     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                            vec2.begin(), vec2.end()),
-//               ft::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                           vec2.begin(), vec2.end()));
-//   }
+  {
+    std::set<int> vec1;
+    vec1.insert(1);
+    std::set<int> vec2;
+    ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
+                                           vec2.begin(), vec2.end()),
+              ft::lexicographical_compare(vec1.begin(), vec1.end(),
+                                          vec2.begin(), vec2.end()));
+  }
 
-//   {
-//     std::set<int> vec1;
-//     std::set<int> vec2;
-//     vec2.insert(1);
-//     ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                            vec2.begin(), vec2.end()),
-//               ft::lexicographical_compare(vec1.begin(), vec1.end(),
-//                                           vec2.begin(), vec2.end()));
-//   }
-// }
+  {
+    std::set<int> vec1;
+    std::set<int> vec2;
+    vec2.insert(1);
+    ASSERT_EQ(std::lexicographical_compare(vec1.begin(), vec1.end(),
+                                           vec2.begin(), vec2.end()),
+              ft::lexicographical_compare(vec1.begin(), vec1.end(),
+                                          vec2.begin(), vec2.end()));
+  }
+}
 
 int main(int ac, char** av) {
   if (ac == 1) {
@@ -16340,8 +16340,8 @@ int main(int ac, char** av) {
     test_stack();
   if (avs == "pair" || avs == "all")
     test_pair();
-  // if (avs == "other" || avs == "all")
-  //   test_other();
+  if (avs == "other" || avs == "all")
+    test_other();
 
   std::cerr << "RESULT: \033[32mOK\033[0m" << std::endl;
 }
