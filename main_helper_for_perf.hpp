@@ -413,6 +413,31 @@ void vec_map(Map, Pair) {
     double start = static_cast<double>(clock());
 
     mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
+    mp.swap(mp1);
+    mp1.swap(mp);
 
     double end = static_cast<double>(clock());
 
@@ -447,6 +472,20 @@ void vec_set(Set) {
 
     double start = static_cast<double>(clock());
 
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
+    st.size();
     st.size();
 
     double end = static_cast<double>(clock());
@@ -505,6 +544,29 @@ void vec_set(Set) {
     double start = static_cast<double>(clock());
 
     st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
+    st.swap(st2);
+    st2.swap(st);
 
     double end = static_cast<double>(clock());
 
